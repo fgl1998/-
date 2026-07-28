@@ -1,0 +1,164 @@
+{
+  "pages": [
+    // pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
+    {
+      "path": "pages/packageThreeCapital/sunshine/sunshine",
+      "style": {
+        "navigationBarTitleText": "阳光发放",
+        "backgroundColorTop": "#3882ff",
+        "navigationStyle": "custom"
+      }
+    },
+    {
+      "path": "pages/packageThreeCapital/subsidy-payment/subsidy-payment",
+      "style": {
+        "navigationBarTitleText": "个人补贴发放查询",
+        "backgroundColorTop": "#3882ff",
+        "navigationStyle": "custom"
+      }
+    },
+    {
+      "path": "pages/packageThreeCapital/policy/policy",
+      "style": {
+        "navigationBarTitleText": "政策文件搜索",
+        "backgroundColorTop": "#3882ff",
+        "navigationStyle": "custom"
+      }
+    },
+    {
+      "path": "pages/packageThreeCapital/guide-attention/guide-attention",
+      "style": {
+        "navigationBarTitleText": "雅安惠民通",
+        "backgroundColorTop": "#3882ff",
+        "navigationStyle": "custom"
+      }
+    }
+  ],
+  "globalStyle": {
+    "backgroundColor": "#f5f5f5",
+    "navigationBarBackgroundColor": "#3882ff",
+    "navigationBarTextStyle": "white",
+    "navigationBarTitleText": "惠民惠农一卡通",
+    "enablePullDownRefresh": false,
+    "backgroundTextStyle": "light",
+    "backgroundColorBottom": "#f5f5f5",
+    "navigationStyle": "default"
+  },
+  "subPackages": [
+    {
+      "root": "pages/packageCommon",
+      "pages": [
+        {
+          "path": "web-view/web-view",
+          "style": {
+            "navigationBarTitleText": "",
+            "mp-alipay": { "allowsBounceVertical": "NO" }
+          }
+        }
+      ]
+    },
+    {
+      "root": "pages/packageDeclare",
+      "pages": [
+        {
+          "path": "process/process",
+          "style": {
+            "navigationBarTitleText": "发放进度",
+            "mp-alipay": { "allowsBounceVertical": "NO" }
+          }
+        }
+      ]
+    },
+    {
+      "root": "pages/packageMasses",
+      "pages": [
+        {
+          "path": "complaints/complaints",
+          "style": {
+            "navigationBarTitleText": "投诉举报",
+            "mp-alipay": { "allowsBounceVertical": "NO" }
+          }
+        }
+      ]
+    },
+    {
+      "root": "pages/packageDetails",
+      "pages": [
+        {
+          "path": "complaint-progress/complaint-progress",
+          "style": {
+            "navigationBarTitleText": "投诉进度",
+            "mp-alipay": { "allowsBounceVertical": "NO" }
+          }
+        },
+        {
+          "path": "complaint-progress-nj/complaint-progress-nj",
+          "style": {
+            "navigationBarTitleText": "投诉进度",
+            "mp-alipay": { "allowsBounceVertical": "NO" }
+          }
+        },
+        {
+          "path": "complaints/complaints",
+          "style": {
+            "navigationBarTitleText": "投诉",
+            "mp-alipay": { "allowsBounceVertical": "NO" }
+          }
+        },
+        {
+          "path": "declare-process/declare-process",
+          "style": {
+            "navigationBarTitleText": "审批流程",
+            "mp-alipay": { "allowsBounceVertical": "NO" }
+          }
+        },
+        {
+          "path": "my-declare/my-declare",
+          "style": {
+            "navigationBarTitleText": "我的阳光申报",
+            "mp-alipay": { "allowsBounceVertical": "NO" }
+          }
+        },
+        {
+          "path": "my-message/my-message",
+          "style": {
+            "navigationBarTitleText": "我的消息",
+            "mp-alipay": { "allowsBounceVertical": "NO" }
+          }
+        },
+        {
+          "path": "publicity/publicity",
+          "style": {
+            "navigationBarTitleText": "公示详情",
+            "mp-alipay": { "allowsBounceVertical": "NO" }
+          }
+        },
+        {
+          "path": "SSC/SSC",
+          "style": {
+            "navigationBarTitleText": "社保卡办卡详情",
+            "mp-alipay": { "allowsBounceVertical": "NO" }
+          }
+        },
+        {
+          "path": "subsidy/subsidy",
+          "style": {
+            "navigationBarTitleText": "补贴发放详情",
+            "mp-alipay": { "allowsBounceVertical": "NO" }
+          }
+        },
+        {
+          "path": "subsidy-amount/subsidy-amount",
+          "style": {
+            "navigationBarTitleText": "补贴发放",
+            "mp-alipay": { "allowsBounceVertical": "NO" }
+          }
+        }
+      ]
+    }
+  ],
+  "condition": {
+    "current": 0,
+    "list": []
+  }
+}

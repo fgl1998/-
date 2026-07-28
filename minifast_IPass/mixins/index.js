@@ -1,0 +1,6 @@
+// export { useUserLocation } from './useUserLocation'
+// export { useQQMap } from './useQQMap'
+// export { useBMap } from './useBMap'
+export { useAMap } from './useAMap'
+export { useDeclare } from './useDeclare'
+export { useGetUserInfoH5 } from './useGetUserInfoH5'

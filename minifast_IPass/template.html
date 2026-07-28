@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta
+      name="viewport"
+      content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0" />
+    <title><%= htmlWebpackPlugin.options.title %></title>
+    <link rel="stylesheet" href="<%= BASE_URL %>static/index.<%= VUE_APP_INDEX_CSS_HASH %>.css" />
+    <script>
+      var coverSupport =
+        'CSS' in window &&
+        typeof CSS.supports === 'function' &&
+        (CSS.supports('top: env(a)') || CSS.supports('top: constant(a)'))
+      document.write(
+        '<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0' +
+          (coverSupport ? ', viewport-fit=cover' : '') +
+          '" />'
+      )
+    </script>
+    <script>
+      let deviceId = ''
+      let userName = localStorage.getItem('yhm')
+      let webId = '1280783566'
+      if (navigator.userAgent.toLowerCase().indexOf('tfsmy') > -1) {
+        // 若在天府市民云app中
+        eshimin.getDeviceId({
+          onResponse: function (deviceInfo) {
+            deviceInfo = JSON.parse(deviceInfo)
+            eshimin.getUserInfo({
+              onResponse: function (userInfo) {
+                userInfo = JSON.parse(userInfo)
+                if (deviceInfo.code === '200') deviceId = deviceInfo.deviceId
+                if (userInfo.code === '200') userName = userInfo.userName
+                // alert('id ' + webId + '   ' + 'userName   ' + userName+ 'deviceId   ' + deviceId);
+                Trinity.init({
+                  id: webId,
+                  userName: userName,
+                  deviceId: deviceId,
+                  callback: function () {
+                    // alert('Trinity.init')
+                    Trinity.add_event({
+                      key: 'pageview',
+                      segmentation: {
+                        action: '首页访问'
+                      }
+                    })
+                  }
+                })
+              }
+            })
+          }
+        })
+      } else {
+        Trinity.init({
+          id: webId
+        })
+      }
+    </script>
+  </head>
+  <body>
+    <noscript>
+      <strong>Please enable JavaScript to continue.</strong>
+    </noscript>
+    <div id="app"></div>
+  </body>
+</html>

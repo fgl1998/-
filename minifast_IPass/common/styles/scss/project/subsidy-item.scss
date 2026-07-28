@@ -1,0 +1,74 @@
+.subsidy-item {
+  background-color: #fff;
+  box-shadow: $box-shadow-base;
+  margin-bottom: $spacing;
+  padding: 0 $spacing;
+  font-size: 28rpx;
+  color: $color;
+  border-radius: 8rpx;
+  font-weight: 500;
+  .subsidy-name {
+    display: flex;
+    align-items: center;
+    padding: 24rpx 0;
+    line-height: 1.4;
+    font-weight: 700;
+    border-bottom: 1px solid $border-color;
+    .subsidy-name-text {
+      flex: 1;
+      overflow: hidden;
+      padding-left: 12rpx;
+    }
+  }
+  .subsidy-con {
+    padding: 20rpx 0;
+  }
+  .cell {
+    display: flex;
+    align-items: center;
+    line-height: 1.4;
+    font-size: 26rpx;
+    .key {
+      color: $color-placeholder;
+    }
+    .value {
+      flex: 1;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      padding: 12rpx 0;
+      margin-left: 20rpx;
+      &.primary {
+        color: $primary;
+      }
+      &.tag {
+        padding: 10rpx 0;
+        span {
+          background-color: rgba($primary, 0.1);
+          color: $primary;
+          padding: 0 10rpx;
+          line-height: 40rpx;
+          border-radius: 4rpx;
+          font-size: 24rpx;
+        }
+      }
+      &.con {
+        padding: 4rpx 0;
+        span {
+          background-color: rgba($primary, 0.1);
+          color: $primary;
+          padding: 10rpx;
+          line-height: 32rpx;
+          border-radius: 4rpx;
+          font-size: 24rpx;
+        }
+      }
+    }
+    &.details {
+      min-height: 88rpx;
+      border-bottom: 1px solid $border-color;
+      padding: 20rpx 0;
+    }
+  }
+}

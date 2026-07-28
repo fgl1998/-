@@ -1,0 +1,27 @@
+.input-wrapper {
+  margin-bottom: 16rpx;
+  
+  .label {
+    display: block;
+    color: $color;
+    font-size: 28rpx;
+    line-height: 2;
+    font-weight: 500;
+  }
+  input {
+    display: block;
+    width: 100%;
+    padding: 0 16rpx;
+    font-size: 28rpx;
+    line-height: 1.4;
+    height: 72rpx;
+    background-color: #f0f2f5;
+    border-radius: 8rpx;
+    color: $color;
+    transition: all .3s;
+    font-weight: 500;
+    &[disabled] {
+      opacity: .4;
+    }
+  }
+}

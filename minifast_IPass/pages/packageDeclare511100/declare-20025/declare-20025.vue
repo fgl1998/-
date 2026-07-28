@@ -1,0 +1,207 @@
+<!-- 县级大学生创业补贴 -->
+<template>
+  <view class="declare">
+    <div class="progress-wrapper">
+      <ComponentDeclareStep :current="2"></ComponentDeclareStep>
+    </div>
+
+    <div class="basic-info-wrapper">
+      <ComponentDeclare
+        :declareType="declareType"
+        :fixedDeclareType="fixedDeclareType"
+        :renderObj="renderObj"
+        :projectNumber="chi031"
+        :projectName="chi031_desc"
+        @changeDeclareType="handleChangeDeclareType"
+        @changeBasicInfo="handleChangeBasicInfo"
+        @changeCodeMap="handleChangeCodeMap"
+        @changeAgentInfo="handleChangeAgentInfo"
+        @changeDataByIdCard="handleChangeDataByIdCard"
+        currentAddressLabel="常住地址"
+        currentAddressPlaceholder="请选择或输入常住地址"
+      >
+      </ComponentDeclare>
+    </div>
+
+    <div class="personnel-type-wrapper space-top-wrapper">
+      <ComponentDeclarePersonnel
+        :renderData="personnelList"
+        :isOpenCategoryNotes="true"
+        @change="handleChangePersonnelInfo"
+      ></ComponentDeclarePersonnel>
+    </div>
+    <!-- 申报信息 -->
+    <div class="space-top-wrapper">
+      <ComponentPanel title="申报信息">
+        <div class="panel-content">
+          <div class="cell-items">
+            <ComponentDeclarePicker
+              label="最高学历"
+              idName="r00180"
+              :range="codeMap.r00180"
+              rangeKey="aaa103"
+              valueKey="aaa102"
+              placeholder="请选择最高学历"
+              v-model="projectDeclareInfo.r00180"
+            ></ComponentDeclarePicker>
+            <div class="cell-item">
+              <div class="key">毕业院校</div>
+              <div class="value">
+                <input
+                  type="text"
+                  v-model="projectDeclareInfo.r00001"
+                  placeholder="请输入毕业院校"
+                />
+              </div>
+            </div>
+            <div class="cell-item">
+              <div class="key">专业名称</div>
+              <div class="value">
+                <input
+                  type="text"
+                  v-model="projectDeclareInfo.r00121"
+                  placeholder="请输入专业名称"
+                />
+              </div>
+            </div>
+            <ComponentDeclarePicker
+              label="毕业日期"
+              idName="r00120"
+              mode="date"
+              :required="false"
+              fields="day"
+              :endTime="today_d"
+              v-model="projectDeclareInfo.r00120"
+              placeholder="请选择毕业日期"
+            ></ComponentDeclarePicker>
+          </div>
+        </div>
+      </ComponentPanel>
+    </div>
+
+    <!-- end  需要修改的地方结束 在以下代码中根据项目需求更改 下面代码勿动-->
+    <div class="button-wrapper">
+      <ComponentButton
+        @click="handleJumpNextStep"
+        name="下一步"
+        type="primary"
+      ></ComponentButton>
+    </div>
+  </view>
+</template>
+
+<script>
+import ComponentButton from '@/components/common/ez-button/ez-button.vue'
+import ComponentPanel from '@/components/common/ez-panel/ez-panel.vue'
+
+import ComponentDeclareStep from '@/components/project/ez-declare-step/ez-declare-step.vue'
+import ComponentDeclare from '@/components/project/ez-declare/ez-declare.vue'
+import ComponentSelectPermanentAddress from '@/components/project/ez-select-permanent-address/ez-select-permanent-address.vue'
+import ComponentSelectCurrentAddress from '@/components/project/ez-select-current-address/ez-select-current-address.vue'
+import ComponentDeclareCard from '@/components/project/ez-declare-card/ez-declare-card.vue'
+import ComponentDeclarePersonnel from '@/components/project/ez-declare-personnel/ez-declare-personnel.vue'
+import ComponentDeclareRadio from '@/components/project/ez-declare-radio/ez-declare-radio.vue'
+import ComponentDeclarePicker from '@/components/project/ez-declare-picker/ez-declare-picker.vue'
+
+import { useDeclare } from '@/mixins'
+import { useGetCurrentDate } from '@/hooks/common'
+import { getCodeListByCodeName } from '@/utils/custom-api'
+import { showModal } from '@/utils/uni-api'
+export default {
+  name: 'pageDeclare20025',
+  data() {
+    return {
+      today_d: useGetCurrentDate(),
+      // 基本信息 渲染配置
+      renderObj: {
+        idCard: true, // 身份证
+        userName: true, // 姓名
+        tel: true, // 联系电话
+        age: true, // 年龄
+        gender: true, // 性别
+        birthday: true, // 出生年月
+        permanentAddress: true, // 户籍地址
+        currentAddress: true, // 常住地址
+      },
+      // 自定义添加一些属性 防止双向绑定失败 例如 picker组件之类
+      projectDeclareInfo: {
+        aj0050: '',
+      },
+    }
+  },
+  components: {
+    ComponentButton,
+    ComponentPanel,
+    ComponentDeclare,
+    ComponentDeclareStep,
+    ComponentSelectPermanentAddress,
+    ComponentSelectCurrentAddress,
+    ComponentDeclareCard,
+    ComponentDeclareRadio,
+    ComponentDeclarePersonnel,
+    ComponentDeclarePicker,
+  },
+  mixins: [useDeclare],
+  // 监听页面加载，其参数为上个页面传递的数据，参数类型为Object（用于页面传参）
+  onLoad(e) {
+    this.handleOnLoad(e)
+  },
+  methods: {
+    // 获取该申报项目的所需要的码表数据
+    // aaz502、aac011、dac009、aac004、aac005、aae008、yesorno 不用再次获取
+    // 编写格式参考达州20033项目
+    async getCodeTableCacheData() {
+      let r00180 = [] // 最高学历
+      try {
+        r00180 = await getCodeListByCodeName('AQ0014')
+      } catch (err) {
+        console.error('code table r00180 error：', err)
+      }
+
+      this.codeMap = {
+        ...this.codeMap,
+        r00180,
+      }
+    },
+    // 检测数据输入格式是否正确 须根据项目需求更改
+    handleCheckInput() {
+      const { r00180 } = this.projectDeclareInfo
+      if (!r00180) {
+        showModal('请选择最高学历')
+        return false
+      }
+      return true
+    },
+    // 下一步
+    handleJumpNextStep() {
+      if (!this.handleCheckComponentInput()) {
+        return
+      }
+      if (!this.handleCheckInput()) {
+        return
+      }
+
+      const { birthday, permanentAddress, currentAddress, gender } =
+        this.basicInfo
+
+      const { r00180, r00001, r00121, r00120 } = this.projectDeclareInfo
+      // 扩展字段
+      const hb00BizMap = {
+        r00180,
+        r00001,
+        r00121,
+        r00120,
+        r00105: birthday, //出生日期
+        r00079: permanentAddress,
+        r00168: currentAddress,
+        aac004: gender,
+        chb01m: '1', // 发放类型 正常发放
+        aae209: useGetCurrentDate('month', ''), // 发放期号 当前申报年月
+      }
+      this.handleDeclareData(hb00BizMap, '0')
+    },
+  },
+}
+</script>
+
+<style lang="scss" scoped></style>

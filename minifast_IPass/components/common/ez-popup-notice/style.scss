@@ -1,0 +1,37 @@
+.popup-content {
+  width: 90%;
+  background-color: #fff;
+  border-radius: 8rpx 8rpx 0 0;
+  border-radius: 8rpx;
+  padding: 30rpx;
+  position: relative;
+  margin: 0 auto;
+  line-height: 1.4;
+  color: #333;
+}
+.name {
+  color: #000;
+  font-weight: 700;
+  font-size: 30rpx;
+  text-align: center;
+  padding: 0 30rpx 8rpx;
+}
+.content {
+  color: #333;
+  font-size: 26rpx;
+  padding-top: 8rpx;
+  text-indent: 2em;
+}
+.desc,
+.time,
+.unit {
+  color: #333;
+  font-size: 26rpx;
+  padding-top: 16rpx;
+}
+.time,
+.unit {
+  color: #000;
+  font-size: 28rpx;
+  text-align: right;
+}

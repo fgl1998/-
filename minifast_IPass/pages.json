@@ -1,0 +1,857 @@
+{
+  "pages": [
+    // pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
+    {
+      "path": "pages/tabbar/home/home",
+      "style": {
+        "navigationBarTitleText": "泸州一卡通",
+        "backgroundColorTop": "#3882ff"
+      }
+    },
+    {
+      "path": "pages/tabbar/my/my",
+      "style": {
+        "navigationBarTitleText": "个人中心",
+        "backgroundColorTop": "#3882ff"
+      }
+    },
+    {
+      "path": "pages/tabbar/sunshine/sunshine",
+      "style": {
+        "navigationBarTitleText": "村村响",
+        "enablePullDownRefresh": true,
+        "backgroundColorTop": "#3882ff"
+      }
+    },
+    {
+      "path": "pages/tabbar/sunshine-declare/sunshine-declare",
+      "style": {
+        "navigationBarTitleText": "阳光申报"
+      }
+    }
+  ],
+  "globalStyle": {
+    "backgroundColor": "#f5f5f5",
+    "navigationBarBackgroundColor": "#3882ff",
+    "navigationBarTextStyle": "white",
+    "navigationBarTitleText": "泸州一卡通",
+    "enablePullDownRefresh": false,
+    "backgroundTextStyle": "light",
+    "backgroundColorBottom": "#f5f5f5",
+    "navigationStyle": "default",
+    "h5": {
+      "navigationStyle": "custom"
+    }
+  },
+  "subPackages": [
+    {
+      "root": "pages/packageCommon",
+      "pages": [
+        {
+          "path": "complaint-process/complaint-process",
+          "style": {
+            "navigationBarTitleText": "投诉处理流程",
+            "backgroundColorTop": "#3882ff"
+          }
+        },
+        {
+          "path": "login/login",
+          "style": {
+            "navigationBarTitleText": "登录",
+            "backgroundColorTop": "#3882ff"
+          }
+        },
+        {
+          "path": "login-scan/login-scan",
+          "style": {
+            "navigationBarTitleText": "扫码登录",
+            "backgroundColor": "#ffffff"
+          }
+        },
+        {
+          "path": "not-found/not-found",
+          "style": {
+            "navigationBarTitleText": ""
+          }
+        },
+        {
+          "path": "personal-authentication/personal-authentication",
+          "style": {
+            "navigationBarTitleText": "身份认证",
+            "backgroundColor": "#ffffff"
+          }
+        },
+        {
+          "path": "privacy-policy/privacy-policy",
+          "style": {
+            "navigationBarTitleText": "隐私条款"
+          }
+        },
+        {
+          "path": "reset-password/reset-password",
+          "style": {
+            "navigationBarTitleText": "重置密码",
+            "backgroundColor": "#ffffff"
+          }
+        },
+        {
+          "path": "service-network/service-network",
+          "style": {
+            "navigationBarTitleText": "服务网点",
+            "backgroundColor": "#ffffff"
+          }
+        },
+        {
+          "path": "sign/sign",
+          "style": {
+            "navigationBarTitleText": "电子签名"
+          }
+        },
+        {
+          "path": "survival-certification/survival-certification",
+          "style": {
+            "navigationBarTitleText": "生存认证"
+          }
+        },
+        {
+          "path": "user-agreement/user-agreement",
+          "style": {
+            "navigationBarTitleText": "用户服务协议"
+          }
+        },
+        {
+          "path": "user-info/user-info",
+          "style": {
+            "navigationBarTitleText": "基本信息"
+          }
+        },
+        {
+          "path": "video/video",
+          "style": {
+            "navigationBarTitleText": "宣传视频",
+            "navigationBarBackgroundColor": "#000000"
+          }
+        },
+        {
+          "path": "web-view/web-view",
+          "style": {
+            "navigationBarTitleText": ""
+          }
+        }
+      ]
+    },
+    {
+      "root": "pages/packageHome",
+      "pages": [
+        {
+          "path": "my-home/my-home",
+          "style": {
+            "navigationBarTitleText": "我的家"
+          }
+        },
+        {
+          "path": "home-code/home-code",
+          "style": {
+            "navigationBarTitleText": "我的家庭码"
+          }
+        },
+        {
+          "path": "home-add/home-add",
+          "style": {
+            "navigationBarTitleText": "我的家"
+          }
+        },
+        {
+          "path": "news/news",
+          "style": {
+            "navigationBarTitleText": "家庭动态"
+          }
+        },
+        {
+          "path": "home-member/home-member",
+          "style": {
+            "navigationBarTitleText": "我的家庭成员"
+          }
+        },
+        {
+          "path": "subsidy-amount/subsidy-amount",
+          "style": {
+            "navigationBarTitleText": ""
+          }
+        }
+      ]
+    },
+    {
+      "root": "pages/packageDeclare",
+      "pages": [
+        {
+          "path": "declare-info/declare-info",
+          "style": {
+            "navigationBarTitleText": "申报信息",
+            "mp-alipay": { "allowsBounceVertical": "NO" }
+          }
+        },
+        {
+          "path": "file/file",
+          "style": {
+            "navigationBarTitleText": "材料上传",
+            "mp-alipay": { "allowsBounceVertical": "NO" }
+          }
+        },
+        {
+          "path": "file-declare/file-declare",
+          "style": {
+            "navigationBarTitleText": "申报材料",
+            "mp-alipay": { "allowsBounceVertical": "NO" }
+          }
+        },
+        {
+          "path": "notice/notice",
+          "style": {
+            "navigationBarTitleText": "申报须知",
+            "disableScroll": true,
+            "mp-alipay": { "allowsBounceVertical": "NO" }
+          }
+        },
+        {
+          "path": "process/process",
+          "style": {
+            "navigationBarTitleText": "审批流程",
+            "mp-alipay": { "allowsBounceVertical": "NO" }
+          }
+        },
+        {
+          "path": "result/result",
+          "style": {
+            "navigationBarTitleText": "申报结果",
+            "mp-alipay": { "allowsBounceVertical": "NO" }
+          }
+        },
+        {
+          "path": "search/search",
+          "style": {
+            "navigationBarTitleText": "补贴项目搜索",
+            "mp-alipay": { "allowsBounceVertical": "NO" }
+          }
+        },
+        {
+          "path": "survival-certification/survival-certification",
+          "style": {
+            "navigationBarTitleText": "生存认证",
+            "mp-alipay": { "allowsBounceVertical": "NO" }
+          }
+        },
+        {
+          "path": "type/type",
+          "style": {
+            "navigationBarTitleText": "选择申报类型",
+            "disableScroll": true,
+            "mp-alipay": { "allowsBounceVertical": "NO" }
+          }
+        },
+        {
+          "path": "view-examples/view-examples",
+          "style": {
+            "navigationBarTitleText": "查看示例",
+            "disableScroll": true,
+            "mp-alipay": {
+              "allowsBounceVertical": "NO"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "root": "pages/packageMasses",
+      "pages": [
+        {
+          "path": "complaints/complaints",
+          "style": {
+            "navigationBarTitleText": "投诉举报",
+            "mp-alipay": { "allowsBounceVertical": "NO" }
+          }
+        },
+        {
+          "path": "question/question",
+          "style": {
+            "navigationBarTitleText": "我要留言",
+            "mp-alipay": { "allowsBounceVertical": "NO" }
+          }
+        },
+        {
+          "path": "my-question/my-question",
+          "style": {
+            "navigationBarTitleText": "我的留言",
+            "mp-alipay": { "allowsBounceVertical": "NO" }
+          }
+        },
+        {
+          "path": "customer-service/customer-service",
+          "style": {
+            "navigationBarTitleText": "智能客服",
+            "mp-alipay": { "allowsBounceVertical": "NO" }
+          }
+        },
+        {
+          "path": "complaints-voice/complaints-voice",
+          "style": {
+            "navigationBarTitleText": "语音投诉",
+            "mp-alipay": {
+              "allowsBounceVertical": "NO"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "root": "pages/packageQuery",
+      "pages": [
+        {
+          "path": "policy/policy",
+          "style": {
+            "navigationBarTitleText": "政策文件搜索",
+            "mp-alipay": { "allowsBounceVertical": "NO" }
+          }
+        },
+        {
+          "path": "publicity/publicity",
+          "style": {
+            "navigationBarTitleText": "阳光申报公示查询",
+            "mp-alipay": { "allowsBounceVertical": "NO" }
+          }
+        },
+        {
+          "path": "subsidy-payment/subsidy-payment",
+          "style": {
+            "navigationBarTitleText": "补贴发放查询",
+            "mp-alipay": { "allowsBounceVertical": "NO" }
+          }
+        }
+      ]
+    },
+    {
+      "root": "pages/packageDetails",
+      "pages": [
+        {
+          "path": "complaint-progress/complaint-progress",
+          "style": {
+            "navigationBarTitleText": "投诉进度",
+            "mp-alipay": { "allowsBounceVertical": "NO" }
+          }
+        },
+        {
+          "path": "complaints-510500/complaints-510500",
+          "style": {
+            "navigationBarTitleText": "投诉",
+            "mp-alipay": { "allowsBounceVertical": "NO" }
+          }
+        },
+        {
+          "path": "declare-process/declare-process",
+          "style": {
+            "navigationBarTitleText": "审批流程",
+            "mp-alipay": { "allowsBounceVertical": "NO" }
+          }
+        },
+        {
+          "path": "my-declare/my-declare",
+          "style": {
+            "navigationBarTitleText": "我的阳光申报",
+            "mp-alipay": { "allowsBounceVertical": "NO" }
+          }
+        },
+        {
+          "path": "my-message/my-message",
+          "style": {
+            "navigationBarTitleText": "我的消息",
+            "mp-alipay": { "allowsBounceVertical": "NO" }
+          }
+        },
+        {
+          "path": "publicity/publicity",
+          "style": {
+            "navigationBarTitleText": "公示详情",
+            "mp-alipay": { "allowsBounceVertical": "NO" }
+          }
+        },
+        {
+          "path": "SSC/SSC",
+          "style": {
+            "navigationBarTitleText": "社保卡办卡详情",
+            "mp-alipay": { "allowsBounceVertical": "NO" }
+          }
+        },
+        {
+          "path": "subsidy/subsidy",
+          "style": {
+            "navigationBarTitleText": "补贴发放详情",
+            "mp-alipay": { "allowsBounceVertical": "NO" }
+          }
+        },
+        {
+          "path": "subsidy-amount/subsidy-amount",
+          "style": {
+            "navigationBarTitleText": "补贴发放",
+            "mp-alipay": { "allowsBounceVertical": "NO" }
+          }
+        }
+      ]
+    },
+    {
+      "root": "pages/packageSubsidizedGoods",
+      "pages": [
+        {
+          "path": "account/account",
+          "style": {
+            "navigationBarTitleText": "我的账户",
+            "mp-alipay": {
+              "allowsBounceVertical": "NO"
+            }
+          }
+        },
+        {
+          "path": "good-edit/good-edit",
+          "style": {
+            "navigationBarTitleText": "编辑商品信息",
+            "mp-alipay": {
+              "allowsBounceVertical": "NO"
+            }
+          }
+        },
+        {
+          "path": "order/order",
+          "style": {
+            "navigationBarTitleText": "我的订单",
+            "mp-alipay": {
+              "allowsBounceVertical": "NO"
+            }
+          }
+        },
+        {
+          "path": "order-confirm/order-confirm",
+          "style": {
+            "navigationBarTitleText": "订单确认",
+            "mp-alipay": {
+              "allowsBounceVertical": "NO"
+            }
+          }
+        },
+        {
+          "path": "scan/scan",
+          "style": {
+            "navigationBarTitleText": "我要买",
+            "mp-alipay": {
+              "allowsBounceVertical": "NO"
+            }
+          }
+        },
+        {
+          "path": "settlement/settlement",
+          "style": {
+            "navigationBarTitleText": "我的结算",
+            "mp-alipay": {
+              "allowsBounceVertical": "NO"
+            }
+          }
+        },
+        {
+          "path": "shop-add/shop-add",
+          "style": {
+            "navigationBarTitleText": "我要入驻",
+            "mp-alipay": {
+              "allowsBounceVertical": "NO"
+            }
+          }
+        },
+        {
+          "path": "shop-center/shop-center",
+          "style": {
+            "navigationBarTitleText": "我的商铺",
+            "mp-alipay": {
+              "allowsBounceVertical": "NO"
+            }
+          }
+        },
+        {
+          "path": "shop-edit/shop-edit",
+          "style": {
+            "navigationBarTitleText": "修改商铺信息",
+            "mp-alipay": {
+              "allowsBounceVertical": "NO"
+            }
+          }
+        },
+        {
+          "path": "shop-info/shop-info",
+          "style": {
+            "navigationBarTitleText": "商铺信息",
+            "mp-alipay": {
+              "allowsBounceVertical": "NO"
+            }
+          }
+        },
+        {
+          "path": "shop-list/shop-list",
+          "style": {
+            "navigationBarTitleText": "我的商铺",
+            "mp-alipay": {
+              "allowsBounceVertical": "NO"
+            }
+          }
+        },
+        {
+          "path": "shop-query/shop-query",
+          "style": {
+            "navigationBarTitleText": "查询商铺",
+            "mp-alipay": {
+              "allowsBounceVertical": "NO"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "root": "pages/packageScan",
+      "pages": [
+        {
+          "path": "annual-account/annual-account",
+          "style": {
+            "navigationBarTitleText": "年度盘点",
+            "navigationStyle": "custom",
+            "backgroundColorTop": "#fff3dd",
+            "backgroundColorBottom": "#fff3dd",
+            "mp-alipay": { "allowsBounceVertical": "NO" },
+            "singlePage": {
+              "navigationBarFit": "squeezed"
+            }
+          }
+        },
+        {
+          "path": "annual-account-agreement/annual-account-agreement",
+          "style": {
+            "navigationBarTitleText": "年度盘点用户服务协议",
+            "mp-alipay": { "allowsBounceVertical": "NO" }
+          }
+        },
+        {
+          "path": "annual-account-simplify/annual-account-simplify",
+          "style": {
+            "navigationBarTitleText": "年度盘点",
+            "navigationStyle": "custom",
+            "backgroundColorTop": "#fff3dd",
+            "backgroundColorBottom": "#fff3dd",
+            "mp-alipay": { "allowsBounceVertical": "NO" },
+            "singlePage": {
+              "navigationBarFit": "squeezed"
+            }
+          }
+        },
+        {
+          "path": "message-details/message-details",
+          "style": {
+            "navigationBarTitleText": "消息详情",
+            "mp-alipay": {
+              "allowsBounceVertical": "NO"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "root": "pages/packageDeclare510500",
+      "pages": [
+        {
+          "path": "declare-20008/declare-20008",
+          "style": {
+            "navigationBarTitleText": "雨露计划",
+            "mp-alipay": { "allowsBounceVertical": "NO" }
+          }
+        },
+        {
+          "path": "declare-20021/declare-20021",
+          "style": {
+            "navigationBarTitleText": "残疾人机动轮椅车燃油补贴",
+            "mp-alipay": { "allowsBounceVertical": "NO" }
+          }
+        },
+        {
+          "path": "declare-20044/declare-20044",
+          "style": {
+            "navigationBarTitleText": "申报地质灾害避险搬迁流程",
+            "mp-alipay": { "allowsBounceVertical": "NO" }
+          }
+        },
+        {
+          "path": "declare-20055/declare-20055",
+          "style": {
+            "navigationBarTitleText": "申报种粮大户补贴",
+            "mp-alipay": { "allowsBounceVertical": "NO" }
+          }
+        },
+        {
+          "path": "declare-20062/declare-20062",
+          "style": {
+            "navigationBarTitleText": "申报残疾人居家灵活就业（创业）直补资金补贴",
+            "mp-alipay": { "allowsBounceVertical": "NO" }
+          }
+        },
+        {
+          "path": "declare-20064/declare-20064",
+          "style": {
+            "navigationBarTitleText": "申报贫困智力、精神及重度残疾人残疾评定补贴",
+            "mp-alipay": { "allowsBounceVertical": "NO" }
+          }
+        },
+        {
+          "path": "declare-20072/declare-20072",
+          "style": {
+            "navigationBarTitleText": "城镇住房保障家庭租赁补贴发放",
+            "mp-alipay": { "allowsBounceVertical": "NO" }
+          }
+        },
+        {
+          "path": "declare-20140/declare-20140",
+          "style": {
+            "navigationBarTitleText": "申报困难残疾人紧急救助金（县级）",
+            "mp-alipay": { "allowsBounceVertical": "NO" }
+          }
+        },
+        {
+          "path": "declare-20213/declare-20213",
+          "style": {
+            "navigationBarTitleText": "申报独生子女父母奖励",
+            "mp-alipay": { "allowsBounceVertical": "NO" }
+          }
+        },
+        {
+          "path": "declare-20215/declare-20215",
+          "style": {
+            "navigationBarTitleText": "申报卫生扶贫救助基金（年度补贴）",
+            "mp-alipay": { "allowsBounceVertical": "NO" }
+          }
+        },
+        {
+          "path": "declare-20291/declare-20291",
+          "style": {
+            "navigationBarTitleText": "申报残疾人辅具适配补助",
+            "mp-alipay": { "allowsBounceVertical": "NO" }
+          }
+        },
+        {
+          "path": "declare-20370/declare-20370",
+          "style": {
+            "navigationBarTitleText": "申报学前到高中残疾学生教育补贴",
+            "mp-alipay": { "allowsBounceVertical": "NO" }
+          }
+        },
+        {
+          "path": "declare-20382/declare-20382",
+          "style": {
+            "navigationBarTitleText": "申报生态护林员补助",
+            "mp-alipay": { "allowsBounceVertical": "NO" }
+          }
+        },
+        {
+          "path": "declare-20447/declare-20447",
+          "style": {
+            "navigationBarTitleText": "申报事实无人抚养儿童基本生活补贴",
+            "mp-alipay": { "allowsBounceVertical": "NO" }
+          }
+        },
+        {
+          "path": "declare-20535/declare-20535",
+          "style": {
+            "navigationBarTitleText": "申报残疾人家庭无障碍改造资金",
+            "mp-alipay": { "allowsBounceVertical": "NO" }
+          }
+        },
+        {
+          "path": "declare-20551/declare-20551",
+          "style": {
+            "navigationBarTitleText": "申报残疾人城乡居民养老保险代缴（补助）全覆盖工作",
+            "mp-alipay": { "allowsBounceVertical": "NO" }
+          }
+        },
+        {
+          "path": "declare-20557/declare-20557",
+          "style": {
+            "navigationBarTitleText": "申报残疾人及残疾子女圆梦助学金",
+            "mp-alipay": { "allowsBounceVertical": "NO" }
+          }
+        },
+        {
+          "path": "declare-20560/declare-20560",
+          "style": {
+            "navigationBarTitleText": "申报智力、精神三级及特困重度残疾人护理补贴",
+            "mp-alipay": { "allowsBounceVertical": "NO" }
+          }
+        },
+        {
+          "path": "declare-20582/declare-20582",
+          "style": {
+            "navigationBarTitleText": "申报残疾人“圆梦助学工程”（市级）",
+            "mp-alipay": { "allowsBounceVertical": "NO" }
+          }
+        },
+        {
+          "path": "declare-20583/declare-20583",
+          "style": {
+            "navigationBarTitleText": "申报残疾儿童少年康复对象交通生活费补贴",
+            "mp-alipay": { "allowsBounceVertical": "NO" }
+          }
+        },
+        {
+          "path": "declare-20590/declare-20590",
+          "style": {
+            "navigationBarTitleText": "申报残疾人儿童手术护理补贴",
+            "mp-alipay": { "allowsBounceVertical": "NO" }
+          }
+        },
+        {
+          "path": "declare-20591/declare-20591",
+          "style": {
+            "navigationBarTitleText": "申报精神残疾人区外服药补助",
+            "mp-alipay": { "allowsBounceVertical": "NO" }
+          }
+        },
+        {
+          "path": "declare-20592/declare-20592",
+          "style": {
+            "navigationBarTitleText": "申报市外康复机构康复训练救助经费",
+            "mp-alipay": { "allowsBounceVertical": "NO" }
+          }
+        },
+        {
+          "path": "declare-20595/declare-20595",
+          "style": {
+            "navigationBarTitleText": "申报低保独生子女伤残死亡家庭生活补贴(龙马潭区)",
+            "mp-alipay": { "allowsBounceVertical": "NO" }
+          }
+        },
+        {
+          "path": "declare-20599/declare-20599",
+          "style": {
+            "navigationBarTitleText": "申报农村独生子女父母参加新型农村社会养老保险增发养老补助金(龙马潭、泸县、古蔺)",
+            "mp-alipay": { "allowsBounceVertical": "NO" }
+          }
+        },
+        {
+          "path": "declare-20600/declare-20600",
+          "style": {
+            "navigationBarTitleText": "申报计划生育特殊家庭困难补助",
+            "mp-alipay": { "allowsBounceVertical": "NO" }
+          }
+        },
+        {
+          "path": "declare-20640/declare-20640",
+          "style": {
+            "navigationBarTitleText": "申报残疾人就业创业扶持（残保金项目）",
+            "mp-alipay": { "allowsBounceVertical": "NO" }
+          }
+        },
+        {
+          "path": "declare-20701/declare-20701",
+          "style": {
+            "navigationBarTitleText": "申报领导联系计划生育特殊家庭制度慰问项目",
+            "mp-alipay": { "allowsBounceVertical": "NO" }
+          }
+        },
+        {
+          "path": "declare-20982/declare-20982",
+          "style": {
+            "navigationBarTitleText": "申报“福彩圆梦·孤儿助学工程”助学金发放",
+            "mp-alipay": { "allowsBounceVertical": "NO" }
+          }
+        }
+      ]
+    }
+  ],
+  "tabBar": {
+    "color": "#939599",
+    "backgroundColor": "#ffffff",
+    "selectedColor": "#3882ff",
+    "borderStyle": "black",
+    "list": [
+      {
+        "text": "首页",
+        "pagePath": "pages/tabbar/home/home",
+        "iconPath": "static/images/tabbar/icon/home.png",
+        "selectedIconPath": "static/images/tabbar/icon/home_active.png"
+      },
+      {
+        "text": "阳光申报",
+        "pagePath": "pages/tabbar/sunshine-declare/sunshine-declare",
+        "iconPath": "static/images/tabbar/icon/sunshine_declaration.png",
+        "selectedIconPath": "static/images/tabbar/icon/sunshine_declaration_active.png"
+      },
+      {
+        "text": "阳光发放",
+        "pagePath": "pages/tabbar/sunshine/sunshine",
+        "iconPath": "static/images/tabbar/icon/sunshine.png",
+        "selectedIconPath": "static/images/tabbar/icon/sunshine_active.png"
+      },
+      {
+        "text": "我的",
+        "pagePath": "pages/tabbar/my/my",
+        "iconPath": "static/images/tabbar/icon/my.png",
+        "selectedIconPath": "static/images/tabbar/icon/my_active.png"
+      }
+    ],
+    "position": "bottom"
+  },
+  "condition": {
+    "current": 0,
+    "list": [
+      {
+        "name": "declare-20021",
+        "path": "pages/packageDeclare510500/declare-20021/declare-20021",
+        "query": "chi031=20021&declareType=01"
+      },
+      {
+        "name": "declare-20062",
+        "path": "pages/packageDeclare510500/declare-20062/declare-20062",
+        "query": "chi031=20062&declareType=01"
+      },
+      {
+        "name": "declare-20064",
+        "path": "pages/packageDeclare510500/declare-20064/declare-20064",
+        "query": "chi031=20064&declareType=01"
+      },
+      {
+        "name": "declare-20072",
+        "path": "pages/packageDeclare510500/declare-20072/declare-20072",
+        "query": "chi031=20072&declareType=01"
+      },
+      {
+        "name": "declare-20140",
+        "path": "pages/packageDeclare510500/declare-20140/declare-20140",
+        "query": "chi031=20140&declareType=01"
+      },
+      {
+        "name": "declare-20215",
+        "path": "pages/packageDeclare510500/declare-20215/declare-20215",
+        "query": "chi031=20215&declareType=01"
+      },
+      {
+        "name": "declare-20291",
+        "path": "pages/packageDeclare510500/declare-20291/declare-20291",
+        "query": "chi031=20291&declareType=01"
+      },
+      {
+        "name": "declare-20557",
+        "path": "pages/packageDeclare510500/declare-20557/declare-20557",
+        "query": "chi031=20557&declareType=01"
+      },
+      {
+        "name": "declare-20582",
+        "path": "pages/packageDeclare510500/declare-20582/declare-20582",
+        "query": "chi031=20582&declareType=01"
+      },
+      {
+        "name": "declare-20583",
+        "path": "pages/packageDeclare510500/declare-20583/declare-20583",
+        "query": "chi031=20583&declareType=01"
+      }
+    ]
+  }
+}

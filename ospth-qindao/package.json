@@ -1,0 +1,108 @@
+{
+    "id": "lz-table",
+    "displayName": "一个简单好用的表格组件",
+    "version": "1.0.0",
+    "description": "支持固定表头，固定表格左边，固定表格右边，排序，自定义单元格内容",
+    "keywords": [
+        "表格组件"
+    ],
+    "repository": "",
+    "engines": {
+        "HBuilderX": "^3.1.0"
+    },
+    "dcloudext": {
+        "category": [
+            "前端组件",
+            "通用组件"
+        ]
+    },
+    "uni_modules": {
+        "dependencies": [],
+        "encrypt": [],
+        "platforms": {
+            "cloud": {
+                "tcb": "y",
+                "aliyun": "y"
+            },
+            "client": {
+                "Vue": {
+                    "vue2": "y",
+                    "vue3": "u"
+                },
+                "App": {
+                    "app-vue": "y",
+                    "app-nvue": "u"
+                },
+                "H5-mobile": {
+                    "Safari": "y",
+                    "Android Browser": "y",
+                    "微信浏览器(Android)": "y",
+                    "QQ浏览器(Android)": "y"
+                },
+                "H5-pc": {
+                    "Chrome": "u",
+                    "IE": "u",
+                    "Edge": "u",
+                    "Firefox": "u",
+                    "Safari": "u"
+                },
+                "小程序": {
+                    "微信": "u",
+                    "阿里": "u",
+                    "百度": "u",
+                    "字节跳动": "u",
+                    "QQ": "u",
+                    "钉钉": "u",
+                    "快手": "u",
+                    "飞书": "u",
+                    "京东": "u"
+                },
+                "快应用": {
+                    "华为": "u",
+                    "联盟": "u"
+                }
+            }
+        }
+    },
+    "uni-app": {
+        "scripts": {
+            "APP_TEST": {
+                "title": "H5测试环境",
+                "browser": "Edge",
+                "env": {
+                    "UNI_PLATFORM": "h5",
+                    "UNI_RUN_ENV": "test"
+                },
+                "define": {
+                    "APP-TEST": true
+                }
+            },
+            "APP_PROD": {
+                "title": "H5生产环境",
+                "browser": "Edge",
+                "env": {
+                    "UNI_PLATFORM": "h5",
+                    "UNI_RUN_ENV": "prod"
+                },
+                "define": {
+                    "APP-PROD": true
+                }
+            }
+        }
+    },
+    "dependencies": {
+        "@epoint-mrc/ejsv4": "^4.2.22",
+        "@vant/touch-emulator": "^1.5.0",
+        "crypto-js": "^4.2.0",
+        "decimal.js": "^10.6.0",
+        "image-tools": "^1.4.0",
+        "moment": "^2.29.4",
+        "uview-ui": "^1.8.4",
+        "vant": "^2.12.54",
+        "vue-jsonp": "^2.0.0",
+        "vuex": "^4.1.0"
+    },
+    "devDependencies": {
+        "babel-plugin-import": "^1.13.6"
+    }
+}

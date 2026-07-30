@@ -1,0 +1,10 @@
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@osppm/*": ["../osppm/*"],
+      "@/*": ["./*"]
+    }
+  },
+  "exclude": ["node_modules"]
+}

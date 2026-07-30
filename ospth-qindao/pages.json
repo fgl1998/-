@@ -1,0 +1,605 @@
+{
+	"easycom": {
+		"autoscan": true,
+		"custom": {
+			"^mini-(.*)": "@/components/mini-$1/mini-$1.vue",
+			"^h-(.*)": "@/components/h-$1/h-$1.vue",
+			"^u-(.*)": "uview-ui/components/u-$1/u-$1.vue"
+		}
+	},
+	"pages": [{
+			"path": "pages/jumpPage/jumpPage",
+			"style": {
+				"navigationBarTitleText": "",
+				"enablePullDownRefresh": false
+			}
+		},
+		{
+			"path": "pages/jumpPage/jumpPageWithoutLogin",
+			"style": {
+				"navigationBarTitleText": "",
+				"enablePullDownRefresh": false
+			}
+		},
+		{
+			"path": "pages/h5/authorize",
+			"style": {
+				"navigationBarTitleText": "鉴权",
+				"enablePullDownRefresh": false
+			}
+		},
+		{
+			"path": "pages/iframePage/iframePage",
+			"style": {
+				"navigationBarTitleText": "办事页面"
+			}
+		},
+		{
+			"path": "pages/test/test",
+			"style": {
+				"navigationBarTitleText": "测试h5"
+			}
+		}, {
+			"path": "pages/uploadPage/uploadPage",
+			"style": {
+				"navigationBarTitleText": "材料上传",
+				"enablePullDownRefresh": false
+			}
+		}, {
+			"path": "pages/mobileModel/mobileModel",
+			"style": {
+				"navigationBarTitleText": "表单页面",
+				"enablePullDownRefresh": false
+			}
+		}, {
+			"path": "pages/servicePage/servicePage",
+			"style": {
+				"navigationBarTitleText": "信息验证",
+				"enablePullDownRefresh": false
+			}
+		}, {
+			"path": "pages/servicePage/officeStep",
+			"style": {
+				"navigationBarTitleText": "进度查询",
+				"enablePullDownRefresh": false
+			}
+		}, {
+			"path": "pages/servicePage/materialUpload",
+			"style": {
+				"navigationBarTitleText": "材料补正",
+				"enablePullDownRefresh": false
+			}
+		}, {
+			"path": "pages/servicePage/showPdf",
+			"style": {
+				"navigationBarTitleText": "文件预览",
+				"enablePullDownRefresh": false
+			}
+		}, {
+			"path": "pages/osaUpload/osaUpload",
+			"style": {
+				"navigationBarTitleText": "扫码上传",
+				"enablePullDownRefresh": false
+			}
+		}, {
+			"path": "pages/signature/signature",
+			"style": {
+				"navigationBarTitleText": "电子签名",
+				"enablePullDownRefresh": false
+			}
+		}, {
+			"path": "pages/ywjb/ywjbxq",
+			"style": {
+				"navigationBarTitleText": "业务审核",
+				"enablePullDownRefresh": false
+			}
+		}, {
+			"path": "pages/mobileModel/mobileModel_check",
+			"style": {
+				"navigationBarTitleText": "移动审核",
+				"enablePullDownRefresh": false
+			}
+		},
+		{
+			"path": "pages/batchUpload/batchUpload",
+			"style": {
+				"navigationBarTitleText": "",
+				"enablePullDownRefresh": false
+			}
+		},
+		{
+			"path": "pages/batchUpload/uploadExcel",
+			"style": {
+				"navigationBarTitleText": "",
+				"enablePullDownRefresh": false
+			}
+		},
+		{
+			"path": "pages/phoneCheck/phoneCheck",
+			"style": {
+				"navigationBarTitleText": "手机认证",
+				"enablePullDownRefresh": false
+			}
+		},
+		{
+			"path": "pages/scanLogin/scanLogin",
+			"style": {
+				"navigationBarTitleText": "扫码登录",
+				"onReachBottomDistance": 150,
+				"enablePullDownRefresh": false
+			}
+		},
+		{
+			"path": "pages/person/fetch/rent/index",
+			"style": {
+				"navigationBarTitleText": "租赁提取",
+				"enablePullDownRefresh": false
+			}
+		},
+		{
+			"path": "pages/person/fetch/invoiceManagement/index",
+			"style": {
+				"navigationBarTitleText": "发票管理",
+				"enablePullDownRefresh": false
+			}
+		},
+		{
+			"path": "pages/person/fetch/secondHouseDownPayment/fundsUnfreeze/seller/index",
+			"style": {
+				"navigationBarTitleText": "资金解冻-卖方",
+				"enablePullDownRefresh": false
+			}
+		},
+		{
+			"path": "pages/person/fetch/secondHouseDownPayment/fundsUnfreeze/buyer/index",
+			"style": {
+				"navigationBarTitleText": "资金解冻-买方",
+				"enablePullDownRefresh": false
+			}
+		},
+		{
+			"path": "pages/person/fetch/secondHouseDownPayment/fundsReturn/buyer/index",
+			"style": {
+				"navigationBarTitleText": "资金退回-买方",
+				"enablePullDownRefresh": false
+			}
+		},
+		{
+			"path": "pages/person/fetch/secondHouseDownPayment/fundsReturn/seller/index",
+			"style": {
+				"navigationBarTitleText": "资金退回-卖方",
+				"enablePullDownRefresh": false
+			}
+		},
+		{
+			"path": "pages/person/fetch/retirement/index",
+			"style": {
+				"navigationBarTitleText": "离退休",
+				"enablePullDownRefresh": false
+			}
+		},
+		{
+			"path": "pages/person/fetch/resignation/index",
+			"style": {
+				"navigationBarTitleText": "离职提取",
+				"enablePullDownRefresh": false
+			}
+		},
+		{
+			"path": "pages/person/fetch/overseas/index",
+			"style": {
+				"navigationBarTitleText": "出境",
+				"enablePullDownRefresh": false
+			}
+		},
+		{
+			"path": "pages/person/fetch/extractService/index",
+			"style": {
+				"navigationBarTitleText": "银行卡管理",
+				"enablePullDownRefresh": false
+			}
+		},
+		{
+			"path": "pages/person/query/accountInfo/index",
+			"style": {
+				"navigationBarTitleText": "个人账户查询",
+				"enablePullDownRefresh": false
+			}
+		},
+		{
+			"path": "pages/person/query/repaymentCertificate/index",
+			"style": {
+				"navigationBarTitleText": "还款明细查询",
+				"enablePullDownRefresh": false
+			}
+		},
+		{
+			"path": "pages/person/query/settleCertificate/index",
+			"style": {
+				"navigationBarTitleText": "结清证明查询",
+				"enablePullDownRefresh": false
+			}
+		},
+
+		{
+			"path": "pages/person/query/accountDetails/index",
+			"style": {
+				"navigationBarTitleText": "个人明细账查询",
+				"enablePullDownRefresh": false
+			}
+		},
+		{
+			"path": "pages/person/query/loanAccount/index",
+			"style": {
+				"navigationBarTitleText": "个贷账户查询",
+				"enablePullDownRefresh": false
+			}
+		},
+		{
+			"path": "pages/person/query/repaymentPlan/index",
+			"style": {
+				"navigationBarTitleText": "还款计划查询",
+				"enablePullDownRefresh": false
+			}
+		},
+		{
+			"path": "pages/person/query/serviceInquiry/index",
+			"style": {
+				"navigationBarTitleText": "业务办理查询",
+				"enablePullDownRefresh": false
+			}
+		},
+		{
+			"path": "pages/person/query/serviceOutlets/index",
+			"style": {
+				"navigationBarTitleText": "服务网点查询",
+				"enablePullDownRefresh": false
+			}
+		},
+		{
+			"path": "pages/person/query/loanProgress/index",
+			"style": {
+				"navigationBarTitleText": "贷款进度查询",
+				"enablePullDownRefresh": false
+			}
+		},
+		{
+			"path": "pages/person/query/loanProgressInquiry/index",
+			"style": {
+				"navigationBarTitleText": "贷款办理进度查询",
+				"enablePullDownRefresh": false
+			}
+		},
+		{
+			"path": "pages/person/query/partnerProjects/index",
+			"style": {
+				"navigationBarTitleText": "合作楼盘查询",
+				"enablePullDownRefresh": false
+			}
+		},
+		{
+			"path": "pages/person/query/drawQuery/index",
+			"style": {
+				"navigationBarTitleText": "灵活就业人员划扣查询",
+				"enablePullDownRefresh": false
+			}
+		},
+		{
+			"path": "pages/person/query/cooperateProperty/index",
+			"style": {
+				"navigationBarTitleText": "合作楼盘查询",
+				"enablePullDownRefresh": false
+			}
+		},
+		{
+			"path": "pages/person/query/drawQuery/index",
+			"style": {
+				"navigationBarTitleText": "灵活就业人员划扣查询",
+				"enablePullDownRefresh": false
+			}
+		},
+
+		{
+			"path": "pages/person/loan/loanAdjustment/index",
+			"style": {
+				"navigationBarTitleText": "冲还贷款协议管理",
+				"enablePullDownRefresh": false
+			}
+		},
+		{
+			"path": "pages/person/loan/loanTermChange/index",
+			"style": {
+				"navigationBarTitleText": "贷款期限变更",
+				"enablePullDownRefresh": false
+			}
+		},
+		{
+			"path": "pages/person/loan/loanRepaymentMethodChange/index",
+			"style": {
+				"navigationBarTitleText": "还款方式变更登记",
+				"enablePullDownRefresh": false
+			}
+		},
+		{
+			"path": "pages/person/loan/loanRepaymentAccountChange/index",
+			"style": {
+				"navigationBarTitleText": "还款账户变更",
+				"enablePullDownRefresh": false
+			}
+		},
+		{
+			"path": "pages/person/loan/nameIdChange/index",
+			"style": {
+				"navigationBarTitleText": "姓名身份证变更",
+				"enablePullDownRefresh": false
+			}
+		},
+		{
+			"path": "pages/person/query/loanRates/index",
+			"style": {
+				"navigationBarTitleText": "贷款利率查询",
+				"enablePullDownRefresh": false
+			}
+		},
+		{
+			"path": "pages/person/query/loanRateQuery/index",
+			"style": {
+				"navigationBarTitleText": "贷款利率查询",
+				"enablePullDownRefresh": false
+			}
+		},
+		{
+			"path": "pages/person/fetch/loanEntrustDrawContract/index",
+			"style": {
+				"navigationBarTitleText": "贷款委托提取管理",
+				"enablePullDownRefresh": false
+			}
+		},
+		{
+			"path": "pages/person/marshal/offSiteTransferApply/index",
+			"style": {
+				"navigationBarTitleText": "异地转移申请",
+				"enablePullDownRefresh": false
+			}
+		},
+		{
+			"path": "pages/person/marshal/personalInfoChange/index",
+			"style": {
+				"navigationBarTitleText": "个人信息变更",
+				"enablePullDownRefresh": false
+			}
+		},
+		{
+			"path": "pages/person/marshal/messageSubscription/index",
+			"style": {
+				"navigationBarTitleText": "消息订阅",
+				"enablePullDownRefresh": false
+			}
+		},
+		{
+			"path": "pages/person/marshal/personalPhoneManage/index",
+			"style": {
+				"navigationBarTitleText": "个人手机号管理",
+				"enablePullDownRefresh": false
+			}
+		},
+		{
+			"path": "pages/person/flexemp/payment/index",
+			"style": {
+				"navigationBarTitleText": "灵活就业缴款",
+				"enablePullDownRefresh": false
+			}
+		},
+		{
+			"path": "pages/person/flexemp/register/index",
+			"style": {
+				"navigationBarTitleText": "灵活就业开户",
+				"enablePullDownRefresh": false
+			}
+		},
+		{
+			"path": "pages/person/flexemp/contributionAdjust/index",
+			"style": {
+				"navigationBarTitleText": "灵活就业缴存额调整",
+				"enablePullDownRefresh": false
+			}
+		},
+		{
+			"path": "pages/person/flexemp/deductionAgreement/index",
+			"style": {
+				"navigationBarTitleText": "灵活就业划扣协议管理",
+				"enablePullDownRefresh": false
+			}
+		},
+		{
+			"path": "pages/person/flexemp/accountSuspend/index",
+			"style": {
+				"navigationBarTitleText": "灵活就业人员启封封存",
+				"enablePullDownRefresh": false
+			}
+		},
+		{
+			"path": "pages/person/flexemp/exitWithdrawal/index",
+			"style": {
+				"navigationBarTitleText": "灵活就业人员退出提取",
+				"enablePullDownRefresh": false
+			}
+		},
+		{
+			"path": "pages/person/flexemp/fvContributionPay/index",
+			"style": {
+				"navigationBarTitleText": "灵活就业人员-军人缴款",
+				"enablePullDownRefresh": false
+			}
+		},
+		{
+			"path": "pages/person/flexemp/fvContributionAdjust/index",
+			"style": {
+				"navigationBarTitleText": "灵活就业人员-军人缴款调整",
+				"enablePullDownRefresh": false
+			}
+		},
+		{
+			"path": "pages/person/flexemp/fvAccountSuspend/index",
+			"style": {
+				"navigationBarTitleText": "灵活就业人员-军人-启封封存",
+				"enablePullDownRefresh": false
+			}
+		},
+		{
+			"path": "pages/person/PDepositManagement/index",
+			"style": {
+				"navigationBarTitleText": "异地缴存证明管理",
+				"enablePullDownRefresh": false
+			}
+		},
+
+		{
+			"path": "pages/person/loan/remoteDeposit/index",
+			"style": {
+				"navigationBarTitleText": "异地贷款缴存证明",
+				"enablePullDownRefresh": false
+			}
+		},
+		{
+			"path": "pages/person/loan/loanQualification/index",
+			"style": {
+				"navigationBarTitleText": "商转公银行贷款准入申请",
+				"enablePullDownRefresh": false
+			}
+		},
+		{
+			"path": "pages/person/loan/loanApply/index",
+			"style": {
+				"navigationBarTitleText": "贷款合同登记",
+				"enablePullDownRefresh": false
+			}
+		},
+		{
+			"path": "pages/person/loan/loanCollateralAddressChange/index",
+			"style": {
+				"navigationBarTitleText": "抵押物地址变更",
+				"enablePullDownRefresh": false
+			}
+		},
+		{
+			"path": "pages/person/loan/loanCalculator/index",
+			"style": {
+				"navigationBarTitleText": "贷款计算器",
+				"enablePullDownRefresh": false
+			}
+		},
+		{
+			"path": "pages/person/loan/relatedPersonMortgagorChange/index",
+			"style": {
+				"navigationBarTitleText": "关联人/抵押人变更",
+				"enablePullDownRefresh": false
+			}
+		},
+		{
+			"path": "pages/person/repayment/monthly/index",
+			"style": {
+				"navigationBarTitleText": "月还款",
+				"enablePullDownRefresh": false
+			}
+		},
+		{
+			"path": "pages/person/repayment/advance/index",
+			"style": {
+				"navigationBarTitleText": "提前还款",
+				"enablePullDownRefresh": false
+			}
+		},
+		{
+			"path": "pages/person/repayment/overdue/index",
+			"style": {
+				"navigationBarTitleText": "逾期还款",
+				"enablePullDownRefresh": false
+			}
+		},
+		{
+			"path": "pages/person/repayment/settle/index",
+			"style": {
+				"navigationBarTitleText": "提前结清",
+				"enablePullDownRefresh": false
+			}
+		},
+		{
+			"path": "pages/person/repayment/index",
+			"style": {
+				"navigationBarTitleText": "贷款还款管理",
+				"enablePullDownRefresh": false
+			}
+		},
+		{
+			"path": "pages/person/fetch/lossCapacity/index",
+			"style": {
+				"navigationBarTitleText": "丧失劳动能力终止劳动合同提取",
+				"enablePullDownRefresh": false
+			}
+		},
+		{
+			"path": "pages/person/fetch/lowIncome/index",
+			"style": {
+				"navigationBarTitleText": "低保提取",
+				"enablePullDownRefresh": false
+			}
+		},
+		{
+			"path": "pages/person/fetch/death/index",
+			"style": {
+				"navigationBarTitleText": "死亡提取",
+				"enablePullDownRefresh": false
+			}
+		},
+		{
+			"path": "pages/person/fetch/elevatorInstall/index",
+			"style": {
+				"navigationBarTitleText": "老旧小区改造及加装电梯",
+				"enablePullDownRefresh": false
+			}
+		},
+		{
+			"path": "pages/person/fetch/renovationConstruction/index",
+			"style": {
+				"navigationBarTitleText": "建造、翻修、大修",
+				"enablePullDownRefresh": false
+			}
+		},
+		{
+			"path": "pages/person/fetch/repayLoan/index",
+			"style": {
+				"navigationBarTitleText": "偿还贷款本息提取",
+				"enablePullDownRefresh": false
+			}
+		},
+		{
+			"path": "pages/person/fetch/housePurchase/index",
+			"style": {
+				"navigationBarTitleText": "购房提取",
+				"enablePullDownRefresh": false
+			}
+		},
+		{
+			"path": "pages/person/fetch/paymentTransfer/index",
+			"style": {
+				"navigationBarTitleText": "新建商品房支付首付款-首付款转账",
+				"enablePullDownRefresh": false
+			}
+		},
+		{
+			"path": "pages/person/fetch/paymentTransferEsf/index",
+			"style": {
+				"navigationBarTitleText": "二手房支付首付款-首付款转账",
+				"enablePullDownRefresh": false
+			}
+		}
+	],
+	"globalStyle": {
+		"navigationStyle": "custom",
+		"navigationBarTextStyle": "white",
+		"navigationBarTitleText": "uni-app",
+		"navigationBarBackgroundColor": "#1492ff",
+		"backgroundColor": "#FFFFFF"
+	}
+}

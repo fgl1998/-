@@ -1,0 +1,40 @@
+<!-- 老旧小区改造及加装电梯 -->
+<template>
+  <common-layout :step-map="stepMap"/>
+</template>
+
+<script>
+import one from "./parts/one.vue";
+import two from "./parts/two.vue"
+import ENUMS from "@osppm/common/enum";
+import three from './parts/three.vue'
+const stepMap = [
+  // sceneCode: 材料情形码；authType: 认证方式
+  {
+    title: '逝者信息', component: one, previous: ENUMS.STEP.GO_BACK, next: ENUMS.STEP.ONE
+  },
+  {
+    title: '逝者信息', component: two, previous: ENUMS.STEP.ZERO, next: ENUMS.STEP.TWO
+  },
+  {
+    title: '逝者信息', component: three, previous: ENUMS.STEP.ONE, next: ENUMS.STEP.FINISH, sceneCode: 'S0000',
+    authType: ENUMS.AUTH_TYPE.FACE_OR_SMS
+  },
+]
+export default {
+  name: "index",
+  data(){
+    return{
+      stepMap
+    }
+  },
+  mounted() {
+    console.log(123)
+  },
+  methods: {
+  },
+}
+</script>
+
+<style lang="scss">
+</style>

@@ -1,0 +1,76 @@
+	@import url("@/static/css/css/info.css");
+
+	body,
+	html,
+	uni-app,
+	uni-page uni-page-wrapper uni-page-body {
+		// height: auto !important;
+	}
+
+	.service-page {
+		// height: 100%;
+		/* background-color: #ebede5; */
+		padding: 16px;
+		background-color: #f8f8f8;
+
+		.service-box {}
+
+		.btn-box {
+			display: flex;
+			padding: 32rpx;
+
+			.u-btn {
+				flex: 1;
+			}
+		}
+	}
+
+	/* 功能入口卡片样式 */
+	.function-entry-card {
+		background-color: #e3f2fd;
+		border-radius: 8px;
+		padding: 16px;
+		margin-bottom: 16px;
+	}
+
+	.entry-title {
+		font-size: 18px;
+		font-weight: bold;
+		color: #333;
+		margin-bottom: 12px;
+	}
+
+	.entry-actions {
+		display: flex;
+		justify-content: flex-end;
+		gap: 12px;
+		margin-top: 12px;
+	}
+
+	.action-btn {
+		flex: 1;
+		text-align: center;
+		padding: 6px 16px;
+		border-radius: 16px;
+		font-size: 13px;
+		font-weight: 500;
+		margin-left: 12px;
+		transition: all 0.2s ease;
+	}
+
+	.primary-btn {
+		background-color: #1890ff;
+		color: white;
+		border: 1px solid #1890ff;
+	}
+
+	.secondary-btn {
+		background-color: transparent;
+		color: #1890ff;
+		border: 1px solid #1890ff;
+	}
+
+	.secondary-btn.active {
+		background-color: #1890ff;
+		color: white;
+	}

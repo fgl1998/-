@@ -1,0 +1,86 @@
+@import "./variable.scss";
+$item-height: 0;
+.mini-picker-wrapper {
+  display: flex;
+  align-items: center;
+  // line-height: 84rpx;
+  height: 84rpx;
+  color: #36404a;
+  position: relative;
+  padding-left: 30rpx;
+  background-color: #fff;
+  margin-left: -5px !important;
+  padding-left: 0px !important;
+  .left {
+    // width: 190rpx;
+    width: 0rpx;
+    font-size: 28rpx;
+	text-align: left;
+  }
+  .right {
+    font-size: 26rpx;
+    flex: 1;
+    padding-right: 8rpx;
+    // padding-left: 30rpx;
+    input {
+      padding: 0;
+      width: 100%;
+      text-align: right;
+      color: #36404a;
+      font-size: 26rpx;
+      border: 0;
+      background-color: transparent;
+    }
+  }
+  .icon {
+    top: 50%;
+    right: 30rpx;
+    width: 16rpx;
+    height: 26rpx;
+    margin-right: 10rpx;
+    background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAZCAYAAAA4/K6pAAABgElEQVQ4jY3Uv0tWURzH8Zc/SEhIKCTTIQlEqqHCKQk1gzJwKmhqqRaHFmnrj2joP6ippcEQa8jSxQfCKKEIKeShwbIIaWqoyOGeaw9fHz33u1z4nPN+ny+Xc74ttdqyVFMYxg38VbHa0/c27qMFHbiO31UErZhugOEaHmFfVUF3A1zWFTxO3WQFd3EH/8LaJGawPyeAe4qf9yesX8IsOnMCeICr+BX2nMczHMgJ4Aku42fIzyVJV04AixjDRsjPYh4HcwJ4m06th3woSbpzAvikuJnvQn4aC+jJCeALRlAL+Ykk6csJYBM37Xwfg3hYRdCPp2gLeR23coJjilb7Q76GUdT3Egwk+GjIPyb4M/+fc6xBvEBvyFcxjvUyaNbBcbxsAn9QXLD1xjAKTib4SMjfJ/hrPK1RcCrBh8OeFcWD+tak223BGeGKpnqDC/jeDC4FQ3iOQ2HtdYJ/7AaXgjhE4FWCN/eCS8GKYvKUM2AJF+2cCbsKYBkTmEvfSjBsAUBDSM+F/dUVAAAAAElFTkSuQmCC)
+      no-repeat center center;
+    background-size: 100%;
+    transition: transform 0.3s;
+    &.select {
+      transform: rotate(90deg);
+    }
+  }
+}
+
+.mini-picker-content {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  background-color: #fff;
+}
+.mini-picker-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 88rpx;
+  border-bottom: 1px solid #eee;
+  position: relative;
+  .text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    line-height: 1;
+    font-size: 30rpx;
+    color: #333;
+    text-align: center;
+    transform: translate(-50%, -50%);
+  }
+}
+.mini-picker-view {
+  width: 100%;
+}
+.mini-picker-view-column {
+  width: 100%;
+}
+.mini-picker-item {
+  display: block;
+  color: #333;
+  text-align: center;
+  width: 100%;
+}

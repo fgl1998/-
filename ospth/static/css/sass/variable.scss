@@ -1,0 +1,80 @@
+/* 
+    共用 全局属性 
+*/
+// 左右间距
+$space-LR: 30rpx;
+$fontSize: 30rpx;
+
+
+// 主色调
+$color-primary: #2d8cf0;
+// Light Primary 常用于 hover
+$color-light-primary: #5cadff;
+// Dark Primary 常用于 active。
+$color-dark-primary: #2b85e4;
+
+// 辅助色
+$color-info: #2db7f5;
+$color-success: #19be6b;
+$color-wraning: #ff9900;
+$color-error: #ed4014;
+
+// 标题 
+$color-title: #464c5b;
+// 正文
+$color-content: #657180;
+// 辅助
+$color-sub: #9ea7b4;
+// 失效
+$color-disabled: #c5c8ce;
+// 边框
+$color-border: #dcdee2;
+// 背景
+$color-background: #f8f8f9;
+// 分割线
+$color-divider: #e8eaec;
+
+// 标题 
+$font-size-title: 28rpx;
+// 正文
+$font-size-content: 28rpx;
+// 辅助
+$font-size-sub: 24rpx;
+
+/* 
+    input 组件变量
+*/
+$mini-input-label-width: 180rpx;
+$mini-input-label-fontSize: 28rpx;
+$mini-input-input-fontSize: 26rpx;
+$mini-input-height: 84rpx;
+$mini-input-borderColor: #e5e5e5;
+$mini-input-backgroundColor: #fff;
+$mini-input-color: #36404a;
+$mini-input-paddingLeft: 0rpx;
+$mini-input-clear-backgroundColor: #999;
+$mini-input-clear-size: 16px;
+$mini-input-clear-color: #fff;
+
+/* 
+    radio 组件变量
+*/
+$mini-radio-height: 84rpx;
+$mini-radio-borderColor: #e5e5e5;
+$mini-radio-backgroundColor: #fff;
+$mini-radio-iconSize: 48rpx;
+$mini-radio-fontSize: 28rpx;
+
+
+/* 
+    checkbox 组件变量
+*/
+$mini-checkbox-height: 84rpx;
+$mini-checkbox-borderColor: #e5e5e5;
+$mini-checkbox-backgroundColor: #fff;
+$mini-checkbox-iconSize: 48rpx;
+$mini-checkbox-fontSize: 28rpx;
+
+/* 
+    swiperOut 组件变量
+*/

@@ -1,0 +1,66 @@
+@import "./variable.scss";
+.mini-checkbox-wrapper {
+  display: block;
+  width: 100%;
+  font-size: $mini-checkbox-fontSize;
+  .checkbox-group {
+    display: block;
+    width: 100%;
+    padding-left: $space-LR;
+    background-color: $mini-checkbox-backgroundColor;
+    border-top: 1px solid $mini-checkbox-borderColor;
+    border-bottom: 1px solid $mini-checkbox-borderColor;
+  }
+  .checkbox {
+    display: none;
+  }
+  .label {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid $mini-checkbox-borderColor;
+    padding-right: $space-LR/2;
+    transition: all 0.1s;
+    &:last-child {
+      border-bottom: 0;
+    }
+    &.disabled {
+      .left {
+        opacity: 0.5;
+      }
+      .right {
+        opacity: 0.5;
+      }
+    }
+    &.left {
+      .left {
+        order: 3;
+      }
+    }
+    &.flex-start {
+      justify-content: flex-start;
+      .left {
+        order: 3;
+        padding-left: 4rpx;
+      }
+    }
+  }
+  .left {
+    display: flex;
+    align-items: center;
+    height: $mini-checkbox-height;
+    order: 1;
+  }
+  .right {
+    display: flex;
+    position: relative;
+    height: $mini-checkbox-height;
+    order: 2;
+  }
+  .icon {
+    font-size: $mini-checkbox-iconSize;
+    margin: auto;
+    transition: all 0.3s;
+	font-style: unset;
+  }
+}

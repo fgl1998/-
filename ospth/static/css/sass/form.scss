@@ -1,0 +1,63 @@
+	.form-page {
+		background-color: #ffffff;
+		padding: 0 32rpx;
+	}
+
+	.title-line-blue {
+		.title {
+			font-size: 32rpx;
+			font-weight: bold;
+			background-color: #fff;
+			padding: 32rpx;
+			position: relative;
+
+			&::before {
+				content: "";
+				width: 6rpx;
+				height: 36rpx;
+				background-color: #2979ff;
+				position: absolute;
+				left: 0rpx;
+				top: 38rpx;
+			}
+		}
+	}
+
+	.red {
+		color: red;
+		font-size: 24rpx;
+		position: absolute;
+		left: 0rpx;
+		bottom: -12rpx;
+		line-height: 24rpx;
+	}
+
+	.uform {
+		/deep/ .u-input {
+			text-align: right !important;
+		}
+
+		/deep/ .u-form-item {
+			line-height: 32rpx;
+		}
+	}
+
+	.tips {
+		color: #ff4d4f;
+		font-size: 28rpx;
+		line-height: 44rpx;
+		margin: 30rpx 0;
+		padding: 20rpx;
+		background-color: #fff7f7;
+		border: 1px solid #ffe7e6;
+		border-radius: 8rpx;
+	}
+
+	.tips text {
+		display: block;
+		margin-bottom: 10rpx;
+	}
+
+	.tips text:last-child {
+		margin-bottom: 0;
+	}

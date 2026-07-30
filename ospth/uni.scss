@@ -1,0 +1,86 @@
+/**
+ * 下方引入的为uView UI的集成样式文件，为scss预处理器，其中包含了一些"u-"开头的自定义变量
+ * uView自定义的css类名和scss变量，均以"u-"开头，不会造成冲突，请放心使用 
+ */
+@import 'uview-ui/theme.scss';
+
+//外网地址
+// $image-src:'https://zengqt.mynatapp.cc/template';
+//本机地址
+// $image-src:'http://zengqt.mynatapp.cc/osp-tb/template'
+
+/deep/ .u-back-text{
+	width: 120rpx;
+}
+html{
+	height: 99%;
+}
+.u-form-item{
+	position: relative;
+}
+.mini-picker-wrapper{
+	padding-left: 0rpx !important;
+}
+.u-form-item__message{
+	margin-left: auto !important;
+}
+
+.addressBox{
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	z-index: 98;
+	// background-color: red;	
+	}
+.uni-input-input:disabled{
+	// background-color: #f5f5f5 !important;
+}
+.u-form-item--right__content__slot uni-view{
+	// width: 100%;
+}
+uni-picker {
+	width: 100%;
+	height: 100%;
+}
+.conmmon-picker{
+	width: 100%;
+	height: 100%;
+	text-align: right;
+	.placeholder{
+		color: rgb(192, 196, 204);
+	}
+	// background-color: saddlebrown;
+}
+.u-flex{
+	display: flex;
+}
+.u-row-center{
+	justify-content: center;
+}
+.uform {
+		/deep/ .u-input {
+			text-align: right !important;
+		}
+
+		/deep/ .u-form-item {
+			line-height: 32rpx;
+		}
+	}
+.btn-box {
+			display: flex;
+			padding: 32rpx;
+			.u-btn {
+				flex: 1;
+			}
+			.u-btn:first-of-type{
+				margin-right: 20rpx;
+			}
+		}
+/deep/ uni-toast{
+	z-index: 99999;
+}
+/deep/ .u-calendar__action__text{
+	line-height: inherit;
+}

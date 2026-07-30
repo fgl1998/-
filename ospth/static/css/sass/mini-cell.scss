@@ -1,0 +1,38 @@
+@import './variable.scss';
+.mini-cell-wrapper {
+    background-color: #fff;
+    padding: 0 0 0 30rpx;
+    line-height: 1.2;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1px solid $color-border;
+    border-bottom: 1px solid $color-border;
+    margin-bottom: 20px;
+    height: 88rpx;
+    &.exist-label {
+        height: 110rpx;
+    }
+    .left {
+        display: flex;
+        color: $color-title;
+        font-size: $font-size-title;
+    }
+    .label {
+        color: $color-sub;
+        font-size: $font-size-sub;
+        margin-top: 6rpx;
+    }
+    .right {
+        display: flex;
+        justify-content: flex-end;
+        flex: 1;
+        color: $color-content;
+        font-size: $font-size-content;
+    }
+    .icon-arrow-right {
+        font-size: $font-size-sub;
+        color: $color-disabled;
+        font-weight: 700;
+    }
+}

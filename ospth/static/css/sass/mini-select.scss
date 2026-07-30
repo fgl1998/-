@@ -1,0 +1,41 @@
+@import "./variable.scss";
+
+.mini-select-wrapper {
+  display: flex;
+  padding: 0 0 0 $space-LR;
+  height: 88rpx;
+  align-items: center;
+  justify-content: space-between;
+  position: absolute;
+  background-color: #fff;
+  width: 100%;
+  color: #333;
+  .left {
+    width: 190rpx;
+    font-size: 28rpx;
+	text-align: left;
+  }
+  .right {
+    flex: 1;
+    font-size: 26rpx;
+    padding-right: 8rpx;
+    text-align: right;
+	color: #36404a;
+  }
+  &.select {
+    .icon-select {
+      transform: rotate(90deg);
+    }
+  }
+  .icon-select {
+    top: 50%;
+    right: 30rpx;
+    width: 16rpx;
+    height: 26rpx;
+    margin-right: 10rpx;
+    background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAZCAYAAAA4/K6pAAABgElEQVQ4jY3Uv0tWURzH8Zc/SEhIKCTTIQlEqqHCKQk1gzJwKmhqqRaHFmnrj2joP6ippcEQa8jSxQfCKKEIKeShwbIIaWqoyOGeaw9fHz33u1z4nPN+ny+Xc74ttdqyVFMYxg38VbHa0/c27qMFHbiO31UErZhugOEaHmFfVUF3A1zWFTxO3WQFd3EH/8LaJGawPyeAe4qf9yesX8IsOnMCeICr+BX2nMczHMgJ4Aku42fIzyVJV04AixjDRsjPYh4HcwJ4m06th3woSbpzAvikuJnvQn4aC+jJCeALRlAL+Ykk6csJYBM37Xwfg3hYRdCPp2gLeR23coJjilb7Q76GUdT3Egwk+GjIPyb4M/+fc6xBvEBvyFcxjvUyaNbBcbxsAn9QXLD1xjAKTib4SMjfJ/hrPK1RcCrBh8OeFcWD+tak223BGeGKpnqDC/jeDC4FQ3iOQ2HtdYJ/7AaXgjhE4FWCN/eCS8GKYvKUM2AJF+2cCbsKYBkTmEvfSjBsAUBDSM+F/dUVAAAAAElFTkSuQmCC)
+      no-repeat center center;
+    background-size: 100%;
+    transition: transform 0.3s;
+  }
+}

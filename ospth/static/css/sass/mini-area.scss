@@ -1,0 +1,132 @@
+@import "./variable.scss";
+$space-left: 40rpx;
+$active-color: #3b93f7;
+.mini-area-wrapper {
+  // height: 88rpx;
+  display: block;
+  width: 100%;
+  overflow: hidden;
+}
+.popup-content-wrapper {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  height: 80vh;
+  background-color: #fff;
+  overflow: hidden;
+  &.round {
+    border-top-right-radius: 30rpx;
+    border-top-left-radius: 30rpx;
+  }
+}
+.toolbar {
+    position: relative;
+    font-size: 28rpx;
+    line-height: 50rpx;
+    padding: 20rpx 0;
+    box-sizing: border-box;
+    display: flex;
+    justify-content: space-around;
+    border-bottom: 1px solid whitesmoke;
+    .left {
+      // color: $active-color;
+    }
+    .right {
+        border: 1px solid $active-color;
+        color: $active-color;
+        padding: 0 12rpx;
+    }
+    .reset-btn{
+        background: $active-color;
+        color: white;
+        padding: 0 12rpx;
+    }
+    // .icon-close {
+    //     background: $active-color;
+    //     color: white;
+    // }
+  }
+  .tabs {
+    border-bottom: 1px solid #eee;
+    font-size: 30rpx;
+    padding-left: $space-left;
+    display: flex;
+    flex-wrap: wrap;
+    span {
+      color: #000;
+      line-height: 80rpx;
+      position: relative;
+      margin-right: 40rpx;
+      &::after {
+        content: "";
+        width: 100%;
+        height: 1px;
+        position: absolute;
+        left: 0;
+        bottom: -1px;
+        opacity: 0;
+        transition: all 0.3s;
+        background-color: $active-color;
+      }
+      &.active {
+        color: $active-color;
+        &::after {
+          opacity: 1;
+        }
+      }
+    }
+  }
+  .tab-content {
+    flex: 1;
+    overflow: hidden;
+    position: relative;
+    .province,
+    .city,
+    .area,
+    .town {
+      min-height: 100%;
+      transform: translateX(0);
+      animation: rightIn 0.5s;
+    }
+  }
+  li {
+    font-size: 28rpx;
+    line-height: 70rpx;
+    padding-left: $space-left;
+    color: #333;
+    display: flex;
+    justify-content: space-between;
+    &.active {
+      color: $active-color;
+    }
+  }
+  .icon-hook {
+    line-height: 60rpx;
+    color: $active-color;
+    margin-right: 20rpx;
+    font-size: 30rpx;
+    font-weight: 700;
+  }
+  .loading {
+    background-color: #fff;
+    width: 100%;
+    height: 100%;
+    color: #000;
+    animation: none;
+    display: flex;
+    position: absolute;
+    top: 0;
+    left: 0;
+    overflow: hidden;
+    align-items: center;
+    justify-content: center;
+    animation: none;
+    .icon {
+      width: auto;
+      height: auto;
+      font-size: 100rpx;
+      line-height: 1;
+      animation: rotate 1.5s linear infinite;
+      color: #f00;
+    }
+  }

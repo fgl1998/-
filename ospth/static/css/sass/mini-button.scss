@@ -1,0 +1,151 @@
+@import "./variable.scss";
+$mini-button-height: 90rpx;
+$mini-button-samll-height: 80rpx;
+$mini-button-large-height: 100rpx;
+$mini-button-borderColor: #eee;
+$mini-button-primary-background: #1989fa;
+$mini-button-info-background: #4b9cdd;
+$mini-button-warn-background: #ff976a;
+$mini-button-danger-background: #ee0a24;
+.btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 30rpx;
+  font-weight: normal;
+  line-height: 1;
+  outline: 0;
+  margin: 0;
+  padding: 0 10rpx;
+  width: 100%;
+  background-color: transparent;
+  color: #666;
+  height: $mini-button-height;
+  border: 1px solid $mini-button-borderColor;
+  border-radius: 8rpx;
+  &:after {
+    display: none;
+  }
+  &:active {
+    opacity: 0.8;
+  }
+}
+.mini-button-wrapper {
+  display: flex;
+  width: 100%;
+  padding: 0 $space-LR;
+  .btn {
+    &.primary {
+      color: #fff;
+      background-color: $mini-button-primary-background;
+      border: 0;
+    }
+    &.info {
+      color: #fff;
+      background-color: $mini-button-info-background;
+      border: 0;
+    }
+    &.warn {
+      color: #fff;
+      background-color: $mini-button-warn-background;
+      border: 0;
+    }
+    &.danger {
+      color: #fff;
+      background-color: $mini-button-danger-background;
+      border: 0;
+    }
+    &.disabled {
+      opacity: 0.6;
+      &:active {
+        opacity: 0.6;
+      }
+    }
+    &.circle {
+      border-radius: 50rem;
+    }
+    &.square {
+      border-radius: 0;
+    }
+    &.small {
+      height: $mini-button-samll-height;
+    }
+    &.large {
+      height: $mini-button-large-height;
+    }
+    // 获取验证码按钮固定样式
+    &.code {
+      width: 220rpx;
+      height: 60rpx;
+      font-size: 28rpx;
+      border-radius: 8rpx;
+      background-color: rgb(124, 236, 161);
+      color: #fff;
+      border: 0;
+    }
+  }
+  .left {
+    display: flex;
+  }
+  .right {
+    display: flex;
+  }
+  // 自适应
+  &.inline {
+    display: inline-flex;
+    padding: 0;
+    width: auto;
+    .btn {
+      width: auto;
+      height: auto;
+      padding: 10rpx 12rpx;
+      font-size: 28rpx;
+      line-height: 1;
+    }
+  }
+  // 只有icon图标作为按钮
+  &.only-icon {
+    display: inline-flex;
+    padding: 0;
+    width: auto;
+    .btn {
+      width: auto;
+      height: auto;
+      padding: 0;
+      border: 0;
+      border-radius: 0;
+      background-color: transparent;
+      img {
+        margin-right: 0;
+      }
+    }
+  }
+  img {
+    width: 32rpx;
+    height: 32rpx;
+    margin-right: 10rpx;
+  }
+  // 联通两边的按钮
+  &.full {
+    padding: 0;
+    .btn {
+      border-radius: 0;
+    }
+  }
+  .icon-loading {
+    transform: rotate(0);
+    animation: rotate 1s linear infinite;
+    margin-right: 10rpx;
+    font-size: 36rpx;
+    color: #fff;
+  }
+}
+// 360度旋转
+@keyframes rotate {
+  0% {
+    transform: rotate(0);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}

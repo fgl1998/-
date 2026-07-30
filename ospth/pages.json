@@ -1,0 +1,322 @@
+{
+  "easycom": {
+    "^mini-(.*)": "@/components/mini-$1/mini-$1.vue",
+    "^h-(.*)": "@/components/h-$1/h-$1.vue",
+    "^u-(.*)": "uview-ui/components/u-$1/u-$1.vue"
+  },
+  "pages": [
+    {
+      "path": "pages/jumpPage/jumpPage",
+      "style": {
+        "navigationBarTitleText": "",
+        "enablePullDownRefresh": false
+      }
+    },
+    {
+      "path": "pages/jumpPage/jumpPageWithoutLogin",
+      "style": {
+        "navigationBarTitleText": "",
+        "enablePullDownRefresh": false
+      }
+    },
+    {
+      "path": "pages/h5/authorize",
+      "style": {
+        "navigationBarTitleText": "鉴权",
+        "enablePullDownRefresh": false
+      }
+    },
+    {
+      "path": "pages/iframePage/iframePage",
+      "style": {
+        "navigationBarTitleText": "办事页面"
+      }
+    },
+    {
+      "path": "pages/test/test",
+      "style": {
+        "navigationBarTitleText": "测试h5"
+      }
+    },
+    {
+      "path": "pages/uploadPage/uploadPage",
+      "style": {
+        "navigationBarTitleText": "材料上传",
+        "enablePullDownRefresh": false
+      }
+    },
+    {
+      "path": "pages/mobileModel/mobileModel",
+      "style": {
+        "navigationBarTitleText": "表单页面",
+        "enablePullDownRefresh": false
+      }
+    },
+    {
+      "path": "pages/servicePage/servicePage",
+      "style": {
+        "navigationBarTitleText": "信息验证",
+        "enablePullDownRefresh": false
+      }
+    },
+    {
+      "path": "pages/servicePage/officeStep",
+      "style": {
+        "navigationBarTitleText": "进度查询",
+        "enablePullDownRefresh": false
+      }
+    },
+    {
+      "path": "pages/servicePage/materialUpload",
+      "style": {
+        "navigationBarTitleText": "材料补正",
+        "enablePullDownRefresh": false
+      }
+    },
+    {
+      "path": "pages/servicePage/showPdf",
+      "style": {
+        "navigationBarTitleText": "文件预览",
+        "enablePullDownRefresh": false
+      }
+    },
+    {
+      "path": "pages/osaUpload/osaUpload",
+      "style": {
+        "navigationBarTitleText": "扫码上传",
+        "enablePullDownRefresh": false
+      }
+    },
+    {
+      "path": "pages/signature/signature",
+      "style": {
+        "navigationBarTitleText": "电子签名",
+        "enablePullDownRefresh": false
+      }
+    },
+    {
+      "path": "pages/ywjb/ywjbxq",
+      "style": {
+        "navigationBarTitleText": "业务审核",
+        "enablePullDownRefresh": false
+      }
+    },
+    {
+      "path": "pages/mobileModel/mobileModel_check",
+      "style": {
+        "navigationBarTitleText": "移动审核",
+        "enablePullDownRefresh": false
+      }
+    },
+    {
+      "path": "pages/batchUpload/batchUpload",
+      "style": {
+        "navigationBarTitleText": "",
+        "enablePullDownRefresh": false
+      }
+    },
+    {
+      "path": "pages/batchUpload/uploadExcel",
+      "style": {
+        "navigationBarTitleText": "",
+        "enablePullDownRefresh": false
+      }
+    },
+    {
+      "path": "pages/phoneCheck/phoneCheck",
+      "style": {
+        "navigationBarTitleText": "手机认证",
+        "enablePullDownRefresh": false
+      }
+    },
+    // 就失业管理-就业登记
+    {
+      "path": "pages/personalServices/employmentRecord/employmentRecord",
+      "style": {
+        "navigationBarTitleText": "就业登记(新)",
+        "enablePullDownRefresh": false
+      }
+    },
+    // 就失业管理-就业登记新增
+    {
+      "path": "pages/personalServices/employmentRecord/employmentRecordAdd",
+      "style": {
+        "navigationBarTitleText": "就业登记新增",
+        "enablePullDownRefresh": false
+      }
+    },
+    // 就失业管理-就业登记注销
+    {
+      "path": "pages/personalServices/employmentRecord/employmentRecordDelete",
+      "style": {
+        "navigationBarTitleText": "就业登记注销",
+        "enablePullDownRefresh": false
+      }
+    },
+    // 就失业管理-失业登记-
+    {
+      "path": "pages/personalServices/UnemploymentRegistration/UnemploymentRegistration",
+      "style": {
+        "navigationBarTitleText": "失业登记",
+        "enablePullDownRefresh": false
+      }
+    }, // 就失业管理-失业登记新增
+    {
+      "path": "pages/personalServices/UnemploymentRegistration/UnemploymentRegistrationAdd",
+      "style": {
+        "navigationBarTitleText": "失业登记新增",
+        "enablePullDownRefresh": false
+      }
+    }, //鉴定补贴
+    {
+      "path": "pages/personalServices/appraisalSubsidy/appraisalSubsidy",
+      "style": {
+        "navigationBarTitleText": "鉴定补贴",
+        "enablePullDownRefresh": false
+      }
+    }, //鉴定补贴新增
+    {
+      "path": "pages/personalServices/appraisalSubsidy/appraisalSubsidyAdd",
+      "style": {
+        "navigationBarTitleText": "鉴定补贴新增",
+        "enablePullDownRefresh": false
+      }
+    }, // 就业困难人员补贴管理-就业因难人员认定
+    {
+      "path": "pages/personalServices/empDifficultiesIden/empDifficultiesIden",
+      "style": {
+        "navigationBarTitleText": "就业因难人员认定",
+        "enablePullDownRefresh": false
+      }
+    }, // 就业困难人员补贴管理-就业因难人员认定新增
+    {
+      "path": "pages/personalServices/empDifficultiesIden/empDifficultiesIdenAdd",
+      "style": {
+        "navigationBarTitleText": "就业因难人员认定新增",
+        "enablePullDownRefresh": false
+      }
+    }, // 就业困难人员补贴管理-就业因难人员灵活就业补贴
+    {
+      "path": "pages/personalServices/empEntreFlexibleEmpSubsidy/empEntreFlexibleEmpSubsidy",
+      "style": {
+        "navigationBarTitleText": "就业因难人员灵活就业补贴",
+        "enablePullDownRefresh": false
+      }
+    }, // 就业困难人员补贴管理-就业困难人员灵活就业补贴申请
+    {
+      "path": "pages/personalServices/empEntreFlexibleEmpSubsidy/empEntreFlexibleEmpSubsidyApply",
+      "style": {
+        "navigationBarTitleText": "就业困难人员灵活就业补贴申请",
+        "enablePullDownRefresh": false
+      }
+    }, // 就业困难人员补贴管理-就业困难人员灵活就业补贴详情
+    {
+      "path": "pages/personalServices/empEntreFlexibleEmpSubsidy/empEntreFlexibleEmpSubsidyDetail",
+      "style": {
+        "navigationBarTitleText": "就业困难人员灵活就业补贴详情",
+        "enablePullDownRefresh": false
+      }
+    }, // 个人信息管理-工考成绩信息
+    {
+      "path": "pages/personalServices/examResult/examResult",
+      "style": {
+        "navigationBarTitleText": "工考成绩信息",
+        "enablePullDownRefresh": false
+      }
+    },
+    //失业保险业务-失业保险金申请
+    {
+      "path": "pages/personalServices/unemploymentInsurance/unemploymentInsurance",
+      "style": {
+        "navigationBarTitleText": "失业保险金申请",
+        "enablePullDownRefresh": false
+      }
+    }, //失业保险业务-失业保险金申请新增
+    {
+      "path": "pages/personalServices/unemploymentInsurance/unemploymentInsuranceAdd",
+      "style": {
+        "navigationBarTitleText": "失业保险金申请新增",
+        "enablePullDownRefresh": false
+      }
+    },
+    {
+      "path": "pages/personalServices/unemploymentInsurance/unemploymentInsuranceAddDetail",
+      "style": {
+        "navigationBarTitleText": "失业保险金申请详情",
+        "enablePullDownRefresh": false
+      }
+    },
+    {
+      "path": "pages/personalServices/unemploymentInsurance/unemploymentInsuranceAddFfxx",
+      "style": {
+        "navigationBarTitleText": "失业保险金申请新增发放信息",
+        "enablePullDownRefresh": false
+      }
+    },
+    {
+      "path": "pages/personalServices/unemploymentInsurance/unemploymentInsuranceCheckfflc",
+      "style": {
+        "navigationBarTitleText": "失业保险金申请查看发放流程",
+        "enablePullDownRefresh": false
+      }
+    },
+    {
+      "path": "pages/personalServices/unemploymentInsurance/unemploymentInsuranceAddYlbx",
+      "style": {
+        "navigationBarTitleText": "新增代缴企业职工养老保险",
+        "enablePullDownRefresh": false
+      }
+    },
+    {
+      "path": "pages/personalServices/unemploymentInsurance/unemploymentInsuranceApplyYlbx",
+      "style": {
+        "navigationBarTitleText": "申请代缴企业职工养老保险信息",
+        "enablePullDownRefresh": false
+      }
+    }, //拉萨市若干政策措施-区内市场稳定就业补贴奖励（拉萨）
+    {
+      "path": "pages/personalServices/localMarketEmpSubsidy/localMarketEmpSubsidy",
+      "style": {
+        "navigationBarTitleText": "区内市场稳定就业补贴奖励（拉萨）",
+        "enablePullDownRefresh": false
+      }
+    },
+    //路费补贴新增
+    {
+      "path": "pages/personalServices/travelExpensesSubsidy/travelExpensesSubsidyAdd",
+      "style": {
+        "navigationBarTitleText": "路费补贴新增",
+        "enablePullDownRefresh": false
+      }
+    },
+    {
+      "path": "pages/personalServices/travelExpensesSubsidy/transferInfoEntry",
+      "style": {
+        "navigationBarTitleText": "转移信息录入",
+        "enablePullDownRefresh": false
+      }
+    },
+    {
+      "path": "pages/personalServices/travelExpensesSubsidy/travelExpensesSubsidyDetail",
+      "style": {
+        "navigationBarTitleText": "查看详情",
+        "enablePullDownRefresh": false
+      }
+    },
+    // 求职创业补贴
+    {
+      "path": "pages/personalServices/grassrootsEntreSubsidy/grassrootsEntreSubsidyAdd",
+      "style": {
+        "navigationBarTitleText": "求职创业补贴新增",
+        "enablePullDownRefresh": false
+      }
+    }
+  ],
+  "globalStyle": {
+    "navigationStyle": "custom",
+    "navigationBarTextStyle": "white",
+    "navigationBarTitleText": "uni-app",
+    "navigationBarBackgroundColor": "#1492ff",
+    "backgroundColor": "#FFFFFF"
+  }
+}

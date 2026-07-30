@@ -1,0 +1,35 @@
+@import "./variable.scss";
+.mini-popup-wrapper {
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  z-index: 999;
+}
+.mini-popup-content {
+  position: absolute;
+  width: 100%;
+  z-index: 1001;
+  height: auto;
+  left: 0;
+  bottom: 0;
+  animation: bottomIn .5s ease-out;
+  &.out{
+    animation-name: bottomOut;
+  }
+}
+.mini-popup-mask{
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  z-index: 1000;
+  background-color: rgba(0,0,0,.3);
+  opacity: 1;
+  animation: fadeIn .5s ease-in-out;
+  &.out{
+    animation-name: fadeOut;
+  }
+}

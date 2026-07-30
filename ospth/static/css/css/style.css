@@ -1,0 +1,105 @@
+@font-face {
+    font-family: 'icomoon';
+    src: url('fonts/icomoon.eot?6acyob');
+    src: url('fonts/icomoon.eot?6acyob#iefix') format('embedded-opentype'), url('fonts/icomoon.ttf?6acyob') format('truetype'), url('fonts/icomoon.woff?6acyob') format('woff'), url('fonts/icomoon.svg?6acyob#icomoon') format('svg');
+    font-weight: normal;
+    font-style: normal;
+    font-display: block;
+}
+
+@font-face {
+    font-family: 'PingFang-SC-Medium';
+    src: url('fonts/PingFangSC-Medium.ttf');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'PingFang-SC-Bold';
+    src: url('fonts/bold.ttf');
+    font-weight: normal;
+    font-style: normal;
+}
+
+[class^="icon-"],
+[class*=" icon-"] {
+    /* use !important to prevent issues with browser extensions that change fonts */
+    font-family: 'icomoon' !important;
+    speak: none;
+    font-style: normal;
+    font-weight: normal;
+    font-variant: normal;
+    text-transform: none;
+    line-height: 1;
+    /* Better Font Rendering =========== */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-search:before {
+    content: "\e910";
+}
+
+.icon-arrow-right-round:before {
+    content: "\e908";
+}
+
+.icon-arrow-right:before {
+    content: "\e909";
+}
+
+.icon-checkbox-checked:before {
+    content: "\e90a";
+}
+
+.icon-checkbox:before {
+    content: "\e90b";
+}
+
+.icon-delete:before {
+    content: "\e90c";
+}
+
+.icon-eye-close-fill:before {
+    content: "\e90d";
+}
+
+.icon-eye-close:before {
+    content: "\e90e";
+}
+
+.icon-eye:before {
+    content: "\e90f";
+}
+
+.icon-select:before {
+    content: "\e907";
+}
+
+.icon-clear:before {
+    content: "\e904";
+}
+
+.icon-close:before {
+    content: "\e905";
+}
+
+.icon-hook:before {
+    content: "\e906";
+}
+
+.icon-loading:before {
+    content: "\e903";
+}
+
+.icon-radio-hook-checked:before {
+    content: "\e902";
+}
+
+.icon-radio-checked:before {
+    content: "\e900";
+}
+
+.icon-radio:before {
+    content: "\e901";
+}

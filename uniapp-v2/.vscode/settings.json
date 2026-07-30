@@ -1,0 +1,13 @@
+{
+  // 开启 SCSS import 路径提示
+  "scss.importSuggestions": true,
+  "css.importSuggestions": true,
+
+  // Path Intellisense 扩展的映射（如果你安装了该扩展）
+  "path-intellisense.mappings": {
+    "@": "${workspaceFolder}"
+  },
+
+  // 也告诉 Path Intellisense 对 scss 文件生效
+  "path-intellisense.extensionOnImport": true
+}

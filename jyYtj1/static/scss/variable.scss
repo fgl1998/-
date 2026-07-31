@@ -1,0 +1,51 @@
+/*图片大小*/
+@mixin bgSize($width:30px,$height:30px) {
+	background-size: $width $height;
+	width: $width;
+	height: $height;
+}
+
+/*省略号*/
+@mixin text-ellipsis () {
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+@mixin text-ellipsis-more($clamp:2) {
+	display: -webkit-box;
+	-webkit-box-orient: vertical;
+	-webkit-line-clamp: $clamp;
+	word-break: break-all;
+	overflow: hidden;
+	white-space: normal;
+}
+
+// flex布局(设置默认参数 跟函数的默认参数一样使用)
+@mixin s-flex($content:flex-start,$wrap:wrap,$alignItem:center){
+	display: flex;
+	justify-content:$content;
+	align-items: $alignItem;
+	flex-wrap:$wrap;
+}
+
+@mixin s-regular-text($fontSize:18px,$fontWeight:400,$fontColor:rgba(0,0,0,.9)){
+	font-family: 'PingFangSC-Regular';
+	font-weight: $fontWeight;
+	font-size: $fontSize;
+	color: $fontColor;
+}
+
+@mixin s-medium-text($fontSize:22px,$fontWeight:500,$fontColor:rgba(0,0,0,.9)){
+	font-family: 'PingFangSC-Medium';
+	font-weight: $fontWeight;
+	font-size: $fontSize;
+	color: $fontColor;
+}
+
+@mixin s-semibold-text($fontSize:24px,$fontWeight:600,$fontColor:rgba(0,0,0,.9)) {
+	font-family: 'PingFangSC-Semibold';
+	font-weight: $fontWeight;
+	font-size: $fontSize;
+	color: $fontColor;
+}

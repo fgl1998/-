@@ -1,0 +1,24 @@
+[
+  {
+    "areacode": "140105001000",
+    "areaid": "140105001000",
+    "arealevel": 4,
+    "areaname": "坞城街道",
+    "childNum": "0",
+    "chooseSelf": true,
+    "idpath": "140000000000/140100000000/140105000000/140105001000",
+    "leaf": true,
+    "namepath": "山西省/太原市/小店区/坞城街道"
+  },
+  {
+    "areacode": "140105002000",
+    "areaid": "140105002000",
+    "arealevel": 4,
+    "areaname": "平阳路街道",
+    "childNum": "0",
+    "chooseSelf": true,
+    "idpath": "140000000000/140100000000/140105000000/140105002000",
+    "leaf": true,
+    "namepath": "山西省/太原市/小店区/平阳路街道"
+  }
+]

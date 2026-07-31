@@ -1,0 +1,80 @@
+{
+	"id": "tk-input",
+	"displayName": "input-no-keybord PDA 文本框输入框，获取焦点，禁止弹出键盘",
+	"version": "0.0.2",
+	"description": "扩展 input 当获取焦点时，不弹出软键盘，不支持nvue",
+	"keywords": [
+        "禁止键盘弹出",
+        "input",
+        "文本框",
+        "input-no-keybord"
+    ],
+	"repository": "",
+	"engines": {
+		"HBuilderX": "^3.7.11"
+	},
+    "dcloudext": {
+        "sale": {
+			"regular": {
+				"price": "20.00"
+			},
+			"sourcecode": {
+				"price": "100.00"
+			}
+		},
+		"contact": {
+			"qq": "309714431"
+		},
+		"declaration": {
+			"ads": "无",
+			"data": "无",
+			"permissions": "无"
+		},
+        "npmurl": "",
+        "type": "component-vue"
+	},
+	"uni_modules": {
+		"dependencies": [],
+		"encrypt": [],
+		"platforms": {
+			"client": {
+				"App": {
+					"app-vue": "y",
+					"app-nvue": "n"
+				},
+				"Vue": {
+					"vue2": "y",
+					"vue3": "y"
+				},
+				"H5-mobile": {
+					"Safari": "n",
+					"Android Browser": "n",
+					"微信浏览器(Android)": "n",
+					"QQ浏览器(Android)": "n"
+				},
+				"H5-pc": {
+					"Chrome": "n",
+					"IE": "n",
+					"Edge": "n",
+					"Firefox": "n",
+					"Safari": "n"
+				},
+				"小程序": {
+					"微信": "n",
+					"阿里": "n",
+					"百度": "n",
+					"字节跳动": "n",
+					"QQ": "n"
+				},
+				"快应用": {
+					"华为": "n",
+					"联盟": "n"
+				}
+			},
+			"cloud": {
+				"tcb": "y",
+				"aliyun": "y"
+			}
+		}
+	}
+}

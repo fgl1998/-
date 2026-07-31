@@ -1,0 +1,34 @@
+#recruitTalents {
+  // background: url('@{public-path}img/publicImg/child_page_banner.png') no-repeat center top,
+  // url('@{public-path}img/publicImg/child_page_bg.png') no-repeat center bottom;
+  // 顶部导航
+  /deep/ .top_nav {
+    background-color: #007dee;
+
+    > ul {
+      > li {
+        padding-left: 20px;
+        //padding-right: 20px;
+        > span {
+          visibility: hidden;
+        }
+      }
+
+      > li:nth-child(1) {
+        > div {
+          > span {
+            font-weight: normal;
+            color: #fff;
+          }
+        }
+      }
+
+      > li:hover {
+        > span {
+          visibility: visible;
+          background-color: rgba(255, 255, 255, 0.42);
+        }
+      }
+    }
+  }
+}

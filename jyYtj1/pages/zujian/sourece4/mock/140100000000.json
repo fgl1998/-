@@ -1,0 +1,24 @@
+[
+  {
+    "areacode": "140105000000",
+    "areaid": "140105000000",
+    "arealevel": 3,
+    "areaname": "小店区",
+    "childNum": "2",
+    "chooseSelf": true,
+    "idpath": "140000000000/140100000000/140105000000",
+    "leaf": false,
+    "namepath": "山西省/太原市/小店区"
+  },
+  {
+    "areacode": "140106000000",
+    "areaid": "140106000000",
+    "arealevel": 3,
+    "areaname": "迎泽区",
+    "childNum": "1",
+    "chooseSelf": true,
+    "idpath": "140000000000/140100000000/140106000000",
+    "leaf": false,
+    "namepath": "山西省/太原市/迎泽区"
+  }
+]

@@ -1,0 +1,211 @@
+.ic{
+	display: inline-block;
+	vertical-align: middle;
+}
+/*首页*/
+.ic-home{
+	background:url('./static/images/ic_home.png') left center no-repeat;
+	background-size: 100% 100%;
+	width:38px;
+	height: 30px;
+}
+/*返回*/
+.ic-back{
+	background:url('./static/images/ic_back.png') left center no-repeat;
+	background-size: 100% 100%;
+	width:34px;
+	height: 30px;
+}
+/*温馨提示*/
+.ic-tip{
+	background:url('./static/images/ic_tip.png') left center no-repeat;
+	background-size: 100% 100%;
+	width:122px;
+	height: 30px;
+}
+/*男*/
+.ic-boy{
+	background:url('./static/images/sex-man.png') left center no-repeat;
+	background-size: 100% 100%;
+	width:24px;
+	height: 24px;
+}
+/*女*/
+.ic-girl{
+	background:url('./static/images/sex-woman.png') left center no-repeat;
+	background-size: 100% 100%;
+	width:24px;
+	height: 24px;
+}
+/*提示*/
+.ic-user-tip{
+	background:url('./static/images/ic_user_tip.png') left center no-repeat;
+	background-size: 100% 100%;
+	width:38px;
+	height: 38px;
+}
+/*刷新*/
+.ic-refresh{
+	background:url('./static/images/ic_refresh.png') left center no-repeat;
+	background-size: 100% 100%;
+	width: 16px;
+	height: 20px;
+}
+/*热门*/
+.ic-hot{
+	background:url('./static/images/ic_hot.png') left center no-repeat;
+	background-size: 100% 100%;
+	width: 44px;
+	height: 44px;
+}
+
+/*三角-左*/
+.pager-lt{
+	background:url('./static/images/pager_lt.png') left center no-repeat;
+	background-size: 100% 100%;
+	width: 14px;
+	height: 16px;
+}
+
+/*三角-右*/
+.pager-rt{
+	background:url('./static/images/pager_rt.png') left center no-repeat;
+	background-size: 100% 100%;
+	width: 14px;
+	height: 16px;
+}
+
+/*三角-左/右-禁用*/
+.pager-btn.disabled{
+	.pager-lt{
+		background:url('./static/images/pager_lt_disabled.png') left center no-repeat;
+		background-size: 100% 100%;
+		width: 12px;
+		height: 14px;
+	}
+	.pager-rt{
+		background:url('./static/images/pager_rt_disabled.png') left center no-repeat;
+		background-size: 100% 100%;
+		width: 12px;
+		height: 14px;
+	}
+}
+
+/*点*/
+.ic-point{
+	width: 8px;
+	height: 8px;
+	background: #999999;
+	border-radius: 50%;
+}
+
+/*热门*/
+.ic-text-hot{
+	background:url('./static/images/ic_text_hot.png') left center no-repeat;
+	background-size: 100% 100%;
+	width: 46px;
+	height: 22px;
+}
+
+/*提示-黄三角*/
+.ic-yellow-tip{
+	background:url('./static/images/ic_yellow_tip.png') left center no-repeat;
+	background-size: 100% 100%;
+	width: 30px;
+	height: 28px;
+}
+
+/*向下*/
+.ic-down{
+	background:url('./static/images/ic_down.png') left center no-repeat;
+	background-size: 100% 100%;
+	width: 20px;
+	height: 10px;
+}
+
+/*收藏*/
+.ic-collect{
+	background:url('./static/images/ic_collect.png') left center no-repeat;
+	background-size: 100% 100%;
+	width: 36px;
+	height: 36px;
+}
+
+/*未收藏*/
+.ic-un-collect{
+	background:url('./static/images/ic_un_collect.png') left center no-repeat;
+	background-size: 100% 100%;
+	width: 36px;
+	height: 36px;
+}
+
+/*五角星*/
+.ic-stars{
+	background:url('./static/images/ic_stars.png') left center no-repeat;
+	background-size: 100% 100%;
+	width: 24px;
+	height: 24px;
+}
+
+/*飞机*/
+.ic-fly{
+	background:url('./static/images/ic_fly.png') left center no-repeat;
+	background-size: 100% 100%;
+	width: 24px;
+	height: 24px;
+}
+
+/*switch*/
+.ic-switch{
+	background:url('./static/images/switch_open.png') left center no-repeat;
+	background-size: 100% 100%;
+	width: 104px;
+	height: 52px;
+}
+
+.ic-un-switch{
+	background:url('./static/images/switch_close.png') left center no-repeat;
+	background-size: 100% 100%;
+	width: 104px;
+	height: 52px;
+}
+
+/*微信*/
+.ic-weixin{
+	background:url('./static/images/ic_weixin.png') left center no-repeat;
+	background-size: 100% 100%;
+	width: 28px;
+	height: 24px;
+}
+
+/*加号*/
+.ic-add{
+	background:url('./static/images/ic_add.png') left center no-repeat;
+	background-size: 100% 100%;
+	width: 10px;
+	height: 10px;
+}
+
+/*home*/
+.ic-home-blue{
+	background: url('./static/images/personalCenter/ic_home.png') left center no-repeat;
+	@include bgSize(30px,30px);
+}
+
+/*unit*/
+.ic-unit{
+	background: url('./static/images/personalCenter/ic_unit.png') left center no-repeat;
+	@include bgSize(36px,36px);
+}
+
+/*星星*/
+.ic-star{
+	background: url('./static/images/personalCenter/ic_star.png') left center no-repeat;
+	@include bgSize(20px,20px);
+}
+
+/*简历小标题*/
+.ic-resume-title{
+	background: url('./static/images/resume/resume_title.png') left center no-repeat;
+	@include bgSize(14px,20px);
+}

@@ -1,0 +1,24 @@
+[
+  {
+    "areacode": "140100000000",
+    "areaid": "140100000000",
+    "arealevel": 2,
+    "areaname": "太原市",
+    "childNum": "2",
+    "chooseSelf": true,
+    "idpath": "140000000000/140100000000",
+    "leaf": false,
+    "namepath": "山西省/太原市"
+  },
+  {
+    "areacode": "140200000000",
+    "areaid": "140200000000",
+    "arealevel": 2,
+    "areaname": "大同市",
+    "childNum": "1",
+    "chooseSelf": true,
+    "idpath": "140000000000/140200000000",
+    "leaf": false,
+    "namepath": "山西省/大同市"
+  }
+]

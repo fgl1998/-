@@ -1,0 +1,17 @@
+#recruitTalents /deep/ .top_nav {
+  background-color: #007dee;
+}
+#recruitTalents /deep/ .top_nav > ul > li {
+  padding-left: 20px;
+}
+#recruitTalents /deep/ .top_nav > ul > li > span {
+  visibility: hidden;
+}
+#recruitTalents /deep/ .top_nav > ul > li:nth-child(1) > div > span {
+  font-weight: normal;
+  color: #fff;
+}
+#recruitTalents /deep/ .top_nav > ul > li:hover > span {
+  visibility: visible;
+  background-color: rgba(255, 255, 255, 0.42);
+}

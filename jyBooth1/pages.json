@@ -1,0 +1,207 @@
+{
+  "pages": [
+    // pages 数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
+    {
+      "path": "pages/loginPage/loginPage",
+      "style": {
+        "navigationBarTitleText": "登录",
+        "enablePullDownRefresh": false
+      }
+    },
+    {
+      "path": "pages/index/index",
+      "style": {
+        "navigationBarTitleText": "主页"
+      }
+    },
+    {
+      "path": "pages/loginPage/loginPage",
+      "style": {
+        "navigationBarTitleText": "登录",
+        "enablePullDownRefresh": false
+      }
+    },
+    {
+      "path": "pages/sysInfo/sysInfo",
+      "style": {
+        "navigationBarTitleText": "系统信息"
+      }
+    },
+    {
+      "path": "pages/uniCenter/index",
+      "style": {
+        "navigationBarTitleText": "单位中心"
+      }
+    },
+    {
+      "path": "pages/recruitment/recruitment",
+      "style": {
+        "navigationBarTitleText": "企业招聘信息"
+      }
+    },
+    {
+      "path": "pages/recruitment/workDetail",
+      "style": {
+        "navigationBarTitleText": "企业职位详情"
+      }
+    },
+    {
+      "path": "pages/resumeManage/resumeManage",
+      "style": {
+        "navigationBarTitleText": "简历管理"
+      }
+    },
+    //    {
+    //      "path": "pages/resumeShow/resumeShow",
+    //      "style": {
+    //        "navigationBarTitleText": "简历信息"
+    //      }
+    //    },
+    {
+      "path": "pages/unitMessage/unitMessage",
+      "style": {
+        "navigationBarTitleText": "企业信息"
+      }
+    },
+    {
+      "path": "pages/releaseSuccess/releaseSuccess",
+      "style": {
+        "navigationBarTitleText": "发布成功"
+      }
+    },
+    {
+      "path": "pages/tongji/tongji",
+      "style": {
+        "navigationBarTitleText": "日常统计"
+      }
+    },
+    //		{
+    //			"path": "pages/navigationMap/navigationMap",
+    //			"style": {
+    //				"navigationBarTitleText": "导航地图",
+    //				"enablePullDownRefresh": false
+    //			}
+    //		},
+    //		{
+    //			"path": "pages/recruitmentArea/recruitmentArea",
+    //			"style": {
+    //				"navigationBarTitleText": "招聘区域",
+    //				"enablePullDownRefresh": false
+    //			}
+    //		},
+    {
+      "path": "pages/positionRecording/positionRecording",
+      "style": {
+        "navigationBarTitleText": "岗位补录",
+        "enablePullDownRefresh": false
+      }
+    },
+    {
+      "path": "pages/newInterviewManage/interviewManage",
+      "style": {
+        "navigationBarTitleText": "新面试管理",
+        "enablePullDownRefresh": false
+      }
+    },
+    {
+      "path": "pages/newSearchTalent/newSearchTalent",
+      "style": {
+        "navigationBarTitleText": "新人才搜索",
+        "enablePullDownRefresh": false
+      }
+    },
+    {
+      "path": "pages/bigScreen/bigScreen",
+      "style": {
+        "navigationBarTitleText": "大屏管理",
+        "enablePullDownRefresh": false
+      }
+    },
+    {
+      "path": "pages/recruitmentArea/recruitmentArea",
+      "style": {
+        "navigationBarTitleText": "招聘区域",
+        "enablePullDownRefresh": false
+      }
+    },
+    {
+      "path": "pages/callNumManage/callNumManage",
+      "style": {
+        "navigationBarTitleText": "叫号管理",
+        "enablePullDownRefresh": false
+      }
+    },
+    {
+      "path": "pages/largeScreen/largeScreen",
+      "style": {
+        "navigationBarTitleText": "智慧招聘大屏",
+        "enablePullDownRefresh": false
+      }
+    },
+    {
+      "path": "pages/jobInfoStatistic/jobInfoStatistic",
+      "style": {
+        "navigationBarTitleText": "总体情况分析大屏",
+        "enablePullDownRefresh": false
+      }
+    },
+    //		{
+    //			"path": "pages/newPositionManage/newPositionManage",
+    //			"style": {
+    //				"navigationBarTitleText": "新职位管理",
+    //				"enablePullDownRefresh": false
+    //			}
+    //		},
+    //		{
+    //			"path": "pages/newResumeManage/newResumeManage",
+    //			"style": {
+    //				"navigationBarTitleText": "新简历管理",
+    //				"enablePullDownRefresh": false
+    //			}
+    //		},
+    {
+      "path": "pages/positionList/positionList",
+      "style": {
+        "navigationBarTitleText": "招聘职位",
+        "enablePullDownRefresh": false
+      }
+    },
+    //		{
+    //			"path": "pages/businessPersonnel/businessPersonnel",
+    //			"style": {
+    //				"navigationBarTitleText": "业务办理人员登录",
+    //				"enablePullDownRefresh": false
+    //			}
+    //		},
+    //		{
+    //			"path": "pages/businessPersonnel/personnelWelcome",
+    //			"style": {
+    //				"navigationBarTitleText": "欢迎业务人员",
+    //				"enablePullDownRefresh": false
+    //			}
+    //		},
+    {
+      "path": "pages/loginPage/companyNoLogin",
+      "style": {
+        "navigationBarTitleText": "欢迎企业",
+        "enablePullDownRefresh": false
+      }
+    },
+    {
+      "path": "pages/personInterview/personInterview",
+      "style": {
+        "navigationBarTitleText": ""
+      }
+    }
+  ],
+  "subPackages": [],
+  "globalStyle": {
+    "app-plus": {
+      "titleNView": false
+    },
+    "navigationBarTextStyle": "black",
+    "navigationBarTitleText": "uni-app",
+    "navigationBarBackgroundColor": "#F8F8F8",
+    "backgroundColor": "#F8F8F8"
+  }
+}

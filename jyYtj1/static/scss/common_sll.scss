@@ -1,0 +1,393 @@
+@import './variable.scss';
+
+image{
+	width: 100%;
+	height: 100%;
+}
+
+.input-placeholder,
+/deep/ .input-placehoder{
+	font-size: 18px;
+	color: rgba(0,0,0,0.25) !important;
+}
+
+.no-data {
+	margin-top: 100px;
+}
+
+.wrap-title {
+	@include s-flex(space-between);
+	height: 98px;
+
+	.title-lt {
+		@include s-flex();
+
+		.name {
+			@include s-semibold-text();
+			position: relative;
+			padding-left: 14px;
+
+			&:before {
+				content: '';
+				width: 8px;
+				height: 24px;
+				background: #0C6AF7;
+				border-radius: 2px;
+				position: absolute;
+				top: 50%;
+				transform: translateY(-50%);
+				left: 0;
+			}
+
+			span {
+				color: #0C6AF7;
+			}
+		}
+
+		.decr {
+			@include s-regular-text();
+			color: rgba(0, 0, 0, 0.6);
+			padding-left: 6px;
+		}
+	}
+
+	.title-rt {
+		@include s-flex(flex-end);
+		width: auto !important;
+
+		.tab {
+			@include s-flex();
+			margin-right: 24px;
+
+			.tab-item {
+				@include s-regular-text();
+				width: 130px;
+				height: 48px;
+				line-height: 48px;
+				text-align: center;
+				background: #FFFFFF;
+				cursor: pointer;
+
+				&:first-child {
+					border-radius: 4px 0px 0px 4px;
+					border: 1px solid #A2A7A9;
+					border-right: 0;
+				}
+
+				&:last-child {
+					border-radius: 0px 4px 4px 0px;
+					border: 1px solid #A2A7A9;
+					border-left: 0;
+				}
+
+				&.active {
+					color: #0C6AF7;
+					background: #DDF0FD;
+					border: 1px solid #0C6AF7;
+				}
+			}
+		}
+
+		.search {
+			@include s-flex();
+			margin-right: 60px;
+
+			.search-inp {
+				margin-right: 12px;
+				width: 400px;
+				height: 48px;
+				background: #FFFFFF;
+				border-radius: 4px;
+				border: 1px solid #A2A7A9;
+				padding: 0 16px;
+				box-sizing: border-box;
+			}
+
+			.search-btn {
+				width: 120px;
+				height: 48px;
+			}
+		}
+
+		.select-box{
+			width:160px;
+			margin-right: 12px;
+
+			/deep/ .input-content{
+				border: 1px solid #A2A7A9;
+				border-radius: 4px;
+			}
+		}
+
+		.navigation {
+			@include s-flex();
+			line-height: 30px;
+			width: auto !important;
+
+			label {
+				@include s-regular-text();
+				color: rgba(0, 0, 0, 0.6);
+			}
+		}
+
+		.reset-btn{
+			width: 120px;
+			height: 48px;
+			background: #FFFFFF;
+			border-radius: 4px;
+			border: 1px solid #A2A7A9;
+			box-sizing: border-box;
+		}
+
+		.salary{
+			@include s-flex();
+			margin-right: 12px;
+
+			.uni-input{
+				width: 120px;
+				height: 48px;
+				background: #FFFFFF;
+				border-radius: 4px;
+				border: 1px solid #A2A7A9;
+				box-sizing: border-box;
+				text-align: center;
+			}
+
+			span{
+				padding:0 8px;
+			}
+		}
+	}
+}
+
+
+.job {
+	.job-list {
+		@include s-flex();
+
+		.list-item {
+			position: relative;
+			background: #F5F5F5;
+			width: calc(33.33% - 22px);
+			padding: 16px 30px;
+			box-sizing: border-box;
+			margin-right: 32px;
+			margin-bottom: 18px;
+
+			&:nth-child(3n) {
+				margin-right: 0;
+			}
+
+			.item-status {
+				position: absolute;
+				right: 0;
+				top: -12px;
+				.ic{
+					@include s-regular-text(16px);
+					border-radius: 0px 0px 0px 15px;
+					padding:0 12px;
+					height: 30px;
+					line-height: 30px;
+					color: #FFFFFF;
+					text-align: center;
+					font-style: normal;
+				}
+
+				.ic-tag-default{
+					background: rgba(0, 0, 0, .5);
+				}
+
+				.ic-tag-blue{
+					background: linear-gradient( 90deg, rgba(32, 182, 255, .8) 0%, rgba(59, 136, 251, 1) 100%);
+				}
+
+				.ic-tag-green{
+					background: linear-gradient( 90deg, rgba(27, 211, 45, .8) 0%, rgba(20, 214, 144, 1) 100%);
+				}
+
+				.ic-tag-gray{
+					background: linear-gradient( 90deg, rgba(148, 148, 148, 0.8) 0%, rgb(61, 61, 61) 100%);
+				}
+
+			}
+
+			.item-top {
+				@include s-flex(space-between);
+				padding-bottom: 8px;
+				.first {
+					display: flex;
+					.top-lt {
+						@include s-flex();
+						@include text-ellipsis();
+						max-width: 150px;
+						margin-right: 10px;
+						&.btn {
+
+							.cancel, .again {
+								margin-right: 5px;
+								border: 1px solid #A2A7A9;
+								border-radius: 5px;
+								padding: 0 5px;
+							}
+						}
+						.urgency{
+							width: 34px;
+							height: 24px;
+							margin-right: 4px;
+						}
+
+						.name{
+							@include text-ellipsis();
+							max-width: 160px;
+							margin-right: 4px;
+						}
+
+						.per-or-unit{
+							width: 66px;
+							height: 30px;
+						}
+					}
+				}
+
+
+				.top-rt {
+					&.money {
+						@include s-medium-text(18px);
+						color: #EB3527;
+					}
+				}
+			}
+
+			.item-bottom {
+				@include s-flex(space-between);
+
+				.bottom-lt {
+					@include s-flex();
+
+					.per-head{
+						width: 48px;
+						height: 48px;
+						border-radius: 50%;
+						margin-right: 8px;
+
+						.head-img{
+							width: 48px;
+							height: 48px;
+							border-radius: 50%;
+						}
+					}
+
+					.per{
+						.name{
+							@include s-regular-text();
+							line-height: 22px;
+						}
+						.addr{
+							@include s-regular-text(14px);
+							color: rgba(0,0,0,0.6);
+							line-height: 20px;
+						}
+					}
+
+					span {
+						@include s-regular-text();
+						padding-left: 8px;
+					}
+				}
+
+				.bottom-rt {
+					@include s-flex();
+
+					span {
+						@include s-regular-text();
+						color: rgba(0, 0, 0, 0.6);
+						padding-right: 10px;
+					}
+
+					.btn{
+						width: 104px;
+						height: 42px;
+						line-height: 42px;
+					}
+				}
+			}
+
+		}
+	}
+}
+
+.unit {
+	.unit-list {
+		@include s-flex();
+
+		.list-item {
+			background: #F5F5F5;
+			width: calc(33.33% - 22px);
+			padding: 20px 30px;
+			box-sizing: border-box;
+			margin-right: 32px;
+			margin-bottom: 32px;
+			height: 160px;
+
+			&:nth-child(3n) {
+				margin-right: 0;
+			}
+
+			.item-top {
+				@include s-flex();
+				padding-bottom: 12px;
+
+				.top-lt{
+					width:70px;
+					height: 70px;
+				}
+
+				.top-rt{
+					padding-left: 20px;
+					width: calc(100% - 70px);
+					box-sizing: border-box;
+
+					.title{
+						@include s-flex(space-between);
+						margin-bottom: 8px;
+
+						.name{
+							@include s-medium-text();
+							@include text-ellipsis();
+							width: 280px;
+						}
+					}
+
+					.tag-list{
+						.tag-item{
+							max-width: 100px;
+							@include text-ellipsis();
+						}
+					}
+
+				}
+			}
+
+			.item-bottom {
+				@include s-regular-text();
+				@include text-ellipsis();
+				color: rgba(0, 0, 0, 0.6);
+			}
+		}
+	}
+}
+
+
+.tag-list {
+	@include s-flex();
+	gap: 8px;
+	padding-bottom: 12px;
+
+	.tag-item {
+		@include s-regular-text(16px);
+		color: rgba(0, 0, 0, 0.6);
+		padding: 4px 12px;
+		background: #E4E8EB;
+		border-radius: 2px;
+	}
+}

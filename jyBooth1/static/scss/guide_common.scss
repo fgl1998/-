@@ -1,0 +1,131 @@
+@charset 'utf-8';
+.min-box {
+  width: 1920px;
+  height: 1080px;
+  position: relative;
+}
+
+.screen {
+  padding: 54px 54px 0;
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 96px;
+  bottom: 180px;
+
+  .screen-lt {
+    height: 100%;
+    position: relative;
+    padding-right: 104px;
+
+    .lt-top {
+      position: relative;
+      padding-bottom: 80px;
+
+      .map-title {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        .floor-name {
+          font-size: 54px;
+          font-family: SourceHanSansCN-Medium, SourceHanSansCN;
+          font-weight: 500;
+          color: #A4B1C3;
+          margin-right: 168px;
+        }
+
+        .color-group {
+          .color-item {
+            margin-right: 15px;
+          }
+        }
+      }
+
+      .area-title {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+
+        .top-lt {
+
+        }
+
+        .top-cr {
+          font-size: 24px;
+          line-height: 32px;
+          font-family: PingFangSC-Medium, PingFang SC;
+          font-weight: 500;
+          color: #A4B1C3;
+          padding: 0 120px;
+          text-align: center;
+        }
+
+        .top-rt {
+          .vr-btn {
+            background: #007aff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 32px;
+            line-height: 32px;
+            padding: 0 10px;
+            border-radius: 8px;
+            cursor: pointer;
+
+            .btn-img {
+              width: 20px;
+              height: 20px;
+            }
+
+            text {
+              padding-left: 10px;
+              color: #FEFEFE;
+              font-size: 16px;
+            }
+          }
+        }
+      }
+
+    }
+
+    .lt-con {
+      height: calc(100% - 112px);
+      padding-left: 130px;
+    }
+  }
+
+  .screen-rt {
+    position: absolute;
+    top: 0;
+    right: 54px;
+    width: 104px;
+    height: 100%;
+
+    .rt-top {
+      width: 74px;
+      height: 74px;
+      position: absolute;
+      top: 72px;
+      right: 0;
+
+      image {
+        width: 100%;
+        height: 100%;
+      }
+    }
+
+    .rt-bottom {
+      width: 45px;
+      height: 44px;
+      position: absolute;
+      bottom: 0;
+      right: 6px;
+
+      image {
+        width: 100%;
+        height: 100%;
+      }
+    }
+  }
+}

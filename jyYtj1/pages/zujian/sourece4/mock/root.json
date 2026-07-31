@@ -1,0 +1,24 @@
+[
+  {
+    "areacode": "140000000000",
+    "areaid": "140000000000",
+    "arealevel": 1,
+    "areaname": "山西省",
+    "childNum": "2",
+    "chooseSelf": true,
+    "idpath": "140000000000",
+    "leaf": false,
+    "namepath": "山西省"
+  },
+  {
+    "areacode": "130000000000",
+    "areaid": "130000000000",
+    "arealevel": 1,
+    "areaname": "河北省",
+    "childNum": "1",
+    "chooseSelf": true,
+    "idpath": "130000000000",
+    "leaf": false,
+    "namepath": "河北省"
+  }
+]

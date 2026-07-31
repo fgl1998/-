@@ -1,0 +1,467 @@
+{
+  "pages": [
+    //pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
+    {
+      "path": "pages/machineRegister/machineRegister",
+      "style": {
+        "navigationBarTitleText": "一体机注册",
+        "navigationStyle": "custom"
+      }
+    },
+    {
+      "path": "pages/index/index",
+      "style": {
+        "navigationBarTitleText": "首页",
+        "navigationStyle": "custom"
+      }
+    },
+    {
+      "path": "pages/login/login",
+      "style": {
+        "navigationBarTitleText": "登录", //无扫脸登录方式
+        "navigationStyle": "custom"
+      }
+    },
+    {
+      "path": "pages/login/loginFacial",
+      "style": {
+        "navigationBarTitleText": "登录", //有扫脸登录方式
+        "navigationStyle": "custom"
+      }
+    },
+    {
+      "path": "pages/register/register",
+      "style": {
+        "navigationBarTitleText": "注册",
+        "navigationStyle": "custom"
+      }
+    },
+    {
+      "path": "pages/archivesQuery/archivesQuery",
+      "style": {
+        "navigationBarTitleText": "",
+        "enablePullDownRefresh": false
+      }
+    },
+    {
+      "path": "pages/employMap/employMap",
+      "style": {
+        "navigationBarTitleText": "就业地图",
+        "enablePullDownRefresh": false
+      }
+    }
+  ],
+
+  "subPackages": [
+    {
+      "root": "pages/personalCenter",
+      "pages": [
+        {
+          "path": "personalCenter/personalCenter",
+          "style": {
+            "navigationBarTitleText": "个人中心",
+            "navigationStyle": "custom"
+          }
+        },
+        {
+          "path": "myResume/myResumeList",
+          "style": {
+            "navigationBarTitleText": "简历列表",
+            "navigationStyle": "custom"
+          }
+        },
+        {
+          "path": "myResume/myResume",
+          "style": {
+            "navigationBarTitleText": "简历详情",
+            "navigationStyle": "custom"
+          }
+        },
+        {
+          "path": "resumeEdit/resumeEdit",
+          "style": {
+            "navigationBarTitleText": "编辑简历",
+            "navigationStyle": "custom"
+          }
+        },
+        {
+          "path": "myApplication/myApplication",
+          "style": {
+            "navigationBarTitleText": "我的申请",
+            "navigationStyle": "custom"
+          }
+        },
+        {
+          "path": "myCollection/myCollection",
+          "style": {
+            "navigationBarTitleText": "我的收藏",
+            "navigationStyle": "custom"
+          }
+        },
+        {
+          "path": "servicePoint/servicePoint",
+          "style": {
+            "navigationBarTitleText": "找管理服务机构",
+            "navigationStyle": "custom"
+          }
+        },
+        {
+          "path": "myProgress/myProgress",
+          "style": {
+            "navigationBarTitleText": "业务办理进度",
+            "navigationStyle": "custom"
+          }
+        },
+        {
+          "path": "myInterview/myInterview",
+          "style": {
+            "navigationBarTitleText": "我的面试",
+            "navigationStyle": "custom"
+          }
+        },
+        {
+          "path": "onlineInterview/onlineInterview",
+          "style": {
+            "navigationBarTitleText": "线上面试",
+            "navigationStyle": "custom"
+          }
+        }
+      ]
+    },
+    {
+      "root": "pages/jobRecruitment",
+      "pages": [
+        {
+          "path": "jobRecruitment/jobRecruitment",
+          "style": {
+            "navigationBarTitleText": "求职招聘",
+            "navigationStyle": "custom"
+          }
+        },
+        {
+          "path": "findUnit/findUnit",
+          "style": {
+            "navigationBarTitleText": "找单位",
+            "navigationStyle": "custom"
+          }
+        },
+        {
+          "path": "findUnitDetail/findUnitDetail",
+          "style": {
+            "navigationBarTitleText": "单位详情",
+            "navigationStyle": "custom"
+          }
+        },
+        {
+          "path": "findUnitDetail/companyWork",
+          "style": {
+            "navigationBarTitleText": "单位发布",
+            "navigationStyle": "custom"
+          }
+        },
+        {
+          "path": "findWork/findWork",
+          "style": {
+            "navigationBarTitleText": "找工作",
+            "navigationStyle": "custom"
+          }
+        },
+        {
+          "path": "engageCQ/index",
+          "style": {
+            "navigationBarTitleText": "创业项目",
+            "navigationStyle": "custom"
+          }
+        },
+        {
+          "path": "engageCQ/detailCQ",
+          "style": {
+            "navigationBarTitleText": "创业项目详情",
+            "navigationStyle": "custom"
+          }
+        },
+        {
+          "path": "findWork/findOddJob",
+          "style": {
+            "navigationBarTitleText": "零工市场",
+            "navigationStyle": "custom"
+          }
+        },
+        {
+          "path": "findWorkDetail/findWorkDetail",
+          "style": {
+            "navigationBarTitleText": "岗位详情",
+            "navigationStyle": "custom"
+          }
+        },
+        {
+          "path": "findWorkDetail/findWorkDetails",
+          "style": {
+            "navigationBarTitleText": "零工详情",
+            "navigationStyle": "custom"
+          }
+        },
+        {
+          "path": "findJobFair/findJobFair",
+          "style": {
+            "navigationBarTitleText": "找招聘会",
+            "navigationStyle": "custom"
+          }
+        },
+        {
+          "path": "findJobFairDetail/findJobFairDetail",
+          "style": {
+            "navigationBarTitleText": "招聘会详情",
+            "navigationStyle": "custom"
+          }
+        },
+        {
+          "path": "findJobFairDetail/jobFairUnit",
+          "style": {
+            "navigationBarTitleText": "报名公司",
+            "navigationStyle": "custom"
+          }
+        }
+      ]
+    },
+    {
+      "root": "pages/popularServices",
+      "pages": [
+        {
+          "path": "popularServices/popularServices",
+          "style": {
+            "navigationBarTitleText": "热门服务",
+            "navigationStyle": "custom"
+          }
+        }
+      ]
+    },
+    {
+      "root": "pages/policyServices",
+      "pages": [
+        {
+          "path": "policyServices/policyServices",
+          "style": {
+            "navigationBarTitleText": "政策服务",
+            "navigationStyle": "custom"
+          }
+        },
+        {
+          "path": "policyDetail/policyDetail",
+          "style": {
+            "navigationBarTitleText": "政策服务详情",
+            "navigationStyle": "custom"
+          }
+        },
+        {
+          "path": "workGuide/workGuide",
+          "style": {
+            "navigationBarTitleText": "办事指南",
+            "navigationStyle": "custom"
+          }
+        },
+        {
+          "path": "workGuide/workGuideDetail",
+          "style": {
+            "navigationBarTitleText": "办事指南详情",
+            "navigationStyle": "custom"
+          }
+        }
+      ]
+    },
+    {
+      "root": "pages/trainingClass",
+      "pages": [
+        {
+          "path": "trainningIndex/trainningIndex",
+          "style": {
+            "navigationBarTitleText": "培训班级",
+            "navigationStyle": "custom"
+          }
+        },
+        {
+          "path": "trainClassDetail/trainClassDetail",
+          "style": {
+            "navigationBarTitleText": "培训班级详情",
+            "navigationStyle": "custom"
+          }
+        },
+        {
+          "path": "orgDetail/orgDetail",
+          "style": {
+            "navigationBarTitleText": "机构详情",
+            "navigationStyle": "custom"
+          }
+        }
+      ]
+    },
+    {
+      "root": "pages/entrepreneurialProject",
+      "pages": [
+        {
+          "path": "projectIndex/projectIndex",
+          "style": {
+            "navigationBarTitleText": "创业项目",
+            "navigationStyle": "custom"
+          }
+        }
+      ]
+    },
+    {
+      "root": "pages/laborInformationCollection",
+      "pages": [
+        {
+          "path": "labourIndex/labourIndex",
+          "style": {
+            "navigationBarTitleText": "就业信息采集",
+            "navigationStyle": "custom"
+          }
+        }
+      ]
+    },
+    {
+      "root": "pages/intelligentCustomerService",
+      "pages": [
+        {
+          "path": "intelligentCustomerService",
+          "style": {
+            "navigationBarTitleText": "智能客服",
+            "navigationStyle": "custom"
+          }
+        }
+      ]
+    },
+    {
+      "root": "pages/waitPage",
+      "pages": [
+        {
+          "path": "index",
+          "style": {
+            "navigationBarTitleText": "等待页面",
+            "navigationStyle": "custom"
+          }
+        }
+      ]
+    },
+    {
+      "root": "pages/staticPage",
+      "pages": [
+        {
+          "path": "staticPage",
+          "style": {
+            "navigationBarTitleText": "信息宣传屏",
+            "navigationStyle": "custom"
+          }
+        }
+      ]
+    },
+    {
+      "root": "pages/demo",
+      "pages": [
+        {
+          "path": "index",
+          "style": {
+            "navigationBarTitleText": "测试走马灯",
+            "navigationStyle": "custom"
+          }
+        }
+      ]
+    },
+
+    {
+      "root": "pages/zujian/sourece",
+      "pages": [
+        {
+          "path": "test",
+          "style": {
+            "navigationBarTitleText": "测试走马灯",
+            "navigationStyle": "custom"
+          }
+        }
+      ]
+    },
+
+    {
+      "root": "pages/zujian/sourece2",
+      "pages": [
+        {
+          "path": "test",
+          "style": {
+            "navigationBarTitleText": "测试走马灯",
+            "navigationStyle": "custom"
+          }
+        }
+      ]
+    },
+    {
+      "root": "pages/zujian/sourece21",
+      "pages": [
+        {
+          "path": "test",
+          "style": {
+            "navigationBarTitleText": "测试走马灯",
+            "navigationStyle": "custom"
+          }
+        }
+      ]
+    },
+    {
+      "root": "pages/zujian/sourece3",
+      "pages": [
+        {
+          "path": "test",
+          "style": {
+            "navigationBarTitleText": "测试走马灯",
+            "navigationStyle": "custom"
+          }
+        }
+      ]
+    },
+    {
+      "root": "pages/zujian/sourece31",
+      "pages": [
+        {
+          "path": "test",
+          "style": {
+            "navigationBarTitleText": "测试走马灯",
+            "navigationStyle": "custom"
+          }
+        }
+      ]
+    },
+    {
+      "root": "pages/zujian/sourece4",
+      "pages": [
+        {
+          "path": "test",
+          "style": {
+            "navigationBarTitleText": "测试走马灯",
+            "navigationStyle": "custom"
+          }
+        }
+      ]
+    },
+    {
+      "root": "pages/zujian/sourece6",
+      "pages": [
+        {
+          "path": "test",
+          "style": {
+            "navigationBarTitleText": "Schema Form Test",
+            "navigationStyle": "custom"
+          }
+        }
+      ]
+    }
+  ],
+  "easycom": {
+    "^u-(.*)": "uview-ui/components/u-$1/u-$1.vue"
+  },
+
+  "globalStyle": {
+    "navigationBarTextStyle": "black",
+    "navigationBarTitleText": "uni-app",
+    "navigationBarBackgroundColor": "#F8F8F8",
+    "backgroundColor": "#F8F8F8"
+  }
+}

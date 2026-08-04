@@ -1,5 +1,5 @@
 import type { ErrorRequestHandler } from 'express'
-import { AppError } from '../utils/app-error.js'
+import { AppError } from '../shared/errors/app-error.js'
 
 export const errorHandler: ErrorRequestHandler = (
   error,
@@ -14,18 +14,20 @@ export const errorHandler: ErrorRequestHandler = (
 
   if (error instanceof AppError) {
     res.status(error.statusCode).json({
-      code: error.statusCode,
+      success: false,
+      code: error.code,
       message: error.message,
-      data: null
+      details: error.details
     })
     return
   }
 
-  console.error(error)
+  console.error('未处理的请求异常', error)
 
   res.status(500).json({
-    code: 500,
+    success: false,
+    code: 'INTERNAL_SERVER_ERROR',
     message: '服务器内部错误',
-    data: null
+    details: null
   })
 }

@@ -1,8 +1,14 @@
 import 'dotenv/config'
-import app from './app.js'
+import {checkDatabaseConnection,createDatabase} from './database/mysql.js'
+import {loadEnv} from './config/env.js'   
+import { createUserModule } from './modules/user/user.module.js'
+import { MysqlUserRepository } from './modules/user/user.mysql-repository.js'
+import { createApp } from './app.js'
 
-const port = Number(process.env.PORT ?? 3000)
+const env = loadEnv(process.env)
+const pool = createDatabase(env)
+checkDatabaseConnection(pool)
 
-app.listen(port, () => {
-  console.log(`服务器启动成功：http://localhost:${port}`)
-})
+const repository = new MysqlUserRepository(pool)
+const userRouter = createUserModule(repository)
+const app = createApp(userRouter)

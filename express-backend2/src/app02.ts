@@ -1,7 +1,5 @@
-import 'dotenv/config'
 import express,{type ErrorRequestHandler} from 'express';
 import cors from 'cors';
-import mysql,{type Pool,type ResultSetHeader,type RowDataPacket} from 'mysql2/promise'
 
 const app = express()
 app.use(cors())
@@ -13,42 +11,15 @@ interface User {
   email:string
   createdAt:Date
 }
-
-interface UserRow extends RowDataPacket {
-  id: number
-  name: string
-  email: string
-  created_at: Date
-}
 interface CreateUserInput {
   name:string
   email:string
 }
-interface UserOutput {
-  id: number|string
-  name: string
-  email: string
-  createdAt: string
-}
-
 
 interface UserRespository{
   create(input:CreateUserInput):Promise<User>
   findByEmail(email:string):Promise<User|null>
-  findById(id:number):Promise<User|null>
 }
-
-const pool = mysql.createPool({
-  host: process.env.DB_HOST,
-  port: Number(process.env.DB_PORT ?? 3306),
-  user: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
-  database: process.env.DB_NAME,
-  waitForConnections: true,
-  connectionLimit: 10,
-  charset: 'utf8mb4',
-  timezone: 'Z'
-})
 
 function parseCreateUserInput(body:unknown):CreateUserInput|null{
   if(
@@ -75,6 +46,15 @@ function parseCreateUserInput(body:unknown):CreateUserInput|null{
   }
 }
 
+// class userService{
+//   respository
+//   constructor(respository){
+//     this.respository=respository
+//   }
+//   create(input:CreateUserInput){
+
+//   }
+
 // }
 function emailAlreadyExistsError(){
   const error=new Error('该邮箱已被使用')
@@ -83,84 +63,56 @@ function emailAlreadyExistsError(){
 }
 
 const userService = {
-  async create(input:CreateUserInput):Promise<UserOutput>{
+  async create(input:CreateUserInput){
     const existingUser=await userRespository.findByEmail(input.email)
     if(existingUser){
       throw emailAlreadyExistsError()
     }
-    try {
-      const user = await userRespository.create(input)
-      return {
-        id:user.id,
-        name:user.name,
-        email:user.email,
-        createdAt:user.createdAt.toISOString()
-      }
-    } catch (error) {
-      throw error
-    }
+    return userRespository.create(input)
 
   }
 }
+// new UserService(userRepository)
+//                 等价目的
+// createUserService(userRepository)
+// 对你目前这个阶段，工厂函数更容易理解。等以后出现多个Service方法、私有状态、依赖注入容器时，再使用class也不迟。
+function createUserService2(repository: UserRespository) {
+  return {
+    async create(
+      input: CreateUserInput
+    ): Promise<User> {
+      const existingUser =
+        await repository.findByEmail(input.email)
 
-function toUser(row:UserRow):User{
-  const id=Number(row.id)
-  const createdAt=
-    row.created_at instanceof Date
-      ? row.created_at
-      : new Date(row.created_at)
-    return {
-      id,
-      name:row.name,
-      email:row.email,
-      createdAt
+      if (existingUser) {
+        throw emailAlreadyExistsError()
+      }
+
+      return repository.create(input)
     }
+  }
 }
 
+// const userService =
+//   createUserService(UserRespository)
+
+const users:User[]=[]
+let nextUserId=1
 const userRespository:UserRespository={
   async create(input:CreateUserInput):Promise<User>{
-    let insertResult:ResultSetHeader
-    try {
-      const [result] = await pool.execute<ResultSetHeader>(
-      `
-        INSERT INTO users (name, email)
-        VALUES (?, ?)
-      `,
-      [input.name, input.email]
-    )
-    insertResult=result
-    } catch (error) {
-      throw error
+    const user:User={
+      id:nextUserId,
+      name:input.name,
+      email:input.email,
+      createdAt:new Date()
     }
-    const createdUser = await userRespository.findById(insertResult.insertId)
-    if(!createdUser){
-      throw new Error(`创建用户后无法读取记录：${insertResult.insertId}`)
-    }
-    return createdUser
+    users.push(user)
+    nextUserId+=1
+    return user
   },
   async findByEmail(email:string):Promise<User|null>{
-    const [rows] = await pool.execute<UserRow[]>(
-      `
-        SELECT id, name, email, created_at
-        FROM users
-        WHERE email = ?
-        LIMIT 1
-      `,
-      [email]
-    )
-    return rows[0]?toUser(rows[0]):null
-  },
-  async findById(id:number):Promise<User|null>{
-    const [rows] = await pool.execute<UserRow[]>(
-      `
-        SELECT id, name, email, created_at
-        FROM users
-        WHERE id = ?
-        LIMIT 1
-      `,
-      [id]
-    )
-    return rows[0]?toUser(rows[0]):null
+    const user=users.find(user=>user.email===email)
+    return user??null
   }
 }
 
@@ -187,7 +139,8 @@ app.post('/users/add',async(req,res,next)=>{
     next(error)
   }
 })
-const errorHandler:ErrorRequestHandler = (error, req, res, next) => { 
+
+app.use((error, req, res, next) => { 
   if(error?.code==='EMAIL_ALREADY_EXISTS'){
     res.status(400).json({
       success: false,
@@ -202,8 +155,7 @@ const errorHandler:ErrorRequestHandler = (error, req, res, next) => {
     code: 'INTERNAL_SERVER_ERROR',
     message: '服务器内部错误'
   })
-}
-app.use(errorHandler)
+})
 
 
 const port = 3000

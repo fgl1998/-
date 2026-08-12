@@ -1,4 +1,7 @@
 import mysql, {type Pool } from 'mysql2/promise'
+import dotenv from 'dotenv'
+dotenv.config() 
+
 
 export const pool: Pool = mysql.createPool({
   host: process.env.DB_HOST,

@@ -1,5 +1,5 @@
 import {type ErrorRequestHandler } from 'express'
-import { AppError } from './user.error.js'
+import { AppError } from '../modules/user/user.error.js'
 
 export const errorHandler:ErrorRequestHandler = (error,req,res,next)=>{ 
   console.error("错误日志==========",error);

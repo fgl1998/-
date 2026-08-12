@@ -3,7 +3,7 @@ import type { CreateUserInput } from "./user.dto.js"
 import { type RowDataPacket,type ResultSetHeader } from "mysql2"
 import {type UserRow,toUser} from "./user.mapper.js"
 import { pool } from "./user.database.js"
-import { AppError } from "./user.error.js"
+import { AppError } from "../../errors/app-error.js"
 
 export interface UserRepository {
   findByEmail(email: string): Promise<User | null>

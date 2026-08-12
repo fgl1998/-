@@ -1,6 +1,11 @@
-import express from "express"
+import express,{type ErrorRequestHandler} from "express"
 import cors from "cors"
 import mysql,{type RowDataPacket,type Pool,type ResultSetHeader} from "mysql2/promise"
+
+interface CreateUserBody{
+  name:unknown
+  email:unknown
+}
 interface CreateUserInput{
   name:string
   email:string
@@ -42,7 +47,7 @@ function toUser(row:UserRow):User{
   }
 }
 
-interface UserRespository{
+interface UserRepository{
   findByEmail(email:string):Promise<User|null>
   findById(id:number):Promise<User|null>
   create(input:CreateUserInput):Promise<User>
@@ -64,7 +69,27 @@ const pool: Pool = mysql.createPool({
   timezone: 'Z'
 })
 
-const userRespository:UserRespository={
+class EmailAlreadyExistsError extends Error{
+  readonly code = 'EMAIL_ALREADY_EXISTS'
+  readonly statusCode = 409
+  constructor(){
+    super('该邮箱已被使用')
+    this.name = 'EmailAlreadyExistsError'
+  }
+}
+
+function isValidEmail(value: string): boolean {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)
+}
+
+class DuplicateUserEmailError extends Error{
+  constructor(){
+    super('Duplicate user email')
+    this.name = 'DuplicateUserEmailError'
+  }
+}
+
+const userRepository:UserRepository={
   async findByEmail(email:string):Promise<User|null>{
     const [rows] = await pool.execute<UserRow[]>(
       `
@@ -91,9 +116,9 @@ const userRespository:UserRespository={
   },
 
   async create(input:CreateUserInput):Promise<User>{
-    const existingEmail = await userRespository.findByEmail(input.email)
+    const existingEmail = await userRepository.findByEmail(input.email)
     if(existingEmail){
-      throw new Error('邮箱已存在')
+      throw new EmailAlreadyExistsError()
     }
     let insertResult:ResultSetHeader
     try {
@@ -106,13 +131,16 @@ const userRespository:UserRespository={
     )
     insertResult = result
 
-    const createdUser = await userRespository.findById(insertResult.insertId)
+    const createdUser = await userRepository.findById(insertResult.insertId)
     if(!createdUser){
       throw new Error(`创建用户后无法读取记录：${insertResult.insertId}`)
     }
     return createdUser
     
     } catch (error) {
+      if(error instanceof Error&&(error as any).code==='ER_DUP_ENTRY'){
+        throw new EmailAlreadyExistsError()
+      }
       throw error
     }
 
@@ -121,7 +149,7 @@ const userRespository:UserRespository={
 
 const userService:UserService={
   async create(input:CreateUserInput):Promise<UserOutput>{
-    const user = await userRespository.create(input)
+    const user = await userRepository.create(input)
     return {
       id:user.id,
       name:user.name,
@@ -130,6 +158,91 @@ const userService:UserService={
     }
   }
 }
+
+const app = express()
+app.use(cors())
+app.use(express.json())
+
+app.post('/users/create',async (req,res,next)=>{
+  try {
+    const body = req.body as CreateUserBody
+    const rowName=body.name
+    const rowEmail=body.email
+    if(typeof rowName !== 'string'){
+      res.status(400).json({
+        success:false,
+        code:'INVALID_NAME',
+        message:'name 必须是字符串'
+      })
+      return
+    }
+    if(typeof rowEmail !== 'string'){
+      res.status(400).json({
+        success:false,
+        code:'INVALID_EMAIL',
+        message:'email 必须是字符串'
+      })
+      return
+    }
+
+    const input:CreateUserInput = {
+      name:rowName.trim(),
+      email:rowEmail.trim().toLowerCase()
+    }
+
+    if (input.name.length < 2 || input.name.length > 50) {
+      res.status(400).json({
+        success: false,
+        code: 'INVALID_NAME',
+        message: '用户名长度必须在 2 到 50 个字符之间'
+      })
+      return
+    }
+
+    if (!isValidEmail(input.email)) {
+      res.status(400).json({
+        success: false,
+        code: 'INVALID_EMAIL',
+        message: '邮箱格式不正确'
+      })
+      return
+    }
+
+    const user = await userService.create(input)
+
+    res.status(201).json({
+      success:true,
+      code: 'USER_CREATED',
+      message: '用户创建成功',
+      data:user
+    })
+    
+  } catch (error) {
+    next(error)
+    
+  } 
+})
+
+const errorHandler:ErrorRequestHandler = (error,req,res,next)=>{
+  if (error instanceof EmailAlreadyExistsError) {
+      res.status(error.statusCode).json({
+        success: false,
+        code: error.code,
+        message: error.message,
+      })
+      return
+    }
+  console.error(error)
+  res.status(500).json({
+    success:false,
+    code:'INTERNAL_SERVER_ERROR',
+    message:'服务器内部错误'
+  })
+}
+app.use(errorHandler)
+app.listen(3000,()=>{
+  console.log('服务器启动成功，端口3000')
+})
 
 
 

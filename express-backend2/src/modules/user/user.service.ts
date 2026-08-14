@@ -1,6 +1,7 @@
-import type{CreateUserInput,UserOutput} from './user.dto.js'
+import type{UserOutput} from './user.dto.js'
 import { userRepository } from './user.respository.js'
-import { AppError } from './user.error.js'
+import { EmailAlreadyExistsError } from './user.error.js'
+import {type CreateUserInput} from './user.schema.js'
 
 export interface UserService{
   create(input:CreateUserInput):Promise<UserOutput>
@@ -10,7 +11,8 @@ export const userService:UserService = {
   async create(input:CreateUserInput):Promise<UserOutput>{
     const existingUser = await userRepository.findByEmail(input.email)
     if(existingUser){
-      throw new AppError('Email already exists', 'EMAIL_ALREADY_EXISTS', 400)
+      // throw new AppError('Email already exists', 'EMAIL_ALREADY_EXISTS', 400)
+      throw new EmailAlreadyExistsError()
     }
     const user = await userRepository.create({
       name:input.name,

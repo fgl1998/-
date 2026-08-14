@@ -12,4 +12,4 @@ export interface UserOutput {
 //   email:string
 // }
 
-export type CreateUserInput = z.infer<typeof createUserSchema>
+// export type CreateUserInput = z.infer<typeof createUserSchema>

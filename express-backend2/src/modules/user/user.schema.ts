@@ -12,3 +12,5 @@ export const createUserSchema = z.object({
     .email('email格式不正确')
     .toLowerCase()
 })
+
+export type CreateUserInput = z.infer<typeof createUserSchema>

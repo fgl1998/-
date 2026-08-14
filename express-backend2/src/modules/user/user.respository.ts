@@ -1,9 +1,9 @@
 import type { User } from "./user.entity.js"
-import type { CreateUserInput } from "./user.dto.js"
+import type { CreateUserInput } from "./user.schema.js"
 import { type RowDataPacket,type ResultSetHeader } from "mysql2"
 import {type UserRow,toUser} from "./user.mapper.js"
-import { pool } from "./user.database.js"
-import { AppError } from "../../errors/app-error.js"
+import { pool } from "../../database/pool.js"
+import { EmailAlreadyExistsError } from "./user.error.js"
 
 export interface UserRepository {
   findByEmail(email: string): Promise<User | null>
@@ -45,7 +45,8 @@ export const userRepository:UserRepository = {
       return createdUser
     } catch (error) {
       if(error instanceof Error&&(error as any).code==='ER_DUP_ENTRY'){
-        throw new AppError('Email already exists', 'EMAIL_ALREADY_EXISTS', 400)
+        // throw new AppError('Email already exists', 'EMAIL_ALREADY_EXISTS', 400)
+        throw new EmailAlreadyExistsError()
       }
       throw error
     }

@@ -9,6 +9,15 @@ export class EmailAlreadyExistsError extends AppError {
     )
   }
 }
+export class UsernameAlreadyExistsError extends AppError {
+  constructor() {
+    super(
+      'USERNAME_ALREADY_EXISTS',
+      409,
+      '用户名已被使用',
+    )
+  }
+}
 
 export class UserNotFoundError extends AppError {
   constructor() {
@@ -26,6 +35,15 @@ export class UserDisabledError extends AppError {
       'USER_DISABLED',
       403,
       '用户已被禁用'
+    )
+  }
+}
+export class InvalidCredentialsError extends AppError {
+  constructor() {
+    super(
+      'INVALID_CREDENTIALS',
+      403,
+      '用户名或者密码错误'
     )
   }
 }

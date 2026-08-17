@@ -1,0 +1,39 @@
+import type {
+  Request,
+  Response,
+  NextFunction
+} from 'express'
+
+import type { ZodType } from 'zod'
+
+export function validateBody(schema: ZodType) {
+  return (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
+    console.log(req.body,'req.body');
+    
+    const result = schema.safeParse(req.body)
+
+    if (!result.success) {
+      const errors = result.error.issues.map(issue => ({
+        field: issue.path.join('.'),
+        message: issue.message
+      }))
+
+      return res.status(400).json({
+        success: false,
+        code: 'INVALID_PARAMS',
+        message: errors
+          .map(e => `${e.field}: ${e.message}`)
+          .join('; ')
+      })
+    }
+
+    // 非常重要
+    req.body = result.data
+
+    next()
+  }
+}

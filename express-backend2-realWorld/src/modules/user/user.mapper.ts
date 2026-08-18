@@ -7,8 +7,8 @@ export interface UserRow extends RowDataPacket {
   username: string
   email: string
   password_hash: string
-  image: string
-  bio: string
+  image: string|null
+  bio: string|null
   created_at: Date
   updated_at: Date
 }

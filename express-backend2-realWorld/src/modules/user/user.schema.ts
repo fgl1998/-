@@ -23,8 +23,13 @@ export type LoginInput = z.infer<typeof LoginSchema>
 export const UpdateUserSchema = z.object({
   email: z.string().trim().email("邮箱格式错误").optional(),
   password: z.string().min(6).max(20).optional(),
-  bio: z.string().max(100).optional(),
-  image: z.string().max(100).optional(),
-})
+  bio: z.string().max(100).nullable().optional(),
+  image: z.string().max(500).nullable().optional(),
+}).refine(
+  data => Object.keys(data).length > 0,
+  {
+    message: '至少需要提供一个需要修改的字段'
+  }
+)
 
 export type UpdateUserInput = z.infer<typeof UpdateUserSchema>

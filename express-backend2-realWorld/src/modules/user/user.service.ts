@@ -1,5 +1,5 @@
 import {userRepository} from './user.repository.js'
-import {CreateUserInput,LoginInput,UpdateUserInput} from './user.schema.js'
+import {CreateUserInput,LoginInput,UpdateUserInput,CreateUserData} from './user.schema.js'
 import {UserOutput,LoginOutput} from './user.dto.js'
 import {EmailAlreadyExistsError, UserNotFoundError,UsernameAlreadyExistsError,InvalidCredentialsError} from './user.error.js'
 import bcrypt from 'bcrypt'
@@ -23,9 +23,9 @@ export const userService:UserService = {
     if(existingUser){
       throw new EmailAlreadyExistsError()
     }
-    const inputWithHashedPassword = {
+    const inputWithHashedPassword:CreateUserData = {
       ...input,
-      password: await bcrypt.hash(input.password,12)
+      passwordHash: await bcrypt.hash(input.password,12)
     }
     const user = await userRepository.create(inputWithHashedPassword)
 
@@ -81,6 +81,12 @@ export const userService:UserService = {
   async updateUserById(userId: number, input: UpdateUserInput):Promise<UserOutput | null>{
     if(input.password){
       input.password = await bcrypt.hash(input.password,12)
+    }
+    if(input.email){
+      const existingEmail = await userRepository.findByEmail(input.email)
+      if(existingEmail){
+        throw new EmailAlreadyExistsError()
+      }
     }
     const user = await userRepository.updateUserById(userId,input)
     if(!user){

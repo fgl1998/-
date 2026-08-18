@@ -13,7 +13,7 @@ export class TokenInvalid extends AppError {
   constructor() {
     super(
       'INVALID_TOKEN',
-      403,
+      401,
       '登录状态已失效'
     )
   }

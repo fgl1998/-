@@ -2,8 +2,8 @@ export interface UserOutput {
   id: number
   username: string
   email: string
-  bio: string
-  image: string
+  bio: string|null
+  image: string|null
   createdAt: string
   updatedAt: string
 }

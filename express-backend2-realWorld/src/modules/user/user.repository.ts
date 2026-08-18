@@ -6,10 +6,11 @@ import { type ResultSetHeader } from 'mysql2'
 import { UserNotFoundError, EmailAlreadyExistsError,InvalidCredentialsError } from './user.error.js'
 import bcrypt from 'bcrypt'
 import { fi } from 'zod/v4/locales'
+import { any } from 'zod'
 
 
 export interface UserRepository  {
-  create(input: CreateUserInput): Promise<User>
+  create(input: CreateUserData): Promise<User>
   findById(id: number): Promise<User | null>
   findByUsername(username: string): Promise<User | null>
   // update(id:number): Promise<User | null>
@@ -21,7 +22,9 @@ export const userRepository:UserRepository = {
   async findByEmail(email: string): Promise<User | null> {
     const [rows] = await pool.execute<UserRow[]>(
       `
-      select id,username,email,created_at from users where email=? limit 1
+      select id,username,email,password_hash,image,bio,created_at,updated_at 
+      from users 
+      where email=? limit 1
       `,
       [email]
     )
@@ -45,53 +48,68 @@ export const userRepository:UserRepository = {
     )
     return rows[0] ? toUser(rows[0]) : null
   },
-  async create(input: CreateUserInput):Promise<User> { 
+  async create(input: CreateUserData):Promise<User> { 
     // try {
     //并发？
       
     // } catch (error) {
       
     // }
-    const [result] = await pool.execute<ResultSetHeader>(
+    try {
+       const [result] = await pool.execute<ResultSetHeader>(
       `
       insert into users(username,email,password_hash) values(?,?,?)
       `,
-      [input.username,input.email,input.password]
-    )
-    const createdUser = await this.findById(result.insertId)
-    if(!createdUser){
-      throw new UserNotFoundError()
+        [input.username,input.email,input.passwordHash]
+      )
+      const createdUser = await this.findById(result.insertId)
+      if(!createdUser){
+        throw new UserNotFoundError()
+      }
+      return createdUser
+    } catch (error) {
+      if(error instanceof Error&&(error as any).code==='ER_DUP_ENTRY'){
+        throw new EmailAlreadyExistsError()
+      }
+      throw error
     }
-    return createdUser
   },
   async updateUserById(id: number, input: UpdateUserInput):Promise<User | null> { 
     const fileds:string[] = []
     const values:any[] = []
 
-    if(input.password){
+    if(input.password!==undefined){
       fileds.push('password_hash=?')
       values.push(input.password)
     }
-    if(input.email){
+    if(input.email!==undefined){
       fileds.push('email=?')
       values.push(input.email)
     }
-    if(input.bio){
+    if(input.bio!==undefined){
       fileds.push('bio=?')
       values.push(input.bio)
     }
-    if(input.image){
+    if(input.image!==undefined){
       fileds.push('image=?')
       values.push(input.image)
     }
-    const [result] = await pool.execute<ResultSetHeader>(
-      `
-      update users set ${fileds.join(',')} where id=?
-      `,
-      [...values,id]
-    )
-    const updatedUser = await this.findById(id)
-    return updatedUser
+    try {
+        const [result] = await pool.execute<ResultSetHeader>(
+        `
+        update users set ${fileds.join(',')} where id=?
+        `,
+        [...values,id]
+      )
+      const updatedUser = await this.findById(id)
+      return updatedUser
+    } catch (error) {
+      if(error instanceof Error&&(error as any).code==='ER_DUP_ENTRY'){
+        throw new EmailAlreadyExistsError()
+      }
+      throw error
+    }
+  
   }
  
 }

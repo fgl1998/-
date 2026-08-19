@@ -18,3 +18,12 @@ export class TokenInvalid extends AppError {
     )
   }
 }
+export class ForbiddenError extends AppError { 
+  constructor() {
+    super(
+      'ForbiddenError',
+      401,
+      '未授权'
+    )
+  }
+}

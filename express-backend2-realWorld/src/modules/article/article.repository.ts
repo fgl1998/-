@@ -11,7 +11,8 @@ export interface ArticleRepository {
   create(input: CreateArticleData):Promise<Article>
   findById(id: number): Promise<Article | null>
   deleteBySlug(slug: string): Promise<boolean>
-  findByAuthorId(authorId: number): Promise<Article[]>
+  // findByAuthorId(authorId: number): Promise<Article[]>
+  findBySlug(slug: string): Promise<Article|null>
 }
 
 export const articleRepository:ArticleRepository = { 
@@ -74,28 +75,23 @@ export const articleRepository:ArticleRepository = {
     )
     return result.affectedRows > 0
   },
-  async findByAuthorId(authorId: number):Promise<Article[]>{
-    const [rows] = pool.execute<ArticleRow[]>(
+  async findBySlug(slug: string):Promise<Article|null>{
+    const [rows] =await pool.execute<ArticleRow[]>(
       `
       SELECT
-        articles.id,               
-        articles.slug,
-        articles.title,
-        articles.description,
-        articles.body,
-        articles.author_id,
-        articles.created_at,
-        articles.updated_at,
-        users.id AS author_id,
-        users.username AS username,
-        users.bio AS bio,
-        users.image AS image
-      WHERE articles.author_id = ?
+        id,               
+        slug,
+        title,
+        description,
+        body,
+        author_id,
+        created_at,
+        updated_at
+      FROM articles
+      WHERE slug = ?
         `,
-        [authorId]
+        [slug]
     )
-    console.log(rows[0],'rows[0]');
-    
-
+    return rows[0] ? toArticle(rows[0]) : null
   }
 }

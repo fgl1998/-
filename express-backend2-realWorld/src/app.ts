@@ -4,6 +4,7 @@ import cors from 'cors'
 import {errorHandler} from './middleware/error-handler.js'
 import {userRouter} from './modules/user/user.route.js'
 import {articleRouter} from './modules/article/article.route.js'
+import {tagRouter} from './modules/tag/tag.route.js'
 
 
 const app = express()
@@ -14,6 +15,7 @@ app.use(cors())
 
 app.use('/api/users', userRouter)
 app.use('/api/articles', articleRouter)
+app.use('/api/tags', tagRouter)
 
 app.use(errorHandler)
 

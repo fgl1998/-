@@ -3,6 +3,7 @@
   import type { CreateArticleInput,CreateArticleData } from '../article/article.schema.js'
   import {ArticleNotFoundError} from './article.error.js'
   import { generateSlug } from '../../utils/article.util.js'
+  import {ForbiddenError} from '../../errors/common.error.js'
   
   
   export interface ArticleService {
@@ -46,7 +47,13 @@
       }
     },
     async deleteBySlug(userId:number,slug:string):Promise<boolean>{
-      
+      const article = await articleRepository.findBySlug(slug)
+      if(!article){
+        throw new ArticleNotFoundError()
+      }
+      if(article.author_id !== userId){
+        throw new ForbiddenError()
+      }
       const result = await articleRepository.deleteBySlug(slug)
       if(!result){
         throw new ArticleNotFoundError()

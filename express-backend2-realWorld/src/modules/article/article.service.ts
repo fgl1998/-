@@ -26,6 +26,7 @@
         body:article.body,
         slug:article.slug,
         author:article.author,
+        tags:article.tags,
         createdAt:article.createdAt.toISOString(),
         updatedAt:article.updatedAt.toISOString(),
       }
@@ -42,6 +43,7 @@
         body:article.body,
         slug:article.slug,
         author:article.author,
+        tags:article.tags,
         createdAt:article.createdAt.toISOString(),
         updatedAt:article.updatedAt.toISOString(),
       }

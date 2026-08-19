@@ -6,6 +6,7 @@ export interface Article {
   author_id: number
   slug: string
   author: Author
+  tags: Tag[]
   createdAt: Date
   updatedAt: Date
 }
@@ -15,4 +16,9 @@ export interface Author {
   username: string
   bio: string | null
   image: string | null
+}
+
+export interface Tag {
+  id: number
+  name: string
 }

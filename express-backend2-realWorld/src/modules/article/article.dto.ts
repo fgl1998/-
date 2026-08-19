@@ -1,4 +1,4 @@
-import {type Author } from './article.entity.js'
+import {type Author,type Tag } from './article.entity.js'
 
 export interface ArticleOutput {
   id: number
@@ -7,6 +7,7 @@ export interface ArticleOutput {
   body: string
   slug: string
   author: Author
+  tags: Tag[]
   createdAt: string
   updatedAt: string
 }

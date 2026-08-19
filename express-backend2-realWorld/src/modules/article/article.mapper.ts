@@ -15,7 +15,9 @@ export interface ArticleRow extends RowDataPacket {
   image: string | null
 }
 
-export function toArticle(row: ArticleRow):Article{
+
+
+export function toArticle(row: ArticleRow,tagRow:TagRow[]):Article{
   return {
     id:row.id,
     author_id:row.author_id,
@@ -29,7 +31,14 @@ export function toArticle(row: ArticleRow):Article{
       bio:row.bio,
       image:row.image
     },
+    tags:tagRow,
     createdAt:row.created_at,
     updatedAt:row.updated_at
   }
+}
+
+
+export interface TagRow extends RowDataPacket {
+  id: number;
+  name: string;
 }

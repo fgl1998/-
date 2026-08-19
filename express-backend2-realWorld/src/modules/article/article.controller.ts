@@ -38,3 +38,24 @@ export async function deleteBySlug(req:Request,res:Response,next:NextFunction){
     next(error)
   }
 }
+
+export async function getArticleById(req:Request,res:Response,next:NextFunction) { 
+
+  try {
+    const input = req.body
+    if(!req.userId){
+      throw new UserUnauthrized()
+    }
+    const result = await articleService.getArticleById(input.id)
+    return res.status(200).json({
+      success: true,
+      code: 'ARTICLE_FOUND',
+      message: '文章获取成功',
+      data: result
+    })
+    
+  } catch (error) {
+    next
+    
+  }
+}

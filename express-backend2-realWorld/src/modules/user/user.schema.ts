@@ -31,5 +31,12 @@ export const UpdateUserSchema = z.object({
     message: '至少需要提供一个需要修改的字段'
   }
 )
+export interface UpdateUserData {
+    email?: string | undefined;
+    passwordHash?: string | undefined;
+    bio?: string | null | undefined;
+    image?: string | null | undefined;
+}
+
 
 export type UpdateUserInput = z.infer<typeof UpdateUserSchema>

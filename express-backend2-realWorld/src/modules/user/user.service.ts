@@ -1,5 +1,5 @@
 import {userRepository} from './user.repository.js'
-import {CreateUserInput,LoginInput,UpdateUserInput,CreateUserData} from './user.schema.js'
+import {CreateUserInput,LoginInput,UpdateUserInput,CreateUserData,UpdateUserData} from './user.schema.js'
 import {UserOutput,LoginOutput} from './user.dto.js'
 import {EmailAlreadyExistsError, UserNotFoundError,UsernameAlreadyExistsError,InvalidCredentialsError} from './user.error.js'
 import bcrypt from 'bcrypt'
@@ -9,8 +9,8 @@ import {sign,verify} from '../../utils/jwt.js'
 interface UserService {
   create(input: CreateUserInput): Promise<UserOutput>
   login(input:LoginInput):Promise<LoginOutput>
-  getUser(userId:number):Promise<UserOutput | null>
-  updateUserById(userId: number, input: UpdateUserInput):Promise<UserOutput | null>
+  getUser(userId:number):Promise<UserOutput>
+  updateUserById(userId: number, input: UpdateUserInput):Promise<UserOutput>
 }
 export const userService:UserService = {
 
@@ -63,7 +63,7 @@ export const userService:UserService = {
      
     }
   },
-  async getUser(userId:number):Promise<UserOutput|null>{
+  async getUser(userId:number):Promise<UserOutput>{
     const user = await userRepository.findById(userId)
     if(!user){
       throw new UserNotFoundError()
@@ -78,17 +78,21 @@ export const userService:UserService = {
       updatedAt:user.updatedAt.toISOString(),
     }
   },
-  async updateUserById(userId: number, input: UpdateUserInput):Promise<UserOutput | null>{
+  async updateUserById(userId: number, input: UpdateUserInput):Promise<UserOutput>{
     if(input.password){
       input.password = await bcrypt.hash(input.password,12)
     }
     if(input.email){
       const existingEmail = await userRepository.findByEmail(input.email)
-      if(existingEmail){
+      if(existingEmail&&existingEmail.id!==userId){
         throw new EmailAlreadyExistsError()
       }
     }
-    const user = await userRepository.updateUserById(userId,input)
+    const inputWithHashedPassword:UpdateUserData = {
+      ...input,
+      passwordHash: input.password
+    }
+    const user = await userRepository.updateUserById(userId,inputWithHashedPassword)
     if(!user){
       throw new UserNotFoundError()
     }

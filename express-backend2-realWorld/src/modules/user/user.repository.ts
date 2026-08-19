@@ -1,12 +1,9 @@
 import {type User } from './user.entity.js'
-import { type CreateUserInput,type CreateUserData,type LoginInput,type UpdateUserInput } from './user.schema.js'
+import { type CreateUserInput,type CreateUserData,type LoginInput,type UpdateUserInput,type UpdateUserData } from './user.schema.js'
 import {pool} from '../../database/pool.js'
 import { UserRow,toUser } from './user.mapper.js'
 import { type ResultSetHeader } from 'mysql2'
-import { UserNotFoundError, EmailAlreadyExistsError,InvalidCredentialsError } from './user.error.js'
-import bcrypt from 'bcrypt'
-import { fi } from 'zod/v4/locales'
-import { any } from 'zod'
+import { UserNotFoundError, EmailAlreadyExistsError,InvalidCredentialsError,UsernameAlreadyExistsError } from './user.error.js'
 
 
 export interface UserRepository  {
@@ -15,7 +12,7 @@ export interface UserRepository  {
   findByUsername(username: string): Promise<User | null>
   // update(id:number): Promise<User | null>
   findByEmail(email: string): Promise<User | null>
-  updateUserById(id: number, input: UpdateUserInput):Promise<User | null>
+  updateUserById(id: number, input: UpdateUserData):Promise<User|null>
 }
 
 export const userRepository:UserRepository = { 
@@ -69,18 +66,25 @@ export const userRepository:UserRepository = {
       return createdUser
     } catch (error) {
       if(error instanceof Error&&(error as any).code==='ER_DUP_ENTRY'){
-        throw new EmailAlreadyExistsError()
+        // throw new EmailAlreadyExistsError()
+        if (error.message.includes('uk_users_username')) {
+          throw new UsernameAlreadyExistsError()
+        }
+
+        if (error.message.includes('uk_users_email')) {
+          throw new EmailAlreadyExistsError()
+        }
       }
       throw error
     }
   },
-  async updateUserById(id: number, input: UpdateUserInput):Promise<User | null> { 
+  async updateUserById(id: number, input: UpdateUserData):Promise<User|null> { 
     const fileds:string[] = []
     const values:any[] = []
 
-    if(input.password!==undefined){
+    if(input.passwordHash!==undefined){
       fileds.push('password_hash=?')
-      values.push(input.password)
+      values.push(input.passwordHash)
     }
     if(input.email!==undefined){
       fileds.push('email=?')
@@ -105,7 +109,10 @@ export const userRepository:UserRepository = {
       return updatedUser
     } catch (error) {
       if(error instanceof Error&&(error as any).code==='ER_DUP_ENTRY'){
-        throw new EmailAlreadyExistsError()
+        // throw new EmailAlreadyExistsError()
+        if (error.message.includes('uk_users_email')) {
+          throw new EmailAlreadyExistsError()
+        }
       }
       throw error
     }

@@ -39,6 +39,26 @@ export async function deleteBySlug(req:Request,res:Response,next:NextFunction){
   }
 }
 
+export async function list(req:Request,res:Response,next:NextFunction) { 
+
+  try {
+    const input = req.body
+    if(!req.userId){
+      throw new UserUnauthrized()
+    }
+    const list = await articleService.list(req.userId)
+    return res.status(200).json({
+      success: true,
+      code: 'ARTICLE_FOUND',
+      message: '文章获取成功',
+      data: list
+    })
+    
+  } catch (error) {
+    next(error)
+    
+  }
+}
 export async function getArticleById(req:Request,res:Response,next:NextFunction) { 
 
   try {
@@ -55,7 +75,7 @@ export async function getArticleById(req:Request,res:Response,next:NextFunction)
     })
     
   } catch (error) {
-    next
+    next(error)
     
   }
 }

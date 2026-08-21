@@ -1,5 +1,7 @@
 import {type Author,type Tag } from './article.entity.js'
 
+
+
 export interface ArticleOutput {
   id: number
   title: string
@@ -8,6 +10,8 @@ export interface ArticleOutput {
   slug: string
   author: Author
   tags: Tag[]
+  favorited:number
+  favoritesCount:number
   createdAt: string
   updatedAt: string
 }

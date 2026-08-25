@@ -46,3 +46,51 @@ export interface TagQuery{
   tag_id: number
   tag_name: string
 }
+
+export interface QueryFollowingArticle {
+  article_id: number
+  slug: string
+  title: string
+  description: string
+  body: string
+  author_id: number
+  author_username: string
+  author_bio: string | null
+  author_image: string | null
+  following: number
+  favorited: number
+  favorites_count: number
+  createdAt: Date
+  updatedAt: Date
+}
+
+export interface QueryArticleDetail {
+  id: number
+  slug: string
+  title: string
+  description: string
+  body: string
+  author_id: number
+  author_username: string
+  author_bio: string | null
+  author_image: string | null
+    following: number
+    favorited: number
+    favorites_count: number
+    createdAt: Date
+    updatedAt: Date
+
+}
+
+export interface QueryComment {
+  id: number
+  article_id: number
+  author_id: number
+  body: string
+  createdAt: Date
+  updatedAt: Date
+  author_username: string
+  author_bio: string | null
+  author_image: string | null
+  following: number
+}

@@ -1,3 +1,4 @@
+import { title } from 'node:process';
 import {z} from 'zod'
 
 export const CreateArticleSchema = z.object({
@@ -27,4 +28,45 @@ export type DeleteArticleInput = z.infer<typeof DeleteArticleSchema>
 
 export const GetArticleByIdSchema = z.object({
   id: z.number().int().positive(),
+})
+
+export const DetailArticleSchema = z.object({
+  slug: z.string().trim().min(1).max(100),
+})
+
+export type detailArticleInput = z.infer<typeof DetailArticleSchema>
+
+export const UpdateArticleSchema = z.object({
+  title: z.string().trim().min(1).max(100).optional(),
+  description: z.string().trim().min(1).max(100).optional(),
+  body: z.string().trim().min(1).optional(),
+  slug: z.string().trim().min(1).max(100),
+  tags: z.string().trim().min(1).max(100).optional(),
+  articleId: z.number().int().positive(),
+}).refine(
+  data => Object.keys(data).length > 0,
+  {
+    message: '至少需要提供一个需要修改的字段'
+  }
+)
+export type UpdateArticleInput = z.infer<typeof UpdateArticleSchema>
+
+
+export const ArticleDeleteByArticleIdSchema = z.object({
+  articleId: z.number().int().positive(),
+})
+
+export const ArticleFavoriteSchema = z.object({
+  articleId: z.number().int().positive(),
+})
+
+export const CommentsCerateSchema = z.object({
+  articleId: z.number().int().positive(),
+  body: z.string().trim().min(1),
+})
+
+export type CommentsCerateInput = z.infer<typeof CommentsCerateSchema>
+
+export const CommentListSchema = z.object({
+  articleId: z.number().int().positive(),
 })

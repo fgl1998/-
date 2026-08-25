@@ -1,66 +1,167 @@
 
-import { CreateArticleData } from './article.schema.js'
+  
+import { CreateArticleData,UpdateArticleInput, CommentsCerateInput} from './article.schema.js'
 import type { ResultSetHeader } from 'mysql2'
 import {pool} from '../../database/pool.js'
 import { ArticleNotFoundError } from './article.error.js'
-import { ArticleRow ,TagRow, ArticleQueryRow,toArticleQuery,TagQueryRow,toTagQuery} from './article.mapper.js'
-import type {Article,ArticleQuery,TagQuery} from './article.entity.js'
+import { ArticleRow ,TagRow, ArticleQueryRow,toArticleQuery,TagQueryRow,toTagQuery,
+  toQueryArticleDetail,QueryFollowingArticleRow,
+  QueryArticleDetailRow,toQueryFollowingArticle,CommentRow,toComment
+} from './article.mapper.js'
+import type {Article,ArticleQuery,TagQuery,QueryFollowingArticle,QueryArticleDetail,QueryComment} from './article.entity.js'
 
 
 export interface ArticleRepository {
-  // create(input: CreateArticleData):Promise<Article>
+  create(input: CreateArticleData):Promise<number>
   // findById(id: number): Promise<Article | null>
   // deleteBySlug(slug: string): Promise<boolean>
   // // findByAuthorId(authorId: number): Promise<Article[]>
   // findBySlug(slug: string): Promise<Article|null>
+  updateArticle(updateData:UpdateArticleInput):Promise<number>
+  deleteArticle(articleId: number):Promise<boolean>
 
   articleList(currentUserId:number): Promise<ArticleQuery[]>
   tagList(articleIdList:number[]): Promise<TagQuery[]>
+
+  followingArticleList(currentUserId:number): Promise<QueryFollowingArticle[]>
+  articleDetail(currentUserId:number,slug: string): Promise<QueryArticleDetail|null>
+  articleDetailById(currentUserId:number,articleId: number): Promise<QueryArticleDetail|null>
+
+  favorite(currentUserId:number,articleId:number):Promise<boolean>
+  unfavorite(currentUserId:number,articleId:number):Promise<boolean>
+
+  commentCreate(currentUserId:number,input:CommentsCerateInput):Promise<number>
+
+  getCommentById(articleId:number,currentUserId:number): Promise<QueryComment|null>
+
+  commentList(articleId:number,currentUserId:number): Promise<QueryComment[]>
 }
 
-
 export const articleRepository:ArticleRepository = { 
-  // async create(input: CreateArticleData): Promise<Article> { 
+  async create(input: CreateArticleData): Promise<number> { 
+    const connection = await pool.getConnection()
 
-  //   try {
-  //      const [result] = await pool.execute<ResultSetHeader>(
-  //     `
-  //     insert into articles(title,description,body,author_id,slug) values(?,?,?,?,?)
-  //     `,
-  //     [input.title,input.description,input.body,input.authorId,input.slug]
-  //     )
+    try {
+      await connection.beginTransaction()
+       const [result] = await connection.execute<ResultSetHeader>(
+      `
+      insert into articles(title,description,body,author_id,slug) values(?,?,?,?,?)
+      `,
+      [input.title,input.description,input.body,input.authorId,input.slug]
+      )
       
-  //     const tagIdList:number[] = JSON.parse(input.tags)
+      const tagIdList:number[] = JSON.parse(input.tags)
 
-  //     if(tagIdList.length){
-  //       const placeholders = tagIdList.map(tagId=>"(?,?)").join(", ")
-  //       const valueList = tagIdList.flatMap(tagId=>[result.insertId,tagId])
-  //       console.log(
-  //         `
-  //       insert into article_tags(article_id,tag_id) values ${placeholders}
-  //       `,
-  //       valueList
-  //       );
+      if(tagIdList.length){
+        const placeholders = tagIdList.map(tagId=>"(?,?)").join(", ")
+        const valueList = tagIdList.flatMap(tagId=>[result.insertId,tagId])
+        console.log(
+          `
+        insert into article_tags(article_id,tag_id) values ${placeholders}
+        `,
+        valueList
+        );
         
-  //       const [tagResult] = await pool.execute<ResultSetHeader>(
-  //         `
-  //         insert into article_tags(article_id,tag_id) values ${placeholders}
-  //         `,
-  //         valueList
-  //       )
+        const [tagResult] = await pool.execute<ResultSetHeader>(
+          `
+          insert into article_tags(article_id,tag_id) values ${placeholders}
+          `,
+          valueList
+        )
        
-  //     }
+      }
 
-  //     const createdArticle = await this.findById(result.insertId)
+      await connection.commit()
 
-  //     if(!createdArticle){
-  //       throw new ArticleNotFoundError()
-  //     }
-  //     return createdArticle
-  //   } catch (error) {
-  //     throw error
-  //   }
-  // },
+      return result.insertId
+    } catch (error) {
+      await connection.rollback()
+      throw error
+    } finally{
+      connection.release()
+    }
+  },
+  async updateArticle(input: UpdateArticleInput):Promise<number>{
+    const connection = await pool.getConnection()
+
+    try {
+      connection.beginTransaction()
+      const fields = []
+      const values = []
+
+      if(input.title!==undefined){
+        fields.push("title = ?")
+        values.push(input.title)
+      }
+      if(input.description!==undefined){
+        fields.push("description = ?")
+        values.push(input.description)
+      }
+      if(input.body!==undefined){
+        fields.push("body = ?")
+        values.push(input.body)
+      }
+      if(fields.length){
+         const [result] = await connection.execute<ResultSetHeader>(
+          `
+          update articles set ${fields.join(', ')} where id = ?
+          `,
+          [...values,input.articleId]
+          )
+
+      }
+     
+
+      if(input.tags!==undefined&&input.tags!=='[]'){
+        await connection.execute<ResultSetHeader>(
+          `
+          DELETE FROM article_tags
+          WHERE article_id = ?
+          `,
+          [input.articleId]
+        )
+        const tagIdList:number[] = JSON.parse(input.tags)
+        const placeholders = tagIdList.map(tagId=>"(?,?)").join(", ")
+        const valueList = tagIdList.flatMap(tagId=>[input.articleId,tagId])
+
+        const [tagResult] = await connection.execute<ResultSetHeader>(
+          `
+          insert into article_tags(article_id,tag_id) values ${placeholders}
+          `,
+          valueList
+        )
+      }
+      if(input.tags==='[]'){
+        await connection.execute<ResultSetHeader>(
+          `
+          DELETE FROM article_tags
+          WHERE article_id = ?
+          `,
+          [input.articleId]
+        )
+      }
+      connection.commit()
+
+      return input.articleId
+      
+    } catch (error) {
+      connection.rollback()
+      throw error
+    } finally{
+      connection.release()
+    }
+  },
+
+  async deleteArticle(articleId:number):Promise<boolean>{
+    const [result] = await pool.execute<ResultSetHeader>(
+      `
+      DELETE FROM articles
+      WHERE id = ?
+      `,
+      [articleId]
+    )
+    return result.affectedRows === 1
+  },
   // async findById(id: number): Promise<Article | null> { 
   //   const [rows] = await pool.execute<ArticleRow[]>(
   //     `
@@ -196,5 +297,210 @@ export const articleRepository:ArticleRepository = {
       articleIdList
     )
     return rows.map(row=>toTagQuery(row))
-  }
+  },
+
+  async  followingArticleList(currentUserId):Promise<QueryFollowingArticle[]> {
+    const [rows] =await pool.execute<QueryFollowingArticleRow[]>(
+      `
+      SELECT 
+      articles.id,
+        articles.slug,
+        articles.title,
+        articles.description,
+        articles.body,
+        articles.author_id,
+        articles.created_at,
+        articles.updated_at,
+        users.username AS author_username,
+        users.bio AS author_bio,
+        users.image AS author_image,
+        1 AS following,
+
+      EXISTS(
+        SELECT 1 FROM favorites WHERE favorites.user_id=? AND articles.author_id=articles.id
+      ) AS favorited,
+
+      (
+        SELECT COUNT(*) FROM favorites WHERE favorites.article_id=articles.id
+      ) AS favorites_count
+
+      from 
+      follows
+      JOIN articles ON articles.author_id=follows.following_id
+      JOIN users ON users.id=articles.author_id
+      WHERE follows.follower_id=?      
+      `,
+      [currentUserId,currentUserId]
+    )
+    return rows.map(row=>toQueryFollowingArticle(row))
+  },
+
+  async articleDetail(currentUserId:number,slug:string):Promise<QueryArticleDetail|null>{
+    console.log(currentUserId,slug);
+    
+    const [rows] =await pool.execute<QueryArticleDetailRow[]>(
+      `
+      SELECT 
+        articles.id,
+        articles.slug,
+        articles.title,
+        articles.description,
+        articles.body,
+        articles.author_id,
+        articles.created_at,
+        articles.updated_at,
+
+        users.username AS author_username,
+        users.bio AS author_bio,
+        users.image AS author_image,
+
+      EXISTS(
+        SELECT 1 FROM follows WHERE follows.follower_id=? AND follows.following_id=articles.author_id
+      ) AS following,
+      EXISTS(
+        SELECT 1 FROM favorites WHERE favorites.user_id=? AND favorites.article_id=articles.id
+      ) AS favorited,
+      (
+        SELECT COUNT(*) FROM favorites WHERE favorites.article_id=articles.id
+      )AS favorites_count
+
+      FROM articles
+      JOIN users ON users.id=articles.author_id
+
+      WHERE  articles.slug=?
+      `,
+      [currentUserId,currentUserId,slug]
+    )
+    console.log(rows[0],'rows');
+    
+    return rows[0]?toQueryArticleDetail(rows[0]):null
+  },
+  async articleDetailById(currentUserId:number,articleId:number):Promise<QueryArticleDetail|null>{
+    console.log(currentUserId,articleId,'6666');
+    
+    
+    const [rows] =await pool.execute<QueryArticleDetailRow[]>(
+      `
+      SELECT 
+        articles.id,
+        articles.slug,
+        articles.title,
+        articles.description,
+        articles.body,
+        articles.author_id,
+        articles.created_at,
+        articles.updated_at,
+
+        users.username AS author_username,
+        users.bio AS author_bio,
+        users.image AS author_image,
+
+      EXISTS(
+        SELECT 1 FROM follows WHERE follows.follower_id=? AND follows.following_id=articles.author_id
+      ) AS following,
+      EXISTS(
+        SELECT 1 FROM favorites WHERE favorites.user_id=? AND favorites.article_id=articles.id
+      ) AS favorited,
+      (
+        SELECT COUNT(*) FROM favorites WHERE favorites.article_id=articles.id
+      )AS favorites_count
+
+      FROM articles
+      JOIN users ON users.id=articles.author_id
+
+      WHERE  articles.id=?
+      `,
+      [currentUserId,currentUserId,articleId]
+    )
+    return rows[0]?toQueryArticleDetail(rows[0]):null
+  },
+
+  async favorite(currentUserId:number,articleId:number):Promise<boolean>{ 
+    console.log(currentUserId,articleId,'333');
+    
+    const [result] =await pool.execute<ResultSetHeader>(
+      `
+      INSERT IGNORE INTO favorites (user_id,article_id) VALUES (?,?)
+      `,
+      [currentUserId,articleId]
+    )
+    return result.affectedRows === 1
+  },
+  async unfavorite(currentUserId:number,articleId:number):Promise<boolean>{ 
+    const [result] =await pool.execute<ResultSetHeader>(
+      `
+      DELETE FROM favorites WHERE user_id=? AND article_id=?
+      `,
+      [currentUserId,articleId]
+    )
+    return result.affectedRows === 1
+  },
+
+  async commentCreate(currentUserId:number, input:CommentsCerateInput):Promise<number> {
+    console.log(currentUserId,input.articleId,input.body,'33333');
+    
+    
+    const [result] = await pool.execute<ResultSetHeader>(
+      `
+      INSERT INTO comments (author_id,article_id,body) VALUES (?,?,?)
+      `,
+      [currentUserId,input.articleId,input.body]
+    )
+    return result.insertId
+  },
+  async getCommentById(commentId:number,currentUserId:number):Promise<QueryComment|null>{ 
+    const [rows] = await pool.execute<CommentRow[]>(
+      `
+      SELECT
+        comments.id,
+        comments.article_id,
+        comments.author_id,
+        comments.body,
+        comments.created_at,
+        comments.updated_at,
+      EXISTS(
+        SELECT 1 FROM follows 
+        WHERE follows.follower_id=? AND follows.following_id=comments.author_id
+      ) AS following
+
+      FROM comments
+      WHERE id=?
+      LIMIT 1
+      `
+      ,
+      [currentUserId,commentId]
+    )
+    return rows[0]?toComment(rows[0]):null
+  },
+  async commentList(articleId:number,currentUserId:number):Promise<QueryComment[]>{ 
+    const [rows] =await pool.execute<CommentRow[]>(
+      `
+      SELECT
+        comments.id,
+        comments.article_id,
+        comments.author_id,
+        comments.body,
+        comments.created_at,
+        comments.updated_at,
+
+        users.username AS author_username,
+        users.bio AS author_bio,
+        users.image AS author_image,
+
+        EXISTS (
+          SELECT 1
+          FROM follows
+          WHERE follows.follower_id = ?
+            AND follows.following_id = comments.author_id
+        ) AS following
+
+      FROM comments
+      JOIN users
+        ON users.id = comments.author_id
+      WHERE comments.article_id = ?
+      `,
+      [currentUserId, articleId]
+    )
+    return rows.map(row=>toComment(row))
+  },
 }

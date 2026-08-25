@@ -1,5 +1,5 @@
 import type { RowDataPacket } from "mysql2";
-import type {Article,ArticleQuery,TagQuery} from './article.entity.js'
+import type {Article,ArticleQuery,TagQuery,QueryFollowingArticle,QueryArticleDetail,QueryComment} from './article.entity.js'
 
 
 export interface ArticleRow extends RowDataPacket {
@@ -92,3 +92,84 @@ export function toTagQuery(row: TagQueryRow):TagQuery{
     tag_name:row.tag_name
   }
 }
+
+export interface QueryFollowingArticleRow extends RowDataPacket {
+  article_id: number
+  slug: string
+  title: string
+  description: string
+  body: string
+  author_id: number
+  author_username: string
+  author_bio: string | null
+  author_image: string | null
+  following: number
+  favorited: number
+  favorites_count: number
+  created_at: Date
+  updated_at: Date
+}
+
+export function toQueryFollowingArticle(row: QueryFollowingArticleRow):QueryFollowingArticle{
+  return {
+    ...row,
+    createdAt:row.created_at,
+    updatedAt:row.updated_at
+  }
+}
+
+export interface QueryArticleDetailRow extends RowDataPacket {
+  id: number
+  slug: string
+  title: string
+  description: string
+  body: string
+  author_id: number
+  author_username: string
+  author_bio: string | null
+  author_image: string | null
+  following: number
+  favorited: number
+  favorites_count: number
+  created_at: Date
+  updated_at: Date
+}
+
+export function toQueryArticleDetail(row: QueryArticleDetailRow):QueryArticleDetail{
+  return {
+    ...row,
+    createdAt:row.created_at,
+    updatedAt:row.updated_at
+  }
+}
+
+export interface CommentRow extends RowDataPacket {
+  id: number
+  article_id: number
+  author_id: number
+  body: string
+  created_at: Date
+  updated_at: Date
+  author_username: string
+  author_bio: string | null
+  author_image: string | null
+  following: number
+}
+
+export function toComment(row: CommentRow):QueryComment{
+  return {
+    id:row.id,
+    article_id:row.article_id,
+    author_id:row.author_id,
+    body:row.body,
+    createdAt:row.created_at,
+    updatedAt:row.updated_at,
+    author_bio:row.author_bio,
+    author_image:row.author_image,
+    author_username:row.author_username,
+    following:row.following
+   
+  }
+}
+
+

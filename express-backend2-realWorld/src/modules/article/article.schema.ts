@@ -40,7 +40,6 @@ export const UpdateArticleSchema = z.object({
   title: z.string().trim().min(1).max(100).optional(),
   description: z.string().trim().min(1).max(100).optional(),
   body: z.string().trim().min(1).optional(),
-  slug: z.string().trim().min(1).max(100),
   tags: z.string().trim().min(1).max(100).optional(),
   articleId: z.number().int().positive(),
 }).refine(

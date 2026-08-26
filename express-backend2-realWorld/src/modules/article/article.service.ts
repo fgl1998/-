@@ -45,7 +45,7 @@
     },
 
     async update(currentUserId:number,input:UpdateArticleInput):Promise<QueryArticleDetailOutput|null> {
-      const article = await articleRepository.articleDetail(currentUserId,input.slug)
+      const article = await articleRepository.articleDetailById(currentUserId,input.articleId)
       if(!article){
         throw new ArticleNotFoundError()
       }

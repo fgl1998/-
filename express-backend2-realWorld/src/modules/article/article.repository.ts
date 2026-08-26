@@ -31,11 +31,8 @@ export interface ArticleRepository {
   unfavorite(currentUserId:number,articleId:number):Promise<boolean>
 
   commentCreate(currentUserId:number,input:CommentsCerateInput):Promise<number>
-
   getCommentById(articleId:number,currentUserId:number): Promise<QueryComment|null>
-
   commentList(articleId:number,currentUserId:number): Promise<QueryComment[]>
-
   commentDelete(commentId:number):Promise<boolean>
 }
 
@@ -57,14 +54,14 @@ export const articleRepository:ArticleRepository = {
       if(tagIdList.length){
         const placeholders = tagIdList.map(tagId=>"(?,?)").join(", ")
         const valueList = tagIdList.flatMap(tagId=>[result.insertId,tagId])
-        console.log(
-          `
-        insert into article_tags(article_id,tag_id) values ${placeholders}
-        `,
-        valueList
-        );
+        // console.log(
+        //   `
+        // insert into article_tags(article_id,tag_id) values ${placeholders}
+        // `,
+        // valueList
+        // );
         
-        const [tagResult] = await pool.execute<ResultSetHeader>(
+        const [tagResult] = await connection.execute<ResultSetHeader>(
           `
           insert into article_tags(article_id,tag_id) values ${placeholders}
           `,
@@ -87,7 +84,7 @@ export const articleRepository:ArticleRepository = {
     const connection = await pool.getConnection()
 
     try {
-      connection.beginTransaction()
+      await connection.beginTransaction()
       const fields = []
       const values = []
 
@@ -142,12 +139,12 @@ export const articleRepository:ArticleRepository = {
           [input.articleId]
         )
       }
-      connection.commit()
+      await connection.commit()
 
       return input.articleId
       
     } catch (error) {
-      connection.rollback()
+      await connection.rollback()
       throw error
     } finally{
       connection.release()
@@ -319,7 +316,7 @@ export const articleRepository:ArticleRepository = {
         1 AS following,
 
       EXISTS(
-        SELECT 1 FROM favorites WHERE favorites.user_id=? AND articles.author_id=articles.id
+        SELECT 1 FROM favorites WHERE favorites.user_id=? AND favorites.author_id=articles.id
       ) AS favorited,
 
       (
@@ -439,9 +436,6 @@ export const articleRepository:ArticleRepository = {
   },
 
   async commentCreate(currentUserId:number, input:CommentsCerateInput):Promise<number> {
-    console.log(currentUserId,input.articleId,input.body,'33333');
-    
-    
     const [result] = await pool.execute<ResultSetHeader>(
       `
       INSERT INTO comments (author_id,article_id,body) VALUES (?,?,?)
@@ -460,12 +454,17 @@ export const articleRepository:ArticleRepository = {
         comments.body,
         comments.created_at,
         comments.updated_at,
+        users.username AS author_username,
+        users.bio AS author_bio,
+        users.image AS author_image,
       EXISTS(
         SELECT 1 FROM follows 
         WHERE follows.follower_id=? AND follows.following_id=comments.author_id
       ) AS following
 
       FROM comments
+      JOIN users
+        ON users.id = comments.author_id
       WHERE id=?
       LIMIT 1
       `

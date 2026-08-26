@@ -35,6 +35,8 @@ export interface ArticleRepository {
   getCommentById(articleId:number,currentUserId:number): Promise<QueryComment|null>
 
   commentList(articleId:number,currentUserId:number): Promise<QueryComment[]>
+
+  commentDelete(commentId:number):Promise<boolean>
 }
 
 export const articleRepository:ArticleRepository = { 
@@ -503,4 +505,13 @@ export const articleRepository:ArticleRepository = {
     )
     return rows.map(row=>toComment(row))
   },
+  async commentDelete(commentId:number):Promise<boolean>{
+    const [result] = await pool.execute<ResultSetHeader>(
+      `
+      DELETE FROM comments WHERE id=? 
+      `,
+      [commentId]
+    )
+    return result.affectedRows === 1
+  }
 }

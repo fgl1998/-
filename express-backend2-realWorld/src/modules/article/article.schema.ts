@@ -70,3 +70,7 @@ export type CommentsCerateInput = z.infer<typeof CommentsCerateSchema>
 export const CommentListSchema = z.object({
   articleId: z.number().int().positive(),
 })
+
+export const CommentDeleteSchema = z.object({
+  commentId: z.number().int().positive(),
+})

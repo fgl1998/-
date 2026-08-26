@@ -8,6 +8,7 @@ import {TagNotFoundError} from './tag.error.js'
 export interface TagRepository {
   create(name: string): Promise<Tag>
   findById(id: number): Promise<Tag | null>
+  list(): Promise<Tag[]>
 }
 
 export const tagRepository: TagRepository = {
@@ -32,5 +33,13 @@ export const tagRepository: TagRepository = {
       [id]
     )
     return rows[0] ? toTag(rows[0]) : null
+  },
+  async list(): Promise<Tag[]> { 
+    const [rows] = await pool.execute<TagRow[]>(
+      `
+      select id ,name ,created_at ,updated_at from tags
+      `
+    )
+    return rows.map(toTag)
   }
 }

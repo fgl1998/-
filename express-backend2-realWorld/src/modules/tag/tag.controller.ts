@@ -17,3 +17,17 @@ export async function create(req:Request, res:Response, next:NextFunction) {
     next(error)
   }
 }
+
+export async function list(req:Request, res:Response, next:NextFunction) { 
+  try {
+    const tags = await tagService.list()
+    res.status(200).json({
+      success: true,
+      code: 'TAG_LIST',
+      message: '标签列表获取成功',
+      data: tags
+    })
+  } catch (error) {
+    next(error)
+  }
+}

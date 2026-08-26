@@ -21,6 +21,7 @@
 
     commentCreate(currentUserId:number,input:CommentsCerateInput):Promise<QueryCommentOutput|null>
     commentList(articleId:number,currentUserId:number):Promise<QueryCommentOutput[]>
+    commentDelete(commentId:number,currentUserId:number):Promise<boolean>
   }
   export const articleService:ArticleService = {
     async create(currentUserId,input:CreateArticleInput):Promise<QueryArticleDetailOutput|null>{
@@ -153,6 +154,15 @@
           updatedAt:comment.updatedAt.toISOString(),
         }
       })
+    },
+
+    async commentDelete(commentId:number,currentUserId:number):Promise<boolean>{
+      const comment = await articleRepository.getCommentById(commentId,currentUserId)
+      if(!comment) return false
+      if(comment.author_id !== currentUserId){
+        throw new ForbiddenError()
+      }
+      return articleRepository.commentDelete(commentId)
     },
 
   }

@@ -178,3 +178,20 @@ export async function commentList(req:Request,res:Response,next:NextFunction){
     next(error)
   }
 }
+
+export async function commentDelete(req:Request,res:Response,next:NextFunction){
+  try {
+     const input = req.body
+    if(!req.userId){
+      throw new UserUnauthrized()
+    }
+    const result = await articleService.commentDelete(input.commentId,req.userId)
+    return res.status(200).json({
+      success: true,
+      code: 'COMMENT_DELETED',
+      data: result
+    })
+  }catch (error) {
+    next(error)
+  }
+}

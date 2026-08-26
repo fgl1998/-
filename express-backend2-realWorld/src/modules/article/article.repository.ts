@@ -27,8 +27,8 @@ export interface ArticleRepository {
   articleDetail(currentUserId:number,slug: string): Promise<QueryArticleDetail|null>
   articleDetailById(currentUserId:number,articleId: number): Promise<QueryArticleDetail|null>
 
-  favorite(currentUserId:number,articleId:number):Promise<boolean>
-  unfavorite(currentUserId:number,articleId:number):Promise<boolean>
+  favorite(currentUserId:number,articleId:number):Promise<void>
+  unfavorite(currentUserId:number,articleId:number):Promise<void>
 
   commentCreate(currentUserId:number,input:CommentsCerateInput):Promise<number>
   getCommentById(articleId:number,currentUserId:number): Promise<QueryComment|null>
@@ -414,7 +414,7 @@ export const articleRepository:ArticleRepository = {
     return rows[0]?toQueryArticleDetail(rows[0]):null
   },
 
-  async favorite(currentUserId:number,articleId:number):Promise<boolean>{ 
+  async favorite(currentUserId:number,articleId:number):Promise<void>{ 
     console.log(currentUserId,articleId,'333');
     
     const [result] =await pool.execute<ResultSetHeader>(
@@ -423,16 +423,14 @@ export const articleRepository:ArticleRepository = {
       `,
       [currentUserId,articleId]
     )
-    return result.affectedRows === 1
   },
-  async unfavorite(currentUserId:number,articleId:number):Promise<boolean>{ 
+  async unfavorite(currentUserId:number,articleId:number):Promise<void>{ 
     const [result] =await pool.execute<ResultSetHeader>(
       `
       DELETE FROM favorites WHERE user_id=? AND article_id=?
       `,
       [currentUserId,articleId]
     )
-    return result.affectedRows === 1
   },
 
   async commentCreate(currentUserId:number, input:CommentsCerateInput):Promise<number> {

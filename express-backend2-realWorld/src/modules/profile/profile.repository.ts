@@ -10,9 +10,10 @@ interface UserIdRow extends RowDataPacket {
 
 export interface ProfileRepository { 
   getProfile(currentUserId:number,username:string):Promise<Profile|null>
-  follow(currentUserId:number ,following_id:number):Promise<boolean>
-  unfollow(currentUserId:number,following_id:number):Promise<boolean>
+  follow(currentUserId:number ,following_id:number):Promise<void>
+  unfollow(currentUserId:number,following_id:number):Promise<void>
   findUserByUsername(username:string):Promise<number|null>
+  findUserById(id:number):Promise<number|null>
 
 }
 
@@ -23,6 +24,15 @@ export const profileRepository:ProfileRepository = {
       SELECT id FROM users WHERE username=?
       `,
       [username]
+    )
+    return rows[0] ? rows[0].id : null
+  },
+  async findUserById(id:number):Promise<number|null>{
+    const [rows] = await pool.execute<UserIdRow[]>(
+      `
+      SELECT id FROM users WHERE id=?
+      `,
+      [id]
     )
     return rows[0] ? rows[0].id : null
   },
@@ -43,16 +53,15 @@ export const profileRepository:ProfileRepository = {
     )
     return rows[0] ? toProfile(rows[0]) : null
   },
-  async follow(currentUserId:number,following_id:number):Promise<boolean>{ 
+  async follow(currentUserId:number,following_id:number):Promise<void>{ 
     const [result] = await pool.execute<ResultSetHeader>(
       `
       INSERT IGNORE INTO follows(follower_id,following_id) VALUES(?,?)
       `,
       [currentUserId,following_id]
     )
-    return result.affectedRows === 1  
   },
-  async unfollow(currentUserId:number,following_id:number):Promise<boolean>{ 
+  async unfollow(currentUserId:number,following_id:number):Promise<void>{ 
     const [result] = await pool.execute<ResultSetHeader>(
        `
       DELETE FROM follows
@@ -61,6 +70,5 @@ export const profileRepository:ProfileRepository = {
       `,
       [currentUserId,following_id]
     )
-    return result.affectedRows === 1
   },
 }

@@ -4,8 +4,8 @@ export class UserUnauthrized extends AppError {
   constructor() {
     super(
       'UNAUTHORIZED',
-      403,
-      '未授权'
+      401,
+      '未登录'
     )
   }
 }
@@ -22,7 +22,7 @@ export class ForbiddenError extends AppError {
   constructor() {
     super(
       'ForbiddenError',
-      401,
+      403,
       '未授权'
     )
   }

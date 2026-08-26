@@ -1,7 +1,7 @@
   import type { ArticleOutput,QueryFollowingArticleOutput,QueryArticleDetailOutput,QueryCommentOutput } from '../article/article.dto.js'
   import { articleRepository } from '../article/article.repository.js'
   import type { CreateArticleInput,CreateArticleData,UpdateArticleInput,CommentsCerateInput } from '../article/article.schema.js'
-  import {ArticleNotFoundError} from './article.error.js'
+  import {ArticleNotFoundError,CommentNotFoundError} from './article.error.js'
   import { generateSlug } from '../../utils/article.util.js'
   import {ForbiddenError} from '../../errors/common.error.js'
   import type { Tag } from '../article/article.entity.js'
@@ -16,8 +16,8 @@
     feed(currentUserId:number):Promise<QueryFollowingArticleOutput[]>
     detail(currentUserId:number,slug:string):Promise<QueryArticleDetailOutput|null>
 
-    favorite(currentUserId:number,articleId:number):Promise<boolean>
-    unfavorite(currentUserId:number,articleId:number):Promise<boolean>
+    favorite(currentUserId:number,articleId:number):Promise<{favorite:true}>
+    unfavorite(currentUserId:number,articleId:number):Promise<{favorite:false}>
 
     commentCreate(currentUserId:number,input:CommentsCerateInput):Promise<QueryCommentOutput|null>
     commentList(articleId:number,currentUserId:number):Promise<QueryCommentOutput[]>
@@ -127,17 +127,29 @@
       }
     },
 
-    favorite(currentUserId:number,articleId:number):Promise<boolean>{
-      return articleRepository.favorite(currentUserId,articleId)
+    async favorite(currentUserId:number,articleId:number):Promise<{favorite:true}>{
+      const article = await articleRepository.articleDetailById(currentUserId,articleId)
+      if(!article){
+        throw new ArticleNotFoundError()
+      }
+      await articleRepository.favorite(currentUserId,articleId)
+      return {favorite:true}
     },
-    async unfavorite(currentUserId:number,articleId:number):Promise<boolean>{
-      return articleRepository.unfavorite(currentUserId,articleId)
+    async unfavorite(currentUserId:number,articleId:number):Promise<{favorite:false}>{
+      const article = await articleRepository.articleDetailById(currentUserId,articleId)
+      if(!article){
+        throw new ArticleNotFoundError()
+      }
+      await articleRepository.unfavorite(currentUserId,articleId)
+      return {favorite:false}
     },
 
     async commentCreate(currentUserId:number,input:CommentsCerateInput):Promise<QueryCommentOutput|null>{
       const commentId = await articleRepository.commentCreate(currentUserId,input)
       const comment = await articleRepository.getCommentById(commentId,currentUserId)
-      if(!comment) return null
+      if(!comment) {
+        throw new CommentNotFoundError()
+      }
       return {
         ...comment,
         createdAt:comment.createdAt.toISOString(),
@@ -158,7 +170,9 @@
 
     async commentDelete(commentId:number,currentUserId:number):Promise<boolean>{
       const comment = await articleRepository.getCommentById(commentId,currentUserId)
-      if(!comment) return false
+      if(!comment){
+        throw new CommentNotFoundError()
+      }
       if(comment.author_id !== currentUserId){
         throw new ForbiddenError()
       }

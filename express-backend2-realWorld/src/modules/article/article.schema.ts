@@ -43,7 +43,7 @@ export const UpdateArticleSchema = z.object({
   tags: z.string().trim().min(1).max(100).optional(),
   articleId: z.number().int().positive(),
 }).refine(
-  data => Object.keys(data).length > 0,
+  data => Object.keys(data).length > 1,
   {
     message: '至少需要提供一个需要修改的字段'
   }

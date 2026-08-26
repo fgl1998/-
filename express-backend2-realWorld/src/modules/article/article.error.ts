@@ -9,3 +9,12 @@ export class ArticleNotFoundError extends AppError {
     )
   }
 }
+export class CommentNotFoundError extends AppError {
+  constructor() {
+    super(
+      'COMMENT_NOT_FOUND',
+      404,
+      '评论不存在'
+    )
+  }
+}

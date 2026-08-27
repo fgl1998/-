@@ -9,3 +9,9 @@ export type GetProfileSchemaType = z.infer<typeof GetProfileSchema>
 export const FollowSchema = z.object({
   followingId: z.number().min(1),
 })
+
+export const FollowListSchema = z.object({
+  userId: z.number().min(1),
+})
+
+export type FollowSchemaType = z.infer<typeof FollowSchema>

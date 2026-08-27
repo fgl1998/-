@@ -25,10 +25,26 @@
 /* 垂直间距 */
 /* 透明度 */
 /* 文章场景相关 */
-.login-container.data-v-b237504c {
-  padding: 40rpx 30rpx;
+.login-page.data-v-b237504c {
+  min-height: 100vh;
+  box-sizing: border-box;
+  padding: 140rpx 32rpx 48rpx;
 }
-.login-btn.data-v-b237504c {
-  margin-top: 60rpx;
+.login-card.data-v-b237504c {
+  padding: 48rpx 36rpx;
+  background: #fff;
+  border-radius: 24rpx;
+  box-shadow: 0 16rpx 48rpx rgba(31, 41, 55, 0.08);
+}
+.brand.data-v-b237504c {
+  color: #303133;
+  font-size: 52rpx;
+  font-weight: 700;
+  line-height: 1.2;
+}
+.subtitle.data-v-b237504c {
+  margin: 16rpx 0 36rpx;
+  color: #909399;
+  font-size: 28rpx;
 }
 

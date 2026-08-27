@@ -2,16 +2,18 @@ import {profileRepository} from './profile.repository.js'
 
 import {ProfileOutput} from './profile.dto.js'
 
-import {UserUnauthrized} from './profile.error.js'
+import {CannotFollowSelfError} from './profile.error.js'
 
 import {UserNotFoundError} from '../../errors/common.error.js'
-import { th } from 'zod/v4/locales'
+
 
 
 interface ProfileService {
   getProfile(currentUserId:number,username:string):Promise<ProfileOutput|null>
-  follow(currentUserId:number ,following_id:number):Promise<{followed:true}>
-  unfollow(currentUserId:number,following_id:number):Promise<{followed:false}>
+  follow(currentUserId:number ,following_id:number):Promise<{following:true}>
+  unfollow(currentUserId:number,following_id:number):Promise<{following:false}>
+  followingList(userId:number):Promise<ProfileOutput[]>
+  followedList(userId:number):Promise<ProfileOutput[]>
 }
 
 export const profileService:ProfileService = {
@@ -25,9 +27,9 @@ export const profileService:ProfileService = {
 
     return profile
   },
-  async follow(currentUserId:number ,following_id:number):Promise<{followed:true}>{
+  async follow(currentUserId:number ,following_id:number):Promise<{following:true}>{
     if(currentUserId === following_id){
-      throw new UserUnauthrized()
+      throw new CannotFollowSelfError()
     }
     const targetUser = await profileRepository.findUserById(following_id)
     if(!targetUser){
@@ -35,15 +37,21 @@ export const profileService:ProfileService = {
     }
     
     await profileRepository.follow(currentUserId,following_id)
-    return {followed:true}
+    return {following:true}
   },
-  async unfollow(currentUserId:number,following_id:number):Promise<{followed:false}>{
+  async unfollow(currentUserId:number,following_id:number):Promise<{following:false}>{
     const targetUser = await profileRepository.findUserById(following_id)
     if(!targetUser){
       throw new UserNotFoundError()
     }
     await profileRepository.unfollow(currentUserId,following_id)
-    return {followed:false}
+    return {following:false}
+  },
+  async followingList(userId:number):Promise<ProfileOutput[]>{ 
+    return await profileRepository.followingList(userId)
+  },
+  async followedList(userId:number):Promise<ProfileOutput[]>{ 
+    return await profileRepository.followedList(userId)
   }
 
 }

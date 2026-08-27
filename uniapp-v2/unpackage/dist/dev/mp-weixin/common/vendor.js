@@ -19243,11 +19243,446 @@ exports.default = _default;
 /* 162 */,
 /* 163 */,
 /* 164 */,
-/* 165 */,
-/* 166 */,
-/* 167 */,
-/* 168 */,
-/* 169 */,
+/* 165 */
+/*!****************************************!*\
+  !*** E:/面试项目/uniapp-v2/api/article.js ***!
+  \****************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var _defineProperty = __webpack_require__(/*! @babel/runtime/helpers/defineProperty */ 11);
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); enumerableOnly && (symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; })), keys.push.apply(keys, symbols); } return keys; }
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = null != arguments[i] ? arguments[i] : {}; i % 2 ? ownKeys(Object(source), !0).forEach(function (key) { _defineProperty(target, key, source[key]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)) : ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } return target; }
+var http = __webpack_require__(/*! ../common/http */ 166);
+function createArticleApi(client) {
+  var request = client.request;
+  return {
+    create: function create(input) {
+      return request('/api/articles/create', {
+        title: input.title,
+        description: input.description,
+        body: input.body,
+        tags: input.tags
+      });
+    },
+    list: function list() {
+      var _ref = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {},
+        page = _ref.page,
+        pageSize = _ref.pageSize;
+      return request('/api/articles/list', {
+        page: page,
+        pageSize: pageSize
+      });
+    },
+    detail: function detail(slug) {
+      return request('/api/articles/detail', {
+        slug: slug
+      });
+    },
+    favorite: function favorite(articleId) {
+      return request('/api/articles/favorite', {
+        articleId: articleId
+      });
+    },
+    unfavorite: function unfavorite(articleId) {
+      return request('/api/articles/unfavorite', {
+        articleId: articleId
+      });
+    },
+    listComments: function listComments(articleId) {
+      return request('/api/articles/comment/list', {
+        articleId: articleId
+      });
+    },
+    createComment: function createComment(articleId, body) {
+      return request('/api/articles/comment/create', {
+        articleId: articleId,
+        body: body
+      });
+    },
+    deleteComment: function deleteComment(commentId) {
+      return request('/api/articles/comment/delete', {
+        commentId: commentId
+      });
+    }
+  };
+}
+var articleApi = createArticleApi(http);
+module.exports = _objectSpread({
+  createArticleApi: createArticleApi
+}, articleApi);
+
+/***/ }),
+/* 166 */
+/*!****************************************!*\
+  !*** E:/面试项目/uniapp-v2/common/http.js ***!
+  \****************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+/* WEBPACK VAR INJECTION */(function(uni) {var _regeneratorRuntime = __webpack_require__(/*! @babel/runtime/regenerator */ 56);
+var _asyncToGenerator = __webpack_require__(/*! @babel/runtime/helpers/asyncToGenerator */ 58);
+var _defineProperty = __webpack_require__(/*! @babel/runtime/helpers/defineProperty */ 11);
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); enumerableOnly && (symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; })), keys.push.apply(keys, symbols); } return keys; }
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = null != arguments[i] ? arguments[i] : {}; i % 2 ? ownKeys(Object(source), !0).forEach(function (key) { _defineProperty(target, key, source[key]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)) : ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } return target; }
+var _require = __webpack_require__(/*! ../config/env */ 167),
+  BASE_URL = _require.BASE_URL;
+var session = __webpack_require__(/*! ./session */ 168);
+var LOGIN_PATH = '/pages/login/login';
+function createRequestAdapter() {
+  return function requestAdapter(options) {
+    if (typeof uni === 'undefined' || !uni || typeof uni.request !== 'function') {
+      return Promise.reject(new Error('当前环境不可用：请注入 requestAdapter'));
+    }
+    return new Promise(function (resolve, reject) {
+      uni.request(_objectSpread(_objectSpread({}, options), {}, {
+        success: resolve,
+        fail: reject
+      }));
+    });
+  };
+}
+function getCurrentRoute() {
+  if (typeof getCurrentPages !== 'function') {
+    return '';
+  }
+  var pages = getCurrentPages();
+  var currentPage = pages[pages.length - 1];
+  return currentPage && currentPage.route || '';
+}
+function navigateToLogin(url) {
+  if (typeof uni !== 'undefined' && uni && typeof uni.reLaunch === 'function') {
+    uni.reLaunch({
+      url: url
+    });
+  }
+}
+function createUnauthorizedHandler(options) {
+  var settings = options || {};
+  var clearSession = settings.clearSession || session.clear;
+  var currentRoute = settings.getCurrentRoute || getCurrentRoute;
+  var redirect = settings.navigateToLogin || navigateToLogin;
+  var loginPath = settings.loginPath || LOGIN_PATH;
+  return function handleUnauthorized() {
+    clearSession();
+    if (currentRoute().replace(/^\//, '') === loginPath.replace(/^\//, '')) {
+      return;
+    }
+    redirect(loginPath);
+  };
+}
+function joinUrl(baseUrl, path) {
+  if (/^https?:\/\//.test(path)) {
+    return path;
+  }
+  return "".concat(baseUrl.replace(/\/$/, ''), "/").concat(String(path || '').replace(/^\//, ''));
+}
+function createError(message, details) {
+  var error = new Error(message || '请求失败');
+  if (details) {
+    Object.assign(error, details);
+  }
+  return error;
+}
+function createHttpClient(options) {
+  var settings = options || {};
+  var requestAdapter = settings.requestAdapter || createRequestAdapter();
+  var getToken = settings.getToken || session.getToken;
+  var onUnauthorized = settings.onUnauthorized || createUnauthorizedHandler();
+  var baseUrl = settings.baseUrl || BASE_URL;
+  function request(_x, _x2, _x3) {
+    return _request.apply(this, arguments);
+  }
+  function _request() {
+    _request = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime.mark(function _callee(path, data, requestOptions) {
+      var extraOptions, token, header, response, body, statusCode;
+      return _regeneratorRuntime.wrap(function _callee$(_context) {
+        while (1) {
+          switch (_context.prev = _context.next) {
+            case 0:
+              extraOptions = requestOptions || {};
+              token = getToken();
+              header = _objectSpread({}, extraOptions.header || {});
+              if (token) {
+                header.Authorization = "Bearer ".concat(token);
+              }
+              _context.prev = 4;
+              _context.next = 7;
+              return requestAdapter({
+                url: joinUrl(baseUrl, path),
+                method: 'POST',
+                data: data || {},
+                header: header
+              });
+            case 7:
+              response = _context.sent;
+              _context.next = 13;
+              break;
+            case 10:
+              _context.prev = 10;
+              _context.t0 = _context["catch"](4);
+              throw createError(_context.t0 && _context.t0.message || '网络请求失败');
+            case 13:
+              body = response && response.data || {};
+              statusCode = response && response.statusCode;
+              if (!(statusCode < 200 || statusCode >= 300)) {
+                _context.next = 20;
+                break;
+              }
+              if (!(statusCode === 401)) {
+                _context.next = 19;
+                break;
+              }
+              _context.next = 19;
+              return onUnauthorized();
+            case 19:
+              throw createError(body.message || "HTTP \u8BF7\u6C42\u5931\u8D25\uFF08".concat(statusCode || '未知状态', "\uFF09"), {
+                code: body.code,
+                statusCode: statusCode
+              });
+            case 20:
+              if (!(body.success === false)) {
+                _context.next = 22;
+                break;
+              }
+              throw createError(body.message || '业务请求失败', {
+                code: body.code,
+                statusCode: statusCode
+              });
+            case 22:
+              return _context.abrupt("return", body.data);
+            case 23:
+            case "end":
+              return _context.stop();
+          }
+        }
+      }, _callee, null, [[4, 10]]);
+    }));
+    return _request.apply(this, arguments);
+  }
+  return {
+    request: request
+  };
+}
+var http = createHttpClient();
+module.exports = {
+  LOGIN_PATH: LOGIN_PATH,
+  createHttpClient: createHttpClient,
+  createUnauthorizedHandler: createUnauthorizedHandler,
+  request: http.request
+};
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 2)["default"]))
+
+/***/ }),
+/* 167 */
+/*!***************************************!*\
+  !*** E:/面试项目/uniapp-v2/config/env.js ***!
+  \***************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+var BASE_URL = 'http://127.0.0.1:3000';
+
+// 真机联调时请改为开发机的局域网 IP，例如 http://192.168.1.10:3000。
+module.exports = {
+  BASE_URL: BASE_URL
+};
+
+/***/ }),
+/* 168 */
+/*!*******************************************!*\
+  !*** E:/面试项目/uniapp-v2/common/session.js ***!
+  \*******************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+/* WEBPACK VAR INJECTION */(function(uni) {var _defineProperty = __webpack_require__(/*! @babel/runtime/helpers/defineProperty */ 11);
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); enumerableOnly && (symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; })), keys.push.apply(keys, symbols); } return keys; }
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = null != arguments[i] ? arguments[i] : {}; i % 2 ? ownKeys(Object(source), !0).forEach(function (key) { _defineProperty(target, key, source[key]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)) : ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } return target; }
+var TOKEN_KEY = 'token';
+var USER_KEY = 'user';
+var memoryValues = new Map();
+var memoryStorage = {
+  getStorageSync: function getStorageSync(key) {
+    return memoryValues.get(key);
+  },
+  setStorageSync: function setStorageSync(key, value) {
+    memoryValues.set(key, value);
+  },
+  removeStorageSync: function removeStorageSync(key) {
+    memoryValues.delete(key);
+  }
+};
+function getDefaultStorage() {
+  if (typeof uni !== 'undefined' && uni) {
+    return uni;
+  }
+  return memoryStorage;
+}
+function read(storage, key) {
+  if (typeof storage.getStorageSync === 'function') {
+    return storage.getStorageSync(key);
+  }
+  if (typeof storage.getItem === 'function') {
+    return storage.getItem(key);
+  }
+  return undefined;
+}
+function write(storage, key, value) {
+  if (typeof storage.setStorageSync === 'function') {
+    storage.setStorageSync(key, value);
+    return;
+  }
+  if (typeof storage.setItem === 'function') {
+    storage.setItem(key, value);
+  }
+}
+function remove(storage, key) {
+  if (typeof storage.removeStorageSync === 'function') {
+    storage.removeStorageSync(key);
+    return;
+  }
+  if (typeof storage.removeItem === 'function') {
+    storage.removeItem(key);
+  }
+}
+function createSession(options) {
+  var storage = options && options.storage || getDefaultStorage();
+  return {
+    set: function set(_ref) {
+      var token = _ref.token,
+        user = _ref.user;
+      write(storage, TOKEN_KEY, token || '');
+      write(storage, USER_KEY, user || null);
+    },
+    setToken: function setToken(token) {
+      write(storage, TOKEN_KEY, token || '');
+    },
+    setUser: function setUser(user) {
+      write(storage, USER_KEY, user || null);
+    },
+    getToken: function getToken() {
+      return read(storage, TOKEN_KEY) || '';
+    },
+    getUser: function getUser() {
+      return read(storage, USER_KEY) || null;
+    },
+    get: function get() {
+      return {
+        token: read(storage, TOKEN_KEY) || '',
+        user: read(storage, USER_KEY) || null
+      };
+    },
+    clear: function clear() {
+      remove(storage, TOKEN_KEY);
+      remove(storage, USER_KEY);
+    }
+  };
+}
+var session = createSession();
+module.exports = _objectSpread({
+  TOKEN_KEY: TOKEN_KEY,
+  USER_KEY: USER_KEY,
+  createSession: createSession
+}, session);
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 2)["default"]))
+
+/***/ }),
+/* 169 */
+/*!*******************************************!*\
+  !*** E:/面试项目/uniapp-v2/common/article.js ***!
+  \*******************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var _typeof = __webpack_require__(/*! @babel/runtime/helpers/typeof */ 13);
+function _createForOfIteratorHelper(o, allowArrayLike) { var it = typeof Symbol !== "undefined" && o[Symbol.iterator] || o["@@iterator"]; if (!it) { if (Array.isArray(o) || (it = _unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e) { throw _e; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = it.call(o); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e2) { didErr = true; err = _e2; }, f: function f() { try { if (!normalCompletion && it.return != null) it.return(); } finally { if (didErr) throw err; } } }; }
+function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
+function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
+function pick(source, keys, fallback) {
+  var input = source || {};
+  var _iterator = _createForOfIteratorHelper(keys),
+    _step;
+  try {
+    for (_iterator.s(); !(_step = _iterator.n()).done;) {
+      var key = _step.value;
+      if (input[key] !== undefined) {
+        return input[key];
+      }
+    }
+  } catch (err) {
+    _iterator.e(err);
+  } finally {
+    _iterator.f();
+  }
+  return fallback;
+}
+function normalizeAuthor(source) {
+  var nestedAuthor = source && _typeof(source.author) === 'object' && source.author ? source.author : {};
+  return {
+    id: pick(nestedAuthor, ['id', 'userId', 'user_id', 'author_id'], pick(source, ['authorId', 'author_id'], null)),
+    username: pick(nestedAuthor, ['username'], pick(source, ['authorUsername', 'author_username'], '')),
+    bio: pick(nestedAuthor, ['bio'], pick(source, ['authorBio', 'author_bio'], '')),
+    image: pick(nestedAuthor, ['image'], pick(source, ['authorImage', 'author_image'], ''))
+  };
+}
+function normalizeTags(value) {
+  var tags = Array.isArray(value) ? value : [value];
+  return tags.map(function (tag) {
+    if (typeof tag === 'string') {
+      return tag;
+    }
+    if (tag && _typeof(tag) === 'object') {
+      return pick(tag, ['tag_name', 'tagName', 'name'], '');
+    }
+    return tag === undefined || tag === null ? '' : String(tag);
+  }).filter(function (tag) {
+    return typeof tag === 'string' && tag.length > 0;
+  });
+}
+function toBoolean(value) {
+  if (typeof value === 'string') {
+    return value === 'true' || value === '1';
+  }
+  return Boolean(value);
+}
+function toNumber(value) {
+  var number = Number(value);
+  return Number.isFinite(number) ? number : 0;
+}
+function normalizeArticle(article) {
+  var source = article || {};
+  return {
+    id: pick(source, ['id', 'articleId', 'article_id'], null),
+    slug: pick(source, ['slug'], ''),
+    title: pick(source, ['title'], ''),
+    description: pick(source, ['description'], ''),
+    body: pick(source, ['body'], ''),
+    author: normalizeAuthor(source),
+    tags: normalizeTags(pick(source, ['tags', 'tagList', 'tag_list'], [])),
+    favorited: toBoolean(pick(source, ['favorited'], false)),
+    favoritesCount: toNumber(pick(source, ['favoritesCount', 'favorites_count'], 0)),
+    createdAt: pick(source, ['createdAt', 'created_at'], ''),
+    updatedAt: pick(source, ['updatedAt', 'updated_at'], '')
+  };
+}
+function normalizeComment(comment) {
+  var source = comment || {};
+  return {
+    id: pick(source, ['id', 'commentId', 'comment_id'], null),
+    articleId: pick(source, ['articleId', 'article_id'], null),
+    body: pick(source, ['body'], ''),
+    author: normalizeAuthor(source),
+    createdAt: pick(source, ['createdAt', 'created_at'], ''),
+    updatedAt: pick(source, ['updatedAt', 'updated_at'], '')
+  };
+}
+module.exports = {
+  normalizeArticle: normalizeArticle,
+  normalizeComment: normalizeComment
+};
+
+/***/ }),
 /* 170 */,
 /* 171 */,
 /* 172 */,
@@ -19256,7 +19691,42 @@ exports.default = _default;
 /* 175 */,
 /* 176 */,
 /* 177 */,
-/* 178 */,
+/* 178 */
+/*!*************************************!*\
+  !*** E:/面试项目/uniapp-v2/api/user.js ***!
+  \*************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var _defineProperty = __webpack_require__(/*! @babel/runtime/helpers/defineProperty */ 11);
+var _typeof = __webpack_require__(/*! @babel/runtime/helpers/typeof */ 13);
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); enumerableOnly && (symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; })), keys.push.apply(keys, symbols); } return keys; }
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = null != arguments[i] ? arguments[i] : {}; i % 2 ? ownKeys(Object(source), !0).forEach(function (key) { _defineProperty(target, key, source[key]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)) : ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } return target; }
+var http = __webpack_require__(/*! ../common/http */ 166);
+function createUserApi(client) {
+  var request = client.request;
+  return {
+    login: function login(username, password) {
+      var credentials = _typeof(username) === 'object' ? username : {
+        username: username,
+        password: password
+      };
+      return request('/api/users/login', {
+        username: credentials.username,
+        password: credentials.password
+      });
+    },
+    getUser: function getUser() {
+      return request('/api/users/getUser', {});
+    }
+  };
+}
+var userApi = createUserApi(http);
+module.exports = _objectSpread({
+  createUserApi: createUserApi
+}, userApi);
+
+/***/ }),
 /* 179 */,
 /* 180 */,
 /* 181 */,
@@ -19269,7 +19739,276 @@ exports.default = _default;
 /* 188 */,
 /* 189 */,
 /* 190 */,
-/* 191 */
+/* 191 */,
+/* 192 */,
+/* 193 */,
+/* 194 */,
+/* 195 */,
+/* 196 */,
+/* 197 */,
+/* 198 */,
+/* 199 */,
+/* 200 */,
+/* 201 */,
+/* 202 */
+/*!*******************************************************************!*\
+  !*** E:/面试项目/uniapp-v2/uni_modules/uview-ui/libs/mixin/button.js ***!
+  \*******************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+var _default = {
+  props: {
+    lang: String,
+    sessionFrom: String,
+    sendMessageTitle: String,
+    sendMessagePath: String,
+    sendMessageImg: String,
+    showMessageCard: Boolean,
+    appParameter: String,
+    formType: String,
+    openType: String
+  }
+};
+exports.default = _default;
+
+/***/ }),
+/* 203 */
+/*!*********************************************************************!*\
+  !*** E:/面试项目/uniapp-v2/uni_modules/uview-ui/libs/mixin/openType.js ***!
+  \*********************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+var _default = {
+  props: {
+    openType: String
+  },
+  methods: {
+    onGetUserInfo: function onGetUserInfo(event) {
+      this.$emit('getuserinfo', event.detail);
+    },
+    onContact: function onContact(event) {
+      this.$emit('contact', event.detail);
+    },
+    onGetPhoneNumber: function onGetPhoneNumber(event) {
+      this.$emit('getphonenumber', event.detail);
+    },
+    onError: function onError(event) {
+      this.$emit('error', event.detail);
+    },
+    onLaunchApp: function onLaunchApp(event) {
+      this.$emit('launchapp', event.detail);
+    },
+    onOpenSetting: function onOpenSetting(event) {
+      this.$emit('opensetting', event.detail);
+    }
+  }
+};
+exports.default = _default;
+
+/***/ }),
+/* 204 */
+/*!***************************************************************************!*\
+  !*** E:/面试项目/uniapp-v2/uni_modules/uview-ui/components/u-button/props.js ***!
+  \***************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(uni) {
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+/*
+ * @Author       : LQ
+ * @Description  :
+ * @version      : 1.0
+ * @Date         : 2021-08-16 10:04:04
+ * @LastAuthor   : LQ
+ * @lastTime     : 2021-08-16 10:04:24
+ * @FilePath     : /u-view2.0/uview-ui/components/u-button/props.js
+ */
+var _default = {
+  props: {
+    // 是否细边框
+    hairline: {
+      type: Boolean,
+      default: uni.$u.props.button.hairline
+    },
+    // 按钮的预置样式，info，primary，error，warning，success
+    type: {
+      type: String,
+      default: uni.$u.props.button.type
+    },
+    // 按钮尺寸，large，normal，small，mini
+    size: {
+      type: String,
+      default: uni.$u.props.button.size
+    },
+    // 按钮形状，circle（两边为半圆），square（带圆角）
+    shape: {
+      type: String,
+      default: uni.$u.props.button.shape
+    },
+    // 按钮是否镂空
+    plain: {
+      type: Boolean,
+      default: uni.$u.props.button.plain
+    },
+    // 是否禁止状态
+    disabled: {
+      type: Boolean,
+      default: uni.$u.props.button.disabled
+    },
+    // 是否加载中
+    loading: {
+      type: Boolean,
+      default: uni.$u.props.button.loading
+    },
+    // 加载中提示文字
+    loadingText: {
+      type: [String, Number],
+      default: uni.$u.props.button.loadingText
+    },
+    // 加载状态图标类型
+    loadingMode: {
+      type: String,
+      default: uni.$u.props.button.loadingMode
+    },
+    // 加载图标大小
+    loadingSize: {
+      type: [String, Number],
+      default: uni.$u.props.button.loadingSize
+    },
+    // 开放能力，具体请看uniapp稳定关于button组件部分说明
+    // https://uniapp.dcloud.io/component/button
+    openType: {
+      type: String,
+      default: uni.$u.props.button.openType
+    },
+    // 用于 <form> 组件，点击分别会触发 <form> 组件的 submit/reset 事件
+    // 取值为submit（提交表单），reset（重置表单）
+    formType: {
+      type: String,
+      default: uni.$u.props.button.formType
+    },
+    // 打开 APP 时，向 APP 传递的参数，open-type=launchApp时有效
+    // 只微信小程序、QQ小程序有效
+    appParameter: {
+      type: String,
+      default: uni.$u.props.button.appParameter
+    },
+    // 指定是否阻止本节点的祖先节点出现点击态，微信小程序有效
+    hoverStopPropagation: {
+      type: Boolean,
+      default: uni.$u.props.button.hoverStopPropagation
+    },
+    // 指定返回用户信息的语言，zh_CN 简体中文，zh_TW 繁体中文，en 英文。只微信小程序有效
+    lang: {
+      type: String,
+      default: uni.$u.props.button.lang
+    },
+    // 会话来源，open-type="contact"时有效。只微信小程序有效
+    sessionFrom: {
+      type: String,
+      default: uni.$u.props.button.sessionFrom
+    },
+    // 会话内消息卡片标题，open-type="contact"时有效
+    // 默认当前标题，只微信小程序有效
+    sendMessageTitle: {
+      type: String,
+      default: uni.$u.props.button.sendMessageTitle
+    },
+    // 会话内消息卡片点击跳转小程序路径，open-type="contact"时有效
+    // 默认当前分享路径，只微信小程序有效
+    sendMessagePath: {
+      type: String,
+      default: uni.$u.props.button.sendMessagePath
+    },
+    // 会话内消息卡片图片，open-type="contact"时有效
+    // 默认当前页面截图，只微信小程序有效
+    sendMessageImg: {
+      type: String,
+      default: uni.$u.props.button.sendMessageImg
+    },
+    // 是否显示会话内消息卡片，设置此参数为 true，用户进入客服会话会在右下角显示"可能要发送的小程序"提示，
+    // 用户点击后可以快速发送小程序消息，open-type="contact"时有效
+    showMessageCard: {
+      type: Boolean,
+      default: uni.$u.props.button.showMessageCard
+    },
+    // 额外传参参数，用于小程序的data-xxx属性，通过target.dataset.name获取
+    dataName: {
+      type: String,
+      default: uni.$u.props.button.dataName
+    },
+    // 节流，一定时间内只能触发一次
+    throttleTime: {
+      type: [String, Number],
+      default: uni.$u.props.button.throttleTime
+    },
+    // 按住后多久出现点击态，单位毫秒
+    hoverStartTime: {
+      type: [String, Number],
+      default: uni.$u.props.button.hoverStartTime
+    },
+    // 手指松开后点击态保留时间，单位毫秒
+    hoverStayTime: {
+      type: [String, Number],
+      default: uni.$u.props.button.hoverStayTime
+    },
+    // 按钮文字，之所以通过props传入，是因为slot传入的话
+    // nvue中无法控制文字的样式
+    text: {
+      type: [String, Number],
+      default: uni.$u.props.button.text
+    },
+    // 按钮图标
+    icon: {
+      type: String,
+      default: uni.$u.props.button.icon
+    },
+    // 按钮图标
+    iconColor: {
+      type: String,
+      default: uni.$u.props.button.icon
+    },
+    // 按钮颜色，支持传入linear-gradient渐变色
+    color: {
+      type: String,
+      default: uni.$u.props.button.color
+    }
+  }
+};
+exports.default = _default;
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 2)["default"]))
+
+/***/ }),
+/* 205 */,
+/* 206 */,
+/* 207 */,
+/* 208 */,
+/* 209 */,
+/* 210 */,
+/* 211 */,
+/* 212 */
 /*!*************************************************************************!*\
   !*** E:/面试项目/uniapp-v2/uni_modules/uview-ui/components/u-form/props.js ***!
   \*************************************************************************/
@@ -19332,7 +20071,7 @@ exports.default = _default;
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 2)["default"]))
 
 /***/ }),
-/* 192 */
+/* 213 */
 /*!***************************************************************************!*\
   !*** E:/面试项目/uniapp-v2/uni_modules/uview-ui/libs/util/async-validator.js ***!
   \***************************************************************************/
@@ -20513,10 +21252,10 @@ Schema.warning = warning;
 Schema.messages = messages;
 var _default = Schema; // # sourceMappingURL=index.js.map
 exports.default = _default;
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/node-libs-browser/mock/process.js */ 193)))
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/node-libs-browser/mock/process.js */ 214)))
 
 /***/ }),
-/* 193 */
+/* 214 */
 /*!********************************************************!*\
   !*** ./node_modules/node-libs-browser/mock/process.js ***!
   \********************************************************/
@@ -20547,7 +21286,7 @@ exports.binding = function (name) {
     var path;
     exports.cwd = function () { return cwd };
     exports.chdir = function (dir) {
-        if (!path) path = __webpack_require__(/*! path */ 194);
+        if (!path) path = __webpack_require__(/*! path */ 215);
         cwd = path.resolve(dir, cwd);
     };
 })();
@@ -20560,7 +21299,7 @@ exports.features = {};
 
 
 /***/ }),
-/* 194 */
+/* 215 */
 /*!***********************************************!*\
   !*** ./node_modules/path-browserify/index.js ***!
   \***********************************************/
@@ -20870,15 +21609,15 @@ var substr = 'ab'.substr(-1) === 'b'
     }
 ;
 
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./../node-libs-browser/mock/process.js */ 193)))
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./../node-libs-browser/mock/process.js */ 214)))
 
 /***/ }),
-/* 195 */,
-/* 196 */,
-/* 197 */,
-/* 198 */,
-/* 199 */,
-/* 200 */
+/* 216 */,
+/* 217 */,
+/* 218 */,
+/* 219 */,
+/* 220 */,
+/* 221 */
 /*!******************************************************************************!*\
   !*** E:/面试项目/uniapp-v2/uni_modules/uview-ui/components/u-form-item/props.js ***!
   \******************************************************************************/
@@ -20944,14 +21683,14 @@ exports.default = _default;
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 2)["default"]))
 
 /***/ }),
-/* 201 */,
-/* 202 */,
-/* 203 */,
-/* 204 */,
-/* 205 */,
-/* 206 */,
-/* 207 */,
-/* 208 */
+/* 222 */,
+/* 223 */,
+/* 224 */,
+/* 225 */,
+/* 226 */,
+/* 227 */,
+/* 228 */,
+/* 229 */
 /*!**************************************************************************!*\
   !*** E:/面试项目/uniapp-v2/uni_modules/uview-ui/components/u-input/props.js ***!
   \**************************************************************************/
@@ -21156,89 +21895,17 @@ exports.default = _default;
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 2)["default"]))
 
 /***/ }),
-/* 209 */,
-/* 210 */,
-/* 211 */,
-/* 212 */,
-/* 213 */,
-/* 214 */,
-/* 215 */,
-/* 216 */
-/*!*******************************************************************!*\
-  !*** E:/面试项目/uniapp-v2/uni_modules/uview-ui/libs/mixin/button.js ***!
-  \*******************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = void 0;
-var _default = {
-  props: {
-    lang: String,
-    sessionFrom: String,
-    sendMessageTitle: String,
-    sendMessagePath: String,
-    sendMessageImg: String,
-    showMessageCard: Boolean,
-    appParameter: String,
-    formType: String,
-    openType: String
-  }
-};
-exports.default = _default;
-
-/***/ }),
-/* 217 */
-/*!*********************************************************************!*\
-  !*** E:/面试项目/uniapp-v2/uni_modules/uview-ui/libs/mixin/openType.js ***!
-  \*********************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = void 0;
-var _default = {
-  props: {
-    openType: String
-  },
-  methods: {
-    onGetUserInfo: function onGetUserInfo(event) {
-      this.$emit('getuserinfo', event.detail);
-    },
-    onContact: function onContact(event) {
-      this.$emit('contact', event.detail);
-    },
-    onGetPhoneNumber: function onGetPhoneNumber(event) {
-      this.$emit('getphonenumber', event.detail);
-    },
-    onError: function onError(event) {
-      this.$emit('error', event.detail);
-    },
-    onLaunchApp: function onLaunchApp(event) {
-      this.$emit('launchapp', event.detail);
-    },
-    onOpenSetting: function onOpenSetting(event) {
-      this.$emit('opensetting', event.detail);
-    }
-  }
-};
-exports.default = _default;
-
-/***/ }),
-/* 218 */
-/*!***************************************************************************!*\
-  !*** E:/面试项目/uniapp-v2/uni_modules/uview-ui/components/u-button/props.js ***!
-  \***************************************************************************/
+/* 230 */,
+/* 231 */,
+/* 232 */,
+/* 233 */,
+/* 234 */,
+/* 235 */,
+/* 236 */,
+/* 237 */
+/*!*****************************************************************************!*\
+  !*** E:/面试项目/uniapp-v2/uni_modules/uview-ui/components/u-textarea/props.js ***!
+  \*****************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -21249,164 +21916,122 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.default = void 0;
-/*
- * @Author       : LQ
- * @Description  :
- * @version      : 1.0
- * @Date         : 2021-08-16 10:04:04
- * @LastAuthor   : LQ
- * @lastTime     : 2021-08-16 10:04:24
- * @FilePath     : /u-view2.0/uview-ui/components/u-button/props.js
- */
 var _default = {
   props: {
-    // 是否细边框
-    hairline: {
-      type: Boolean,
-      default: uni.$u.props.button.hairline
+    // 输入框的内容
+    value: {
+      type: [String, Number],
+      default: uni.$u.props.textarea.value
     },
-    // 按钮的预置样式，info，primary，error，warning，success
-    type: {
+    // 输入框为空时占位符
+    placeholder: {
+      type: [String, Number],
+      default: uni.$u.props.textarea.placeholder
+    },
+    // 指定placeholder的样式类，注意页面或组件的style中写了scoped时，需要在类名前写/deep/
+    placeholderClass: {
       type: String,
-      default: uni.$u.props.button.type
+      default: uni.$u.props.input.placeholderClass
     },
-    // 按钮尺寸，large，normal，small，mini
-    size: {
+    // 指定placeholder的样式
+    placeholderStyle: {
+      type: [String, Object],
+      default: uni.$u.props.input.placeholderStyle
+    },
+    // 输入框高度
+    height: {
+      type: [String, Number],
+      default: uni.$u.props.textarea.height
+    },
+    // 设置键盘右下角按钮的文字，仅微信小程序，App-vue和H5有效
+    confirmType: {
       type: String,
-      default: uni.$u.props.button.size
+      default: uni.$u.props.textarea.confirmType
     },
-    // 按钮形状，circle（两边为半圆），square（带圆角）
-    shape: {
-      type: String,
-      default: uni.$u.props.button.shape
-    },
-    // 按钮是否镂空
-    plain: {
-      type: Boolean,
-      default: uni.$u.props.button.plain
-    },
-    // 是否禁止状态
+    // 是否禁用
     disabled: {
       type: Boolean,
-      default: uni.$u.props.button.disabled
+      default: uni.$u.props.textarea.disabled
     },
-    // 是否加载中
-    loading: {
+    // 是否显示统计字数
+    count: {
       type: Boolean,
-      default: uni.$u.props.button.loading
+      default: uni.$u.props.textarea.count
     },
-    // 加载中提示文字
-    loadingText: {
-      type: [String, Number],
-      default: uni.$u.props.button.loadingText
-    },
-    // 加载状态图标类型
-    loadingMode: {
-      type: String,
-      default: uni.$u.props.button.loadingMode
-    },
-    // 加载图标大小
-    loadingSize: {
-      type: [String, Number],
-      default: uni.$u.props.button.loadingSize
-    },
-    // 开放能力，具体请看uniapp稳定关于button组件部分说明
-    // https://uniapp.dcloud.io/component/button
-    openType: {
-      type: String,
-      default: uni.$u.props.button.openType
-    },
-    // 用于 <form> 组件，点击分别会触发 <form> 组件的 submit/reset 事件
-    // 取值为submit（提交表单），reset（重置表单）
-    formType: {
-      type: String,
-      default: uni.$u.props.button.formType
-    },
-    // 打开 APP 时，向 APP 传递的参数，open-type=launchApp时有效
-    // 只微信小程序、QQ小程序有效
-    appParameter: {
-      type: String,
-      default: uni.$u.props.button.appParameter
-    },
-    // 指定是否阻止本节点的祖先节点出现点击态，微信小程序有效
-    hoverStopPropagation: {
+    // 是否自动获取焦点，nvue不支持，H5取决于浏览器的实现
+    focus: {
       type: Boolean,
-      default: uni.$u.props.button.hoverStopPropagation
+      default: uni.$u.props.textarea.focus
     },
-    // 指定返回用户信息的语言，zh_CN 简体中文，zh_TW 繁体中文，en 英文。只微信小程序有效
-    lang: {
-      type: String,
-      default: uni.$u.props.button.lang
-    },
-    // 会话来源，open-type="contact"时有效。只微信小程序有效
-    sessionFrom: {
-      type: String,
-      default: uni.$u.props.button.sessionFrom
-    },
-    // 会话内消息卡片标题，open-type="contact"时有效
-    // 默认当前标题，只微信小程序有效
-    sendMessageTitle: {
-      type: String,
-      default: uni.$u.props.button.sendMessageTitle
-    },
-    // 会话内消息卡片点击跳转小程序路径，open-type="contact"时有效
-    // 默认当前分享路径，只微信小程序有效
-    sendMessagePath: {
-      type: String,
-      default: uni.$u.props.button.sendMessagePath
-    },
-    // 会话内消息卡片图片，open-type="contact"时有效
-    // 默认当前页面截图，只微信小程序有效
-    sendMessageImg: {
-      type: String,
-      default: uni.$u.props.button.sendMessageImg
-    },
-    // 是否显示会话内消息卡片，设置此参数为 true，用户进入客服会话会在右下角显示"可能要发送的小程序"提示，
-    // 用户点击后可以快速发送小程序消息，open-type="contact"时有效
-    showMessageCard: {
+    // 是否自动增加高度
+    autoHeight: {
       type: Boolean,
-      default: uni.$u.props.button.showMessageCard
+      default: uni.$u.props.textarea.autoHeight
     },
-    // 额外传参参数，用于小程序的data-xxx属性，通过target.dataset.name获取
-    dataName: {
-      type: String,
-      default: uni.$u.props.button.dataName
+    // 如果textarea是在一个position:fixed的区域，需要显示指定属性fixed为true
+    fixed: {
+      type: Boolean,
+      default: uni.$u.props.textarea.fixed
     },
-    // 节流，一定时间内只能触发一次
-    throttleTime: {
+    // 指定光标与键盘的距离
+    cursorSpacing: {
+      type: Number,
+      default: uni.$u.props.textarea.cursorSpacing
+    },
+    // 指定focus时的光标位置
+    cursor: {
       type: [String, Number],
-      default: uni.$u.props.button.throttleTime
+      default: uni.$u.props.textarea.cursor
     },
-    // 按住后多久出现点击态，单位毫秒
-    hoverStartTime: {
+    // 是否显示键盘上方带有”完成“按钮那一栏，
+    showConfirmBar: {
+      type: Boolean,
+      default: uni.$u.props.textarea.showConfirmBar
+    },
+    // 光标起始位置，自动聚焦时有效，需与selection-end搭配使用
+    selectionStart: {
+      type: Number,
+      default: uni.$u.props.textarea.selectionStart
+    },
+    // 光标结束位置，自动聚焦时有效，需与selection-start搭配使用
+    selectionEnd: {
+      type: Number,
+      default: uni.$u.props.textarea.selectionEnd
+    },
+    // 键盘弹起时，是否自动上推页面
+    adjustPosition: {
+      type: Boolean,
+      default: uni.$u.props.textarea.adjustPosition
+    },
+    // 是否去掉 iOS 下的默认内边距，只微信小程序有效
+    disableDefaultPadding: {
+      type: Boolean,
+      default: uni.$u.props.textarea.disableDefaultPadding
+    },
+    // focus时，点击页面的时候不收起键盘，只微信小程序有效
+    holdKeyboard: {
+      type: Boolean,
+      default: uni.$u.props.textarea.holdKeyboard
+    },
+    // 最大输入长度，设置为 -1 的时候不限制最大长度
+    maxlength: {
       type: [String, Number],
-      default: uni.$u.props.button.hoverStartTime
+      default: uni.$u.props.textarea.maxlength
     },
-    // 手指松开后点击态保留时间，单位毫秒
-    hoverStayTime: {
-      type: [String, Number],
-      default: uni.$u.props.button.hoverStayTime
-    },
-    // 按钮文字，之所以通过props传入，是因为slot传入的话
-    // nvue中无法控制文字的样式
-    text: {
-      type: [String, Number],
-      default: uni.$u.props.button.text
-    },
-    // 按钮图标
-    icon: {
+    // 边框类型，surround-四周边框，bottom-底部边框
+    border: {
       type: String,
-      default: uni.$u.props.button.icon
+      default: uni.$u.props.textarea.border
     },
-    // 按钮图标
-    iconColor: {
-      type: String,
-      default: uni.$u.props.button.icon
+    // 用于处理或者过滤输入框内容的方法
+    formatter: {
+      type: [Function, null],
+      default: uni.$u.props.textarea.formatter
     },
-    // 按钮颜色，支持传入linear-gradient渐变色
-    color: {
-      type: String,
-      default: uni.$u.props.button.color
+    // 是否忽略组件内对文本合成系统事件的处理
+    ignoreCompositionEvent: {
+      type: Boolean,
+      default: true
     }
   }
 };
@@ -21414,14 +22039,98 @@ exports.default = _default;
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 2)["default"]))
 
 /***/ }),
-/* 219 */,
-/* 220 */,
-/* 221 */,
-/* 222 */,
-/* 223 */,
-/* 224 */,
-/* 225 */,
-/* 226 */
+/* 238 */,
+/* 239 */,
+/* 240 */,
+/* 241 */,
+/* 242 */,
+/* 243 */,
+/* 244 */,
+/* 245 */
+/*!*********************************************************************************!*\
+  !*** E:/面试项目/uniapp-v2/uni_modules/uview-ui/components/u-loading-icon/props.js ***!
+  \*********************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(uni) {
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+var _default = {
+  props: {
+    // 是否显示组件
+    show: {
+      type: Boolean,
+      default: uni.$u.props.loadingIcon.show
+    },
+    // 颜色
+    color: {
+      type: String,
+      default: uni.$u.props.loadingIcon.color
+    },
+    // 提示文字颜色
+    textColor: {
+      type: String,
+      default: uni.$u.props.loadingIcon.textColor
+    },
+    // 文字和图标是否垂直排列
+    vertical: {
+      type: Boolean,
+      default: uni.$u.props.loadingIcon.vertical
+    },
+    // 模式选择，circle-圆形，spinner-花朵形，semicircle-半圆形
+    mode: {
+      type: String,
+      default: uni.$u.props.loadingIcon.mode
+    },
+    // 图标大小，单位默认px
+    size: {
+      type: [String, Number],
+      default: uni.$u.props.loadingIcon.size
+    },
+    // 文字大小
+    textSize: {
+      type: [String, Number],
+      default: uni.$u.props.loadingIcon.textSize
+    },
+    // 文字内容
+    text: {
+      type: [String, Number],
+      default: uni.$u.props.loadingIcon.text
+    },
+    // 动画模式
+    timingFunction: {
+      type: String,
+      default: uni.$u.props.loadingIcon.timingFunction
+    },
+    // 动画执行周期时间
+    duration: {
+      type: [String, Number],
+      default: uni.$u.props.loadingIcon.duration
+    },
+    // mode=circle时的暗边颜色
+    inactiveColor: {
+      type: String,
+      default: uni.$u.props.loadingIcon.inactiveColor
+    }
+  }
+};
+exports.default = _default;
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 2)["default"]))
+
+/***/ }),
+/* 246 */,
+/* 247 */,
+/* 248 */,
+/* 249 */,
+/* 250 */,
+/* 251 */,
+/* 252 */,
+/* 253 */
 /*!*************************************************************************!*\
   !*** E:/面试项目/uniapp-v2/uni_modules/uview-ui/components/u-icon/icons.js ***!
   \*************************************************************************/
@@ -21652,7 +22361,7 @@ var _default = {
 exports.default = _default;
 
 /***/ }),
-/* 227 */
+/* 254 */
 /*!*************************************************************************!*\
   !*** E:/面试项目/uniapp-v2/uni_modules/uview-ui/components/u-icon/props.js ***!
   \*************************************************************************/
@@ -21759,14 +22468,14 @@ exports.default = _default;
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 2)["default"]))
 
 /***/ }),
-/* 228 */,
-/* 229 */,
-/* 230 */,
-/* 231 */,
-/* 232 */,
-/* 233 */,
-/* 234 */,
-/* 235 */
+/* 255 */,
+/* 256 */,
+/* 257 */,
+/* 258 */,
+/* 259 */,
+/* 260 */,
+/* 261 */,
+/* 262 */
 /*!*************************************************************************!*\
   !*** E:/面试项目/uniapp-v2/uni_modules/uview-ui/components/u-line/props.js ***!
   \*************************************************************************/
@@ -21817,88 +22526,273 @@ exports.default = _default;
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 2)["default"]))
 
 /***/ }),
-/* 236 */,
-/* 237 */,
-/* 238 */,
-/* 239 */,
-/* 240 */,
-/* 241 */,
-/* 242 */,
-/* 243 */
-/*!*********************************************************************************!*\
-  !*** E:/面试项目/uniapp-v2/uni_modules/uview-ui/components/u-loading-icon/props.js ***!
-  \*********************************************************************************/
+/* 263 */,
+/* 264 */,
+/* 265 */,
+/* 266 */,
+/* 267 */,
+/* 268 */,
+/* 269 */,
+/* 270 */,
+/* 271 */,
+/* 272 */,
+/* 273 */,
+/* 274 */,
+/* 275 */,
+/* 276 */,
+/* 277 */,
+/* 278 */,
+/* 279 */,
+/* 280 */,
+/* 281 */,
+/* 282 */,
+/* 283 */
+/*!************************************!*\
+  !*** E:/面试项目/uniapp-v2/api/tag.js ***!
+  \************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-"use strict";
-/* WEBPACK VAR INJECTION */(function(uni) {
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = void 0;
-var _default = {
-  props: {
-    // 是否显示组件
-    show: {
-      type: Boolean,
-      default: uni.$u.props.loadingIcon.show
-    },
-    // 颜色
-    color: {
-      type: String,
-      default: uni.$u.props.loadingIcon.color
-    },
-    // 提示文字颜色
-    textColor: {
-      type: String,
-      default: uni.$u.props.loadingIcon.textColor
-    },
-    // 文字和图标是否垂直排列
-    vertical: {
-      type: Boolean,
-      default: uni.$u.props.loadingIcon.vertical
-    },
-    // 模式选择，circle-圆形，spinner-花朵形，semicircle-半圆形
-    mode: {
-      type: String,
-      default: uni.$u.props.loadingIcon.mode
-    },
-    // 图标大小，单位默认px
-    size: {
-      type: [String, Number],
-      default: uni.$u.props.loadingIcon.size
-    },
-    // 文字大小
-    textSize: {
-      type: [String, Number],
-      default: uni.$u.props.loadingIcon.textSize
-    },
-    // 文字内容
-    text: {
-      type: [String, Number],
-      default: uni.$u.props.loadingIcon.text
-    },
-    // 动画模式
-    timingFunction: {
-      type: String,
-      default: uni.$u.props.loadingIcon.timingFunction
-    },
-    // 动画执行周期时间
-    duration: {
-      type: [String, Number],
-      default: uni.$u.props.loadingIcon.duration
-    },
-    // mode=circle时的暗边颜色
-    inactiveColor: {
-      type: String,
-      default: uni.$u.props.loadingIcon.inactiveColor
+var _defineProperty = __webpack_require__(/*! @babel/runtime/helpers/defineProperty */ 11);
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); enumerableOnly && (symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; })), keys.push.apply(keys, symbols); } return keys; }
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = null != arguments[i] ? arguments[i] : {}; i % 2 ? ownKeys(Object(source), !0).forEach(function (key) { _defineProperty(target, key, source[key]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)) : ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } return target; }
+var http = __webpack_require__(/*! ../common/http */ 166);
+function createTagApi(client) {
+  var request = client.request;
+  return {
+    list: function list() {
+      return request('/api/tags/list', {});
     }
-  }
+  };
+}
+var tagApi = createTagApi(http);
+module.exports = _objectSpread({
+  createTagApi: createTagApi
+}, tagApi);
+
+/***/ }),
+/* 284 */,
+/* 285 */,
+/* 286 */,
+/* 287 */,
+/* 288 */,
+/* 289 */,
+/* 290 */,
+/* 291 */,
+/* 292 */,
+/* 293 */,
+/* 294 */,
+/* 295 */
+/*!*********************************************!*\
+  !*** E:/面试项目/uniapp-v2/mock/user-center.js ***!
+  \*********************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var _defineProperty = __webpack_require__(/*! @babel/runtime/helpers/defineProperty */ 11);
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); enumerableOnly && (symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; })), keys.push.apply(keys, symbols); } return keys; }
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = null != arguments[i] ? arguments[i] : {}; i % 2 ? ownKeys(Object(source), !0).forEach(function (key) { _defineProperty(target, key, source[key]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)) : ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } return target; }
+var followingUsers = [{
+  id: 2,
+  username: 'alice',
+  bio: '专注 Node.js 与服务端工程。',
+  image: '',
+  following: true
+}, {
+  id: 3,
+  username: 'bob',
+  bio: '喜欢 Vue、uni-app 和产品设计。',
+  image: '',
+  following: true
+}, {
+  id: 4,
+  username: 'carol',
+  bio: '记录测试、重构与团队协作。',
+  image: '',
+  following: true
+}];
+var followerUsers = [{
+  id: 5,
+  username: 'dave',
+  bio: '全栈开发者，正在学习 TypeScript。',
+  image: '',
+  following: false
+}, {
+  id: 6,
+  username: 'emma',
+  bio: '关注前端体验与小程序开发。',
+  image: '',
+  following: true
+}];
+var currentAuthor = {
+  id: 1,
+  username: 'me',
+  bio: '这是我的演示主页。',
+  image: '',
+  following: false
 };
-exports.default = _default;
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 2)["default"]))
+var myArticles = [{
+  id: 101,
+  slug: 'my-express-notes',
+  title: 'Express 接口开发笔记',
+  description: '从路由、校验到统一响应结构的实践记录。',
+  body: '',
+  author: currentAuthor,
+  tags: ['Node.js', 'Express'],
+  favorited: false,
+  favoritesCount: 12,
+  createdAt: '2026-08-25T08:00:00.000Z'
+}, {
+  id: 102,
+  slug: 'my-uniapp-notes',
+  title: 'uni-app 小程序页面搭建',
+  description: '登录态、分页和详情页面的实现思路。',
+  body: '',
+  author: currentAuthor,
+  tags: ['uni-app', 'Vue'],
+  favorited: true,
+  favoritesCount: 8,
+  createdAt: '2026-08-23T08:00:00.000Z'
+}, {
+  id: 103,
+  slug: 'my-interview-review',
+  title: '项目面试复盘清单',
+  description: '如何介绍项目结构、接口设计和错误处理。',
+  body: '',
+  author: currentAuthor,
+  tags: ['面试', '工程化'],
+  favorited: false,
+  favoritesCount: 5,
+  createdAt: '2026-08-20T08:00:00.000Z'
+}];
+var favoriteArticles = [{
+  id: 201,
+  slug: 'alice-node-practice',
+  title: 'Node.js 服务稳定性实践',
+  description: '从异常处理到日志追踪的完整思路。',
+  body: '',
+  author: followingUsers[0],
+  tags: ['Node.js'],
+  favorited: true,
+  favoritesCount: 32,
+  createdAt: '2026-08-24T08:00:00.000Z'
+}, {
+  id: 202,
+  slug: 'bob-vue-state',
+  title: 'Vue 页面状态管理避坑',
+  description: '慢请求、重复提交和页面返回时的状态处理。',
+  body: '',
+  author: followingUsers[1],
+  tags: ['Vue'],
+  favorited: true,
+  favoritesCount: 27,
+  createdAt: '2026-08-22T08:00:00.000Z'
+}, {
+  id: 203,
+  slug: 'emma-mini-program',
+  title: '小程序交互体验细节',
+  description: '列表、空状态和错误提示的设计建议。',
+  body: '',
+  author: followerUsers[1],
+  tags: ['小程序', '体验'],
+  favorited: true,
+  favoritesCount: 19,
+  createdAt: '2026-08-18T08:00:00.000Z'
+}];
+var currentUserStats = {
+  followingCount: followingUsers.length,
+  followersCount: followerUsers.length,
+  articlesCount: myArticles.length,
+  favoritesCount: favoriteArticles.length
+};
+function getMockProfile(username) {
+  var profiles = [currentAuthor].concat(followingUsers, followerUsers);
+  var found = profiles.find(function (profile) {
+    return profile.username === username;
+  });
+  if (found) return _objectSpread({}, found);
+  return {
+    id: 0,
+    username: username || 'unknown',
+    bio: '这是一个用于页面联调的作者主页，接口接入后会显示真实资料。',
+    image: '',
+    following: false
+  };
+}
+function getMockMyArticles(user) {
+  var author = {
+    id: user && user.id ? user.id : currentAuthor.id,
+    username: user && user.username ? user.username : currentAuthor.username,
+    bio: user && typeof user.bio === 'string' ? user.bio : currentAuthor.bio,
+    image: user && typeof user.image === 'string' ? user.image : currentAuthor.image,
+    following: false
+  };
+  return myArticles.map(function (article) {
+    return _objectSpread(_objectSpread({}, article), {}, {
+      author: author
+    });
+  });
+}
+module.exports = {
+  currentUserStats: currentUserStats,
+  followingUsers: followingUsers,
+  followerUsers: followerUsers,
+  myArticles: myArticles,
+  favoriteArticles: favoriteArticles,
+  getMockProfile: getMockProfile,
+  getMockMyArticles: getMockMyArticles
+};
+
+/***/ }),
+/* 296 */,
+/* 297 */,
+/* 298 */,
+/* 299 */,
+/* 300 */,
+/* 301 */,
+/* 302 */,
+/* 303 */,
+/* 304 */,
+/* 305 */,
+/* 306 */,
+/* 307 */,
+/* 308 */,
+/* 309 */,
+/* 310 */,
+/* 311 */,
+/* 312 */,
+/* 313 */,
+/* 314 */,
+/* 315 */
+/*!****************************************!*\
+  !*** E:/面试项目/uniapp-v2/api/profile.js ***!
+  \****************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var _defineProperty = __webpack_require__(/*! @babel/runtime/helpers/defineProperty */ 11);
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); enumerableOnly && (symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; })), keys.push.apply(keys, symbols); } return keys; }
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = null != arguments[i] ? arguments[i] : {}; i % 2 ? ownKeys(Object(source), !0).forEach(function (key) { _defineProperty(target, key, source[key]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)) : ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } return target; }
+var http = __webpack_require__(/*! ../common/http */ 166);
+function createProfileApi(client) {
+  var request = client.request;
+  return {
+    followingList: function followingList(userId) {
+      return request('/api/profiles/followingList', {
+        userId: userId
+      });
+    },
+    followedList: function followedList(userId) {
+      return request('/api/profiles/followedList', {
+        userId: userId
+      });
+    }
+  };
+}
+var profileApi = createProfileApi(http);
+module.exports = _objectSpread({
+  createProfileApi: createProfileApi
+}, profileApi);
 
 /***/ })
 ]]);

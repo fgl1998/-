@@ -1,5 +1,5 @@
-import { title } from 'node:process';
 import {z} from 'zod'
+import {PaginationSchema} from '../../utils/pagination.js'
 
 export const CreateArticleSchema = z.object({
   // authorId: z.number(),
@@ -73,3 +73,16 @@ export const CommentListSchema = z.object({
 export const CommentDeleteSchema = z.object({
   commentId: z.number().int().positive(),
 })
+
+
+export const ArticleListSchema = PaginationSchema.extend({
+  tag: z.string().trim().min(1).max(100).optional(),
+  author: z.string().trim().min(1).max(100).optional(),
+})
+
+export type ArticleListInput = z.infer<typeof ArticleListSchema>
+
+export type ArticleListFilter = Omit<
+  ArticleListInput,
+  'page' | 'pageSize'
+>

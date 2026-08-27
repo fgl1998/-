@@ -61,7 +61,7 @@ export async function list(req:Request,res:Response,next:NextFunction) {
     if(!req.userId){
       throw new UserUnauthrized()
     }
-    const list = await articleService.list(req.userId)
+    const list = await articleService.list(req.userId,input)
     return res.status(200).json({
       success: true,
       code: 'ARTICLE_FOUND',

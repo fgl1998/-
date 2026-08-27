@@ -55,3 +55,31 @@ export async function unfollow(req:Request,res:Response,next:NextFunction){
     next(error)
   }
 }
+
+export async function followingList(req:Request,res:Response,next:NextFunction){ 
+  try {
+    const input = req.body
+    const result =await profileService.followingList(input.userId)
+    return res.status(200).json({
+      success: true,
+      code: 'PROFILE_FOLLOWING_LIST',
+      data: result
+    })
+  }catch (error) {
+    next(error)
+  }
+}
+
+export async function followedList(req:Request,res:Response,next:NextFunction){ 
+  try {
+    const input = req.body
+    const result =await profileService.followedList(input.userId)
+    return res.status(200).json({
+      success: true,
+      code: 'PROFILE_FOLLOWED_LIST',
+      data: result
+    })
+  }catch (error) {
+    next(error)
+  }
+}

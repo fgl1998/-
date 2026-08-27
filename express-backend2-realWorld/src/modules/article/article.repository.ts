@@ -9,7 +9,7 @@ import { ArticleRow ,TagRow, ArticleQueryRow,toArticleQuery,TagQueryRow,toTagQue
   QueryArticleDetailRow,toQueryFollowingArticle,CommentRow,toComment
 } from './article.mapper.js'
 import type {Article,ArticleQuery,TagQuery,QueryFollowingArticle,QueryArticleDetail,QueryComment} from './article.entity.js'
-
+import type{ RowDataPacket } from 'mysql2'
 
 export interface ArticleRepository {
   create(input: CreateArticleData):Promise<number>
@@ -20,7 +20,8 @@ export interface ArticleRepository {
   updateArticle(updateData:UpdateArticleInput):Promise<number>
   deleteArticle(articleId: number):Promise<boolean>
 
-  articleList(currentUserId:number): Promise<ArticleQuery[]>
+  articleList(currentUserId:number,limit:number,offset:number): Promise<ArticleQuery[]>
+  articleCount(): Promise<number>
   tagList(articleIdList:number[]): Promise<TagQuery[]>
 
   followingArticleList(currentUserId:number): Promise<QueryFollowingArticle[]>
@@ -238,7 +239,7 @@ export const articleRepository:ArticleRepository = {
   //   return rows[0] ? toArticle(rows[0],[]) : null
   // },
 
-  async articleList(currentUserId:number):Promise<ArticleQuery[]>{
+  async articleList(currentUserId:number,limit:number,offset:number):Promise<ArticleQuery[]>{
     const [rows] = await pool.query<ArticleQueryRow[]>(
       `
       SELECT
@@ -273,11 +274,22 @@ export const articleRepository:ArticleRepository = {
       ORDER BY a.created_at DESC
       LIMIT ? OFFSET ?
       `,
-      [currentUserId,10,0]
+      [currentUserId,limit,offset]
     )
 
     return rows.map(row=>toArticleQuery(row))
 
+  },
+
+  async articleCount(): Promise<number> {
+    const [rows] = await pool.query<RowDataPacket[]>(
+      `
+      SELECT COUNT(*) AS total
+      FROM articles
+      `
+    )
+
+    return Number(rows[0]?.total ?? 0)
   },
 
   async tagList(articleIdList):Promise<TagQuery[]>{
@@ -316,7 +328,7 @@ export const articleRepository:ArticleRepository = {
         1 AS following,
 
       EXISTS(
-        SELECT 1 FROM favorites WHERE favorites.user_id=? AND favorites.author_id=articles.id
+        SELECT 1 FROM favorites WHERE favorites.user_id=? AND favorites.article_id=articles.id
       ) AS favorited,
 
       (
@@ -463,9 +475,10 @@ export const articleRepository:ArticleRepository = {
       FROM comments
       JOIN users
         ON users.id = comments.author_id
-      WHERE id=?
+      WHERE comments.id=?
       LIMIT 1
       `
+      //  WHERE comments.id=?
       ,
       [currentUserId,commentId]
     )

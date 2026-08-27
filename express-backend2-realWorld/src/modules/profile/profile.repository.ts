@@ -14,6 +14,8 @@ export interface ProfileRepository {
   unfollow(currentUserId:number,following_id:number):Promise<void>
   findUserByUsername(username:string):Promise<number|null>
   findUserById(id:number):Promise<number|null>
+  followingList(userId:number):Promise<Profile[]>
+  followedList(userId:number):Promise<Profile[]>
 
 }
 
@@ -71,4 +73,45 @@ export const profileRepository:ProfileRepository = {
       [currentUserId,following_id]
     )
   },
+  //关注列表
+  async followingList(userId:number):Promise<Profile[]>{ 
+    const [rows] = await pool.execute<ProfileRow[]>(
+      `
+      SELECT 
+        users.id,
+        users.username,
+        users.image,
+        users.bio,
+        users.created_at,
+        1 AS following
+      FROM follows
+      JOIN users ON follows.following_id=users.id
+      WHERE follows.follower_id=?
+      `,
+      [userId]
+    )
+    return rows.map(toProfile)
+  },
+  //粉丝列表
+  async followedList(userId:number):Promise<Profile[]>{ 
+    const [rows] = await pool.execute<ProfileRow[]>(
+      `
+      SELECT 
+        users.id,
+        users.username,
+        users.image,
+        users.bio,
+        users.created_at,
+        EXISTS(
+				  SELECT 1 from follows WHERE follows.following_id=users.id AND follows.follower_id=?
+				) AS following
+      FROM follows
+      JOIN users ON follows.follower_id=users.id
+      WHERE follows.following_id=?
+      `,
+      [userId,userId]
+    )
+    	
+    return rows.map(toProfile)
+  }
 }

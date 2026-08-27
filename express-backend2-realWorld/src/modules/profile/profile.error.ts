@@ -6,3 +6,13 @@ export class UserUnauthrized extends AppError {
     super('Unauthorized',401,'USER_UNAUTHRIZED' );
   }
 }
+
+export class CannotFollowSelfError extends AppError {
+  constructor() {
+    super(
+      'CANNOT_FOLLOW_SELF',
+      400,
+      '不能关注自己'
+    )
+  }
+}

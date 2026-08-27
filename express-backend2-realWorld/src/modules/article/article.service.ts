@@ -1,10 +1,13 @@
   import type { ArticleOutput,QueryFollowingArticleOutput,QueryArticleDetailOutput,QueryCommentOutput } from '../article/article.dto.js'
   import { articleRepository } from '../article/article.repository.js'
-  import type { CreateArticleInput,CreateArticleData,UpdateArticleInput,CommentsCerateInput } from '../article/article.schema.js'
+  import type { CreateArticleInput,CreateArticleData,
+    UpdateArticleInput,CommentsCerateInput,ArticleListInput } from '../article/article.schema.js'
   import {ArticleNotFoundError,CommentNotFoundError} from './article.error.js'
   import { generateSlug } from '../../utils/article.util.js'
   import {ForbiddenError} from '../../errors/common.error.js'
   import type { Tag } from '../article/article.entity.js'
+
+  import { createPageResult, getPagination,PageResult } from '../../utils/pagination.js'
   
   
   export interface ArticleService {
@@ -12,12 +15,12 @@
     update(currentUserId:number,input:UpdateArticleInput):Promise<QueryArticleDetailOutput|null>
     deleteByArticleId(currentUserId:number,articleId:number):Promise<boolean>
 
-    list(currentUserId:number):Promise<ArticleOutput[]>
+    list(currentUserId:number,input:ArticleListInput):Promise<PageResult<ArticleOutput>>
     feed(currentUserId:number):Promise<QueryFollowingArticleOutput[]>
     detail(currentUserId:number,slug:string):Promise<QueryArticleDetailOutput|null>
 
-    favorite(currentUserId:number,articleId:number):Promise<{favorite:true}>
-    unfavorite(currentUserId:number,articleId:number):Promise<{favorite:false}>
+    favorite(currentUserId:number,articleId:number):Promise<{favorited:true}>
+    unfavorite(currentUserId:number,articleId:number):Promise<{favorited:false}>
 
     commentCreate(currentUserId:number,input:CommentsCerateInput):Promise<QueryCommentOutput|null>
     commentList(articleId:number,currentUserId:number):Promise<QueryCommentOutput[]>
@@ -79,8 +82,14 @@
       return await articleRepository.deleteArticle(articleId)
     },
 
-    async list(currentUserId:number):Promise<ArticleOutput[]>{
-      const articleList = await articleRepository.articleList(currentUserId)
+    async list(currentUserId:number,input:ArticleListInput):Promise<PageResult<ArticleOutput>>{
+      const {page,pageSize} = input
+      const {limit,offset} = getPagination(page,pageSize)
+      // const articleList = await articleRepository.articleList(currentUserId,limit,offset)
+      const [articleList,total] = await Promise.all([
+        articleRepository.articleList(currentUserId,limit,offset),
+        articleRepository.articleCount()
+      ])
       const articleIdList = articleList.map(article=>article.id)
       const tagList = await articleRepository.tagList(articleIdList)
 
@@ -90,8 +99,7 @@
         tags.push(tag)
         map.set(tag.article_id,tags)
       }
-
-      return articleList.map(article=>{
+      const articleListWithTag = articleList.map(article=>{
         return {
           ...article,
           createdAt:article.createdAt.toISOString(),
@@ -99,6 +107,8 @@
           tags:map.get(article.id)||[],
         }
       })
+
+      return createPageResult<ArticleOutput>(articleListWithTag,total,page,pageSize)
     },
 
     async feed(currentUserId:number):Promise<QueryFollowingArticleOutput[]>{ 
@@ -127,21 +137,21 @@
       }
     },
 
-    async favorite(currentUserId:number,articleId:number):Promise<{favorite:true}>{
+    async favorite(currentUserId:number,articleId:number):Promise<{favorited:true}>{
       const article = await articleRepository.articleDetailById(currentUserId,articleId)
       if(!article){
         throw new ArticleNotFoundError()
       }
       await articleRepository.favorite(currentUserId,articleId)
-      return {favorite:true}
+      return {favorited:true}
     },
-    async unfavorite(currentUserId:number,articleId:number):Promise<{favorite:false}>{
+    async unfavorite(currentUserId:number,articleId:number):Promise<{favorited:false}>{
       const article = await articleRepository.articleDetailById(currentUserId,articleId)
       if(!article){
         throw new ArticleNotFoundError()
       }
       await articleRepository.unfavorite(currentUserId,articleId)
-      return {favorite:false}
+      return {favorited:false}
     },
 
     async commentCreate(currentUserId:number,input:CommentsCerateInput):Promise<QueryCommentOutput|null>{

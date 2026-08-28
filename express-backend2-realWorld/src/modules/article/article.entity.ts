@@ -40,6 +40,20 @@ export interface ArticleQuery {
     image: string | null
   }
 }
+export interface ArticleQueryByUserId{
+  id: number
+  slug: string
+  title: string
+  description: string
+  body: string
+  createdAt: Date
+  updatedAt: Date
+  favorites_count: number
+  author_id: number
+  author_username: string
+  author_bio: string | null
+  author_image: string | null
+}
 
 export interface TagQuery{
   article_id: number

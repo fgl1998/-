@@ -94,6 +94,177 @@ function rawComment(id, body) {
   }
 }
 
+test('login page opens the registration page for users without an account', () => {
+  const urls = []
+  const { instance } = loadPage('pages/login/login.vue', {
+    '../../api/user': {},
+    '../../common/session': {},
+  }, {
+    navigateTo({ url }) {
+      urls.push(url)
+    },
+  })
+
+  instance.openRegister()
+
+  assert.deepEqual(urls, ['/pages/register/register'])
+})
+
+test('registration creates the account then returns to login without signing in', async () => {
+  const calls = []
+  const destinations = []
+  const toasts = []
+  const { instance } = loadPage('pages/register/register.vue', {
+    '../../api/user': {
+      register(username, email, password) {
+        calls.push({ method: 'register', username, email, password })
+        return Promise.resolve({ id: 7, username, email })
+      },
+      login() {
+        throw new Error('registration must not sign in automatically')
+      },
+    },
+  }, {
+    showToast(options) {
+      toasts.push(options)
+    },
+    navigateBack() {
+      destinations.push('login')
+    },
+  })
+  instance.form = {
+    username: ' alice ',
+    email: ' alice@example.com ',
+    password: 'secret',
+    confirmPassword: 'secret',
+  }
+
+  await instance.handleRegister()
+
+  assert.deepEqual(calls, [
+    { method: 'register', username: 'alice', email: 'alice@example.com', password: 'secret' },
+  ])
+  assert.equal(toasts[0].title, '注册成功，请登录')
+  assert.deepEqual(destinations, ['login'])
+  assert.equal(instance.submitting, false)
+})
+
+test('registration rejects mismatched passwords before calling the API', async () => {
+  let apiCalls = 0
+  const toasts = []
+  const { instance } = loadPage('pages/register/register.vue', {
+    '../../api/user': {
+      register() {
+        apiCalls += 1
+      },
+      login() {
+        apiCalls += 1
+      },
+    },
+    '../../common/session': {},
+  }, {
+    showToast(options) {
+      toasts.push(options)
+    },
+  })
+  instance.form = {
+    username: 'alice',
+    email: 'alice@example.com',
+    password: 'secret',
+    confirmPassword: 'different',
+  }
+
+  await instance.handleRegister()
+
+  assert.equal(apiCalls, 0)
+  assert.equal(toasts[0].title, '两次输入的密码不一致')
+})
+
+test('registration rejects usernames over 20 characters and backend-invalid emails', async () => {
+  let apiCalls = 0
+  const toasts = []
+  const { instance } = loadPage('pages/register/register.vue', {
+    '../../api/user': {
+      register() {
+        apiCalls += 1
+      },
+      login() {
+        apiCalls += 1
+      },
+    },
+    '../../common/session': {},
+  }, {
+    showToast(options) {
+      toasts.push(options)
+    },
+  })
+
+  instance.form = {
+    username: 'a'.repeat(21),
+    email: 'alice@example.com',
+    password: 'secret',
+    confirmPassword: 'secret',
+  }
+  await instance.handleRegister()
+  assert.equal(toasts[0].title, '用户名长度不能超过 20 个字符')
+
+  instance.form.username = 'alice'
+  instance.form.email = 'a..b@example.com'
+  await instance.handleRegister()
+  assert.equal(toasts[1].title, '邮箱格式错误')
+  assert.equal(apiCalls, 0)
+})
+
+test('registration failure keeps the page and displays the backend error', async () => {
+  const toasts = []
+  const { instance } = loadPage('pages/register/register.vue', {
+    '../../api/user': {
+      register: () => Promise.reject(new Error('用户名已被使用')),
+      login() {
+        throw new Error('registration must not sign in automatically')
+      },
+    },
+    '../../common/session': {},
+  }, {
+    showToast(options) {
+      toasts.push(options)
+    },
+    navigateBack() {
+      throw new Error('must not navigate')
+    },
+  })
+  instance.form = {
+    username: 'alice',
+    email: 'alice@example.com',
+    password: 'secret',
+    confirmPassword: 'secret',
+  }
+
+  await instance.handleRegister()
+
+  assert.equal(toasts[0].title, '用户名已被使用')
+  assert.equal(instance.submitting, false)
+})
+
+test('registration page falls back to login when there is no page to navigate back to', () => {
+  const destinations = []
+  const { instance } = loadPage('pages/register/register.vue', {
+    '../../api/user': {},
+    '../../common/session': {},
+  }, {
+    navigateBack(options) {
+      options.fail()
+    },
+    reLaunch({ url }) {
+      destinations.push(url)
+    },
+  })
+
+  instance.openLogin()
+
+  assert.deepEqual(destinations, ['/pages/login/login'])
+})
+
 test('my page ignores a getUser response that resolves after logout', async () => {
   const request = deferred()
   const session = createSessionState('token-a', { id: 1, username: 'alice' })
@@ -140,13 +311,17 @@ test('my page starts a new generation for a changed token and ignores the old ac
   assert.deepEqual(instance.userInfo, { id: 2, username: 'bob-new' })
 })
 
-test('my page refreshes following and follower counts from profile APIs', async () => {
+test('my page refreshes all four user-center counts from real APIs', async () => {
   const session = createSessionState('token-a', { id: 7, username: 'alice' })
   const { instance } = loadPage('pages/my/my.vue', {
     '../../api/user': { getUser: async () => ({ id: 7, username: 'alice' }) },
     '../../api/profile': {
       followingList: async (userId) => userId === 7 ? [{ id: 2 }, { id: 3 }] : [],
       followedList: async (userId) => userId === 7 ? [{ id: 4 }] : [],
+    },
+    '../../api/article': {
+      getArticleListByUserId: async (userId) => userId === 7 ? [rawArticle(1, 'mine'), rawArticle(2, 'mine')] : [],
+      getFavoriteArticleListByUserId: async (userId) => userId === 7 ? [rawArticle(3, 'favorite')] : [],
     },
     '../../common/session': session.module,
   }, { reLaunch() {}, showToast() {} })
@@ -155,6 +330,8 @@ test('my page refreshes following and follower counts from profile APIs', async 
 
   assert.equal(instance.stats.followingCount, 2)
   assert.equal(instance.stats.followersCount, 1)
+  assert.equal(instance.stats.articlesCount, 2)
+  assert.equal(instance.stats.favoritesCount, 1)
   assert.equal(instance.relationStatsLoading, false)
   assert.equal(instance.relationStatsError, '')
 })
@@ -364,6 +541,29 @@ test('relation page loads the current user following list from the profile API',
   assert.equal(instance.errorMessage, '')
 })
 
+test('relation page loads another user relation list from the route user id', async () => {
+  const calls = []
+  const session = createSessionState('token-a', { id: 7, username: 'alice' })
+  const { component, instance } = loadPage('pages/profile/relation.vue', {
+    '../../api/profile': {
+      followingList() {
+        throw new Error('wrong endpoint')
+      },
+      followedList(userId) {
+        calls.push(userId)
+        return Promise.resolve([{ id: 3, username: 'carol' }])
+      },
+    },
+    '../../common/session': session.module,
+  }, { setNavigationBarTitle() {}, reLaunch() {}, showToast() {} })
+
+  await component.onLoad.call(instance, { type: 'followers', userId: '8', username: 'bob' })
+
+  assert.deepEqual(calls, [8])
+  assert.equal(instance.userId, 8)
+  assert.equal(instance.pageTitle, 'bob的粉丝')
+})
+
 test('relation page loads followers and exposes a retryable error state', async () => {
   let attempts = 0
   const session = createSessionState('token-a', { id: 7, username: 'alice' })
@@ -424,4 +624,387 @@ test('relation page discards an old-account response and reloads with the new se
   await Promise.all([loadA, loadB])
   assert.deepEqual(instance.users.map((user) => user.username), ['new-user'])
   assert.equal(instance.userId, 8)
+})
+
+test('article list page loads and normalizes the selected real user article list', async () => {
+  const calls = []
+  const session = createSessionState('token-a', { id: 7, username: 'alice' })
+  const raw = rawArticle(11, '收藏文章')
+  raw.author = undefined
+  raw.author_id = 2
+  raw.author_username = 'bob'
+  delete raw.favoritesCount
+  raw.favorites_count = 5
+  const { component, instance } = loadPage('pages/article/list.vue', {
+    '../../api/article': {
+      getArticleListByUserId() {
+        throw new Error('wrong endpoint')
+      },
+      getFavoriteArticleListByUserId(userId) {
+        calls.push(userId)
+        return Promise.resolve([raw])
+      },
+    },
+    '../../common/session': session.module,
+  }, { setNavigationBarTitle() {}, reLaunch() {}, navigateTo() {} })
+
+  await component.onLoad.call(instance, { type: 'favorites' })
+
+  assert.deepEqual(calls, [7])
+  assert.equal(instance.articles[0].author.username, 'bob')
+  assert.equal(instance.articles[0].favoritesCount, 5)
+  assert.equal(instance.loading, false)
+  assert.equal(instance.errorMessage, '')
+  assert.equal(instance.canDelete, false)
+})
+
+test('article list page loads another user articles from the route user id', async () => {
+  const calls = []
+  const session = createSessionState('token-a', { id: 7, username: 'alice' })
+  const { component, instance } = loadPage('pages/article/list.vue', {
+    '../../api/article': {
+      getArticleListByUserId(userId) {
+        calls.push(userId)
+        return Promise.resolve([rawArticle(12, '他的文章')])
+      },
+      getFavoriteArticleListByUserId() {
+        throw new Error('wrong endpoint')
+      },
+    },
+    '../../common/session': session.module,
+  }, { setNavigationBarTitle() {}, reLaunch() {}, navigateTo() {} })
+
+  await component.onLoad.call(instance, { type: 'mine', userId: '8', username: 'bob' })
+
+  assert.deepEqual(calls, [8])
+  assert.equal(instance.userId, 8)
+  assert.equal(instance.pageTitle, 'bob的文章')
+  assert.equal(instance.canDelete, false)
+})
+
+test('my article list confirms deletion and removes the deleted article', async () => {
+  const deleteCalls = []
+  const toasts = []
+  const session = createSessionState('token-a', { id: 7, username: 'alice' })
+  const { component, instance } = loadPage('pages/article/list.vue', {
+    '../../api/article': {
+      getArticleListByUserId: async () => [rawArticle(11, '我的文章')],
+      getFavoriteArticleListByUserId() {
+        throw new Error('wrong endpoint')
+      },
+      deleteArticle(articleId) {
+        deleteCalls.push(articleId)
+        return Promise.resolve()
+      },
+    },
+    '../../common/session': session.module,
+  }, {
+    setNavigationBarTitle() {},
+    reLaunch() {},
+    showModal(options) {
+      options.success({ confirm: true, cancel: false })
+    },
+    showToast(options) {
+      toasts.push(options)
+    },
+  })
+
+  await component.onLoad.call(instance, { type: 'mine' })
+  assert.equal(instance.canDelete, true)
+
+  await instance.confirmDelete(instance.articles[0])
+
+  assert.deepEqual(deleteCalls, [11])
+  assert.deepEqual(instance.articles, [])
+  assert.equal(toasts[0].title, '文章已删除')
+})
+
+test('another user article list cannot invoke article deletion', async () => {
+  let modalCalls = 0
+  let deleteCalls = 0
+  const session = createSessionState('token-a', { id: 7, username: 'alice' })
+  const { component, instance } = loadPage('pages/article/list.vue', {
+    '../../api/article': {
+      getArticleListByUserId: async () => [rawArticle(12, '他的文章')],
+      deleteArticle() {
+        deleteCalls += 1
+      },
+    },
+    '../../common/session': session.module,
+  }, {
+    setNavigationBarTitle() {},
+    reLaunch() {},
+    showModal() {
+      modalCalls += 1
+    },
+  })
+
+  await component.onLoad.call(instance, { type: 'mine', userId: '8', username: 'bob' })
+  await instance.confirmDelete(instance.articles[0])
+
+  assert.equal(instance.canDelete, false)
+  assert.equal(modalCalls, 0)
+  assert.equal(deleteCalls, 0)
+})
+
+test('article deletion locks before confirmation and cancel never calls the API', async () => {
+  const modalRequests = []
+  let deleteCalls = 0
+  const session = createSessionState('token-a', { id: 7, username: 'alice' })
+  const { component, instance } = loadPage('pages/article/list.vue', {
+    '../../api/article': {
+      getArticleListByUserId: async () => [rawArticle(13, '待删除文章')],
+      deleteArticle() {
+        deleteCalls += 1
+      },
+    },
+    '../../common/session': session.module,
+  }, {
+    setNavigationBarTitle() {},
+    reLaunch() {},
+    showModal(options) {
+      modalRequests.push(options)
+    },
+  })
+  await component.onLoad.call(instance, { type: 'mine' })
+
+  const first = instance.confirmDelete(instance.articles[0])
+  const second = instance.confirmDelete(instance.articles[0])
+  assert.equal(modalRequests.length, 1)
+
+  modalRequests[0].success({ confirm: false, cancel: true })
+  await Promise.all([first, second])
+
+  assert.equal(deleteCalls, 0)
+  assert.equal(instance.deletingArticleId, 0)
+  assert.equal(instance.articles.length, 1)
+})
+
+test('failed article deletion keeps the article and releases the deletion state', async () => {
+  const toasts = []
+  const session = createSessionState('token-a', { id: 7, username: 'alice' })
+  const { component, instance } = loadPage('pages/article/list.vue', {
+    '../../api/article': {
+      getArticleListByUserId: async () => [rawArticle(14, '删除失败文章')],
+      deleteArticle: async () => {
+        throw new Error('删除接口失败')
+      },
+    },
+    '../../common/session': session.module,
+  }, {
+    setNavigationBarTitle() {},
+    reLaunch() {},
+    showModal(options) {
+      options.success({ confirm: true })
+    },
+    showToast(options) {
+      toasts.push(options)
+    },
+  })
+  await component.onLoad.call(instance, { type: 'mine' })
+
+  await instance.confirmDelete(instance.articles[0])
+
+  assert.deepEqual(instance.articles.map((article) => article.id), [14])
+  assert.equal(instance.deletingArticleId, 0)
+  assert.equal(toasts[0].title, '删除接口失败')
+})
+
+test('refresh cannot invalidate an in-flight article deletion', async () => {
+  const deleteRequest = deferred()
+  let listCalls = 0
+  const session = createSessionState('token-a', { id: 7, username: 'alice' })
+  const { component, instance } = loadPage('pages/article/list.vue', {
+    '../../api/article': {
+      getArticleListByUserId: async () => {
+        listCalls += 1
+        return [rawArticle(15, '正在删除文章')]
+      },
+      deleteArticle: () => deleteRequest.promise,
+    },
+    '../../common/session': session.module,
+  }, {
+    setNavigationBarTitle() {},
+    reLaunch() {},
+    showModal(options) {
+      options.success({ confirm: true })
+    },
+    showToast() {},
+  })
+  await component.onLoad.call(instance, { type: 'mine' })
+
+  const deletion = instance.confirmDelete(instance.articles[0])
+  await flushPromises()
+  await instance.loadArticles()
+  assert.equal(listCalls, 1)
+
+  deleteRequest.resolve()
+  await deletion
+  assert.deepEqual(instance.articles, [])
+  assert.equal(instance.deletingArticleId, 0)
+})
+
+test('old article deletion response cannot modify a newly signed-in account list', async () => {
+  const deleteRequest = deferred()
+  const session = createSessionState('token-a', { id: 7, username: 'alice' })
+  const { component, instance } = loadPage('pages/article/list.vue', {
+    '../../api/article': {
+      getArticleListByUserId: async (userId) => userId === 7
+        ? [rawArticle(16, '旧账号文章')]
+        : [rawArticle(17, '新账号文章')],
+      deleteArticle: () => deleteRequest.promise,
+    },
+    '../../common/session': session.module,
+  }, {
+    setNavigationBarTitle() {},
+    reLaunch() {},
+    showModal(options) {
+      options.success({ confirm: true })
+    },
+    showToast() {},
+  })
+  await component.onLoad.call(instance, { type: 'mine' })
+
+  const deletion = instance.confirmDelete(instance.articles[0])
+  await flushPromises()
+  session.state.token = 'token-b'
+  session.state.user = { id: 8, username: 'bob' }
+  await instance.loadArticles()
+
+  deleteRequest.resolve()
+  await deletion
+  assert.deepEqual(instance.articles.map((article) => article.id), [17])
+  assert.equal(instance.deletingArticleId, 0)
+})
+
+test('real author profile loads counts and follows through profile APIs', async () => {
+  const followCalls = []
+  const session = createSessionState('token-a', { id: 7, username: 'alice' })
+  const { component, instance } = loadPage('pages/profile/detail.vue', {
+    '../../api/profile': {
+      get: async () => ({ id: 8, username: 'bob', bio: 'hello', following: 0 }),
+      followingList: async () => [{ id: 1 }, { id: 2 }],
+      followedList: async () => [{ id: 3 }],
+      follow: async (userId) => {
+        followCalls.push(userId)
+        return { following: true }
+      },
+      unfollow: async () => ({ following: false }),
+    },
+    '../../api/article': {
+      getArticleListByUserId: async () => [rawArticle(1, 'one'), rawArticle(2, 'two')],
+    },
+    '../../common/session': session.module,
+  }, { setNavigationBarTitle() {}, reLaunch() {}, showToast() {} })
+
+  await component.onLoad.call(instance, { username: 'bob' })
+  assert.equal(instance.profile.username, 'bob')
+  assert.equal(instance.followingCount, 2)
+  assert.equal(instance.followersCount, 1)
+  assert.equal(instance.articleCount, 2)
+
+  await instance.toggleFollow()
+  assert.deepEqual(followCalls, [8])
+  assert.equal(instance.profile.following, true)
+  assert.equal(instance.followersCount, 2)
+})
+
+test('author profile stats navigate to that author relation and article lists', () => {
+  const urls = []
+  const session = createSessionState('token-a', { id: 7, username: 'alice' })
+  const { instance } = loadPage('pages/profile/detail.vue', {
+    '../../api/profile': {},
+    '../../api/article': {},
+    '../../common/session': session.module,
+  }, {
+    navigateTo({ url }) {
+      urls.push(url)
+    },
+  })
+  instance.profile = { id: 8, username: 'bob' }
+
+  instance.openRelation('following')
+  instance.openRelation('followers')
+  instance.openArticles()
+
+  assert.deepEqual(urls, [
+    '/pages/profile/relation?type=following&userId=8&username=bob',
+    '/pages/profile/relation?type=followers&userId=8&username=bob',
+    '/pages/article/list?type=mine&userId=8&username=bob',
+  ])
+})
+
+test('author profile ignores a follow response after the signed-in account changes', async () => {
+  const followRequest = deferred()
+  const session = createSessionState('token-a', { id: 7, username: 'alice' })
+  const { instance } = loadPage('pages/profile/detail.vue', {
+    '../../api/profile': {
+      follow: () => followRequest.promise,
+      unfollow: async () => ({ following: false }),
+    },
+    '../../api/article': {},
+    '../../common/session': session.module,
+  }, { showToast() {} })
+  instance.profile = { id: 8, username: 'bob', following: false }
+  instance.followersCount = 3
+
+  const follow = instance.toggleFollow()
+  session.state.token = 'token-b'
+  session.state.user = { id: 9, username: 'carol' }
+  followRequest.resolve({ following: true })
+  await follow
+
+  assert.equal(instance.profile.following, false)
+  assert.equal(instance.followersCount, 3)
+  assert.equal(instance.followSubmitting, false)
+})
+
+test('author profile ignores profile data when the session user changes with the same token', async () => {
+  const profileRequest = deferred()
+  const session = createSessionState('shared-token', { id: 7, username: 'alice' })
+  const { component, instance } = loadPage('pages/profile/detail.vue', {
+    '../../api/profile': {
+      get: () => profileRequest.promise,
+      followingList: async () => [],
+      followedList: async () => [],
+    },
+    '../../api/article': {
+      getArticleListByUserId: async () => [],
+    },
+    '../../common/session': session.module,
+  }, { setNavigationBarTitle() {}, reLaunch() {}, showToast() {} })
+
+  const load = component.onLoad.call(instance, { username: 'bob' })
+  session.state.user = { id: 9, username: 'carol' }
+  profileRequest.resolve({ id: 8, username: 'bob', following: true })
+  await load
+
+  assert.equal(instance.profile, null)
+})
+
+test('author profile suppresses an old follow error after the session user changes', async () => {
+  const followRequest = deferred()
+  const toasts = []
+  const session = createSessionState('shared-token', { id: 7, username: 'alice' })
+  const { instance } = loadPage('pages/profile/detail.vue', {
+    '../../api/profile': {
+      follow: () => followRequest.promise,
+      unfollow: async () => ({ following: false }),
+    },
+    '../../api/article': {},
+    '../../common/session': session.module,
+  }, {
+    showToast(options) {
+      toasts.push(options)
+    },
+  })
+  instance.profile = { id: 8, username: 'bob', following: false }
+
+  const follow = instance.toggleFollow()
+  session.state.user = { id: 9, username: 'carol' }
+  followRequest.reject(new Error('旧账号关注失败'))
+  await follow
+
+  assert.deepEqual(toasts, [])
+  assert.equal(instance.followSubmitting, false)
 })

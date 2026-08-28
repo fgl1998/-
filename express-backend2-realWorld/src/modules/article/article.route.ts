@@ -2,10 +2,12 @@ import { validateBody } from "../../middleware/validate.js"
 import { CreateArticleSchema ,DeleteArticleSchema,GetArticleByIdSchema,
   DetailArticleSchema,UpdateArticleSchema,ArticleDeleteByArticleIdSchema,
   ArticleFavoriteSchema,CommentsCerateSchema,CommentListSchema,CommentDeleteSchema,
-  ArticleListSchema
+  ArticleListSchema,UserIdSchema
 } from "./article.schema.js"
 import { authMiddleware } from "../../middleware/auth.middleware.js"
-import {create,list,feed,detail,update,deleteByArticleId,favorite,unfavorite,commentCreate,commentList,commentDelete} from "./article.controller.js"
+import {create,list,feed,detail,update,deleteByArticleId,
+  favorite,unfavorite,commentCreate,getArticleListByUserId,getFavoriteArticleListByUserId,
+  commentList,commentDelete} from "./article.controller.js"
 import {Router} from 'express'
 
 export const articleRouter = Router()
@@ -21,4 +23,6 @@ articleRouter.post('/unfavorite',authMiddleware,validateBody(ArticleFavoriteSche
 articleRouter.post('/comment/create',authMiddleware,validateBody(CommentsCerateSchema),commentCreate)
 articleRouter.post('/comment/list',authMiddleware,validateBody(CommentListSchema),commentList)
 articleRouter.post('/comment/delete',authMiddleware,validateBody(CommentDeleteSchema),commentDelete)
+articleRouter.post('/getArticleListByUserId',validateBody(UserIdSchema),getArticleListByUserId)
+articleRouter.post('/getFavoriteArticleListByUserId',validateBody(UserIdSchema),getFavoriteArticleListByUserId)
 

@@ -33,6 +33,15 @@ function createArticleApi(client) {
     deleteComment(commentId) {
       return request('/api/articles/comment/delete', { commentId })
     },
+    deleteArticle(articleId) {
+      return request('/api/articles/deleteByArticleId', { articleId })
+    },
+    getArticleListByUserId(userId) {
+      return request('/api/articles/getArticleListByUserId', { userId })
+    },
+    getFavoriteArticleListByUserId(userId) {
+      return request('/api/articles/getFavoriteArticleListByUserId', { userId })
+    },
   }
 }
 

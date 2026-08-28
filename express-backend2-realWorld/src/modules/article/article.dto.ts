@@ -63,3 +63,20 @@ export interface QueryCommentOutput {
   author_image: string | null
   following: number
 }
+
+export interface ArticleQueryByUserIdOutput {
+  id: number
+  slug: string
+  title: string
+  description: string
+  body: string
+  createdAt: string
+  updatedAt: string
+
+  author_id: number
+  author_username: string
+  author_bio: string | null
+  author_image: string | null
+
+  favorites_count: number
+}

@@ -10,6 +10,15 @@ function createProfileApi(client) {
     followedList(userId) {
       return request('/api/profiles/followedList', { userId })
     },
+    get(username) {
+      return request('/api/profiles/get', { username })
+    },
+    follow(followingId) {
+      return request('/api/profiles/follow', { followingId })
+    },
+    unfollow(followingId) {
+      return request('/api/profiles/unfollow', { followingId })
+    },
   }
 }
 

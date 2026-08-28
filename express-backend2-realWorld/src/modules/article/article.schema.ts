@@ -86,3 +86,6 @@ export type ArticleListFilter = Omit<
   ArticleListInput,
   'page' | 'pageSize'
 >
+export const UserIdSchema = z.object({
+  userId: z.number().int().positive(),
+})

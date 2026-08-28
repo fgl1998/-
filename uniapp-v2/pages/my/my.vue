@@ -38,20 +38,18 @@
         <view class="menu-item" @click="openArticleList('mine')">
           <view>
             <view class="menu-title">我的文章</view>
-            <view class="menu-copy">共 {{ stats.articlesCount }} 篇</view>
+            <view class="menu-copy">共 {{ relationStatsLoading ? '…' : stats.articlesCount }} 篇</view>
           </view>
           <text class="menu-arrow">›</text>
         </view>
         <view class="menu-item menu-item--last" @click="openArticleList('favorites')">
           <view>
             <view class="menu-title">收藏的文章</view>
-            <view class="menu-copy">共 {{ stats.favoritesCount }} 篇</view>
+            <view class="menu-copy">共 {{ relationStatsLoading ? '…' : stats.favoritesCount }} 篇</view>
           </view>
           <text class="menu-arrow">›</text>
         </view>
       </view>
-
-      <view class="mock-tip">关注和粉丝已使用真实接口；文章与收藏暂为演示数据。</view>
 
       <view class="logout-button">
         <u-button type="warning" plain shape="circle" @click="handleLogout">退出登录</u-button>
@@ -63,8 +61,17 @@
 <script>
 const userApi = require('../../api/user')
 const profileApi = require('../../api/profile')
+const articleApi = require('../../api/article')
 const session = require('../../common/session')
-const { currentUserStats } = require('../../mock/user-center')
+
+function emptyStats() {
+  return {
+    followingCount: '--',
+    followersCount: '--',
+    articlesCount: '--',
+    favoritesCount: '--',
+  }
+}
 
 export default {
   data() {
@@ -74,7 +81,7 @@ export default {
       relationStatsLoading: false,
       relationStatsError: '',
       userInfo: {},
-      stats: { ...currentUserStats, followingCount: '--', followersCount: '--' },
+      stats: emptyStats(),
       profileRequestGeneration: 0,
       activeSessionToken: '',
       activeSessionUserId: 0,
@@ -101,7 +108,7 @@ export default {
       this.userInfo = cached.user || {}
 
       if (sessionChanged) {
-        this.stats = { ...currentUserStats, followingCount: '--', followersCount: '--' }
+        this.stats = emptyStats()
         this.relationStatsError = ''
         this.relationStatsLoading = Boolean(cached.token)
       }
@@ -128,7 +135,7 @@ export default {
           })
           if (sessionChanged) {
             this.relationStatsLoading = false
-            this.relationStatsError = '关注数据暂时不可用'
+            this.relationStatsError = '用户中心数据暂时不可用'
           }
         }
       } finally {
@@ -143,19 +150,23 @@ export default {
       this.relationStatsLoading = true
       this.relationStatsError = ''
       try {
-        const [followingUsers, followerUsers] = await Promise.all([
+        const [followingUsers, followerUsers, articles, favoriteArticles] = await Promise.all([
           profileApi.followingList(userId),
           profileApi.followedList(userId),
+          articleApi.getArticleListByUserId(userId),
+          articleApi.getFavoriteArticleListByUserId(userId),
         ])
         if (generation !== this.profileRequestGeneration || session.getToken() !== requestToken) return
         this.stats = {
           ...this.stats,
           followingCount: Array.isArray(followingUsers) ? followingUsers.length : 0,
           followersCount: Array.isArray(followerUsers) ? followerUsers.length : 0,
+          articlesCount: Array.isArray(articles) ? articles.length : 0,
+          favoritesCount: Array.isArray(favoriteArticles) ? favoriteArticles.length : 0,
         }
       } catch (error) {
         if (generation === this.profileRequestGeneration && session.getToken() === requestToken) {
-          this.relationStatsError = (error && error.message) || '关注数据加载失败'
+          this.relationStatsError = (error && error.message) || '用户中心数据加载失败'
         }
       } finally {
         if (generation === this.profileRequestGeneration && session.getToken() === requestToken) {
@@ -193,7 +204,7 @@ export default {
       this.relationStatsLoading = false
       this.relationStatsError = ''
       this.userInfo = {}
-      this.stats = { ...currentUserStats, followingCount: '--', followersCount: '--' }
+      this.stats = emptyStats()
       this.activeSessionToken = ''
       this.activeSessionUserId = 0
       uni.reLaunch({ url: '/pages/login/login' })
@@ -228,6 +239,5 @@ export default {
 .menu-title { color: #303133; font-size: 29rpx; font-weight: 600; }
 .menu-copy { margin-top: 7rpx; color: #909399; font-size: 23rpx; }
 .menu-arrow { color: #c0c4cc; font-size: 48rpx; line-height: 1; }
-.mock-tip { margin: 22rpx 12rpx 0; color: #909399; font-size: 22rpx; line-height: 1.6; text-align: center; }
 .logout-button { margin-top: 36rpx; }
 </style>

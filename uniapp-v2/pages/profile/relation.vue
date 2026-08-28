@@ -44,8 +44,11 @@ export default {
       type: 'following',
       pageTitle: '我的关注',
       userId: 0,
+      targetUserId: 0,
+      targetUsername: '',
       activeToken: '',
       activeUserId: 0,
+      activeTargetUserId: 0,
       requestGeneration: 0,
       users: [],
       loading: false,
@@ -53,9 +56,19 @@ export default {
     }
   },
   onLoad(options) {
+    options = options || {}
     const type = options.type === 'followers' ? 'followers' : 'following'
     this.type = type
-    this.pageTitle = type === 'followers' ? '我的粉丝' : '我的关注'
+    this.targetUserId = Number(options.userId) || 0
+    try {
+      this.targetUsername = decodeURIComponent(options.username || '')
+    } catch (error) {
+      this.targetUsername = options.username || ''
+    }
+    const ownerName = this.targetUsername || '该用户'
+    this.pageTitle = this.targetUserId
+      ? `${ownerName}的${type === 'followers' ? '粉丝' : '关注'}`
+      : (type === 'followers' ? '我的粉丝' : '我的关注')
     uni.setNavigationBarTitle({ title: this.pageTitle })
     return this.loadUsers()
   },
@@ -70,11 +83,13 @@ export default {
     async loadUsers() {
       const token = session.getToken()
       const currentUser = session.getUser() || {}
-      const userId = Number(currentUser.id) || 0
-      if (!token || !userId) {
+      const currentUserId = Number(currentUser.id) || 0
+      const targetUserId = this.targetUserId || currentUserId
+      if (!token || !currentUserId || !targetUserId) {
         this.requestGeneration += 1
         this.activeToken = ''
         this.activeUserId = 0
+        this.activeTargetUserId = 0
         this.userId = 0
         this.users = []
         this.loading = false
@@ -82,12 +97,15 @@ export default {
         return
       }
 
-      const sessionChanged = token !== this.activeToken || userId !== this.activeUserId
+      const sessionChanged = token !== this.activeToken
+        || currentUserId !== this.activeUserId
+        || targetUserId !== this.activeTargetUserId
       if (sessionChanged) {
         this.requestGeneration += 1
         this.activeToken = token
-        this.activeUserId = userId
-        this.userId = userId
+        this.activeUserId = currentUserId
+        this.activeTargetUserId = targetUserId
+        this.userId = targetUserId
         this.users = []
         this.errorMessage = ''
         this.loading = false
@@ -99,23 +117,24 @@ export default {
       this.errorMessage = ''
       try {
         const result = this.type === 'followers'
-          ? await profileApi.followedList(userId)
-          : await profileApi.followingList(userId)
-        if (!this.isCurrentRequest(generation, token, userId)) return
+          ? await profileApi.followedList(targetUserId)
+          : await profileApi.followingList(targetUserId)
+        if (!this.isCurrentRequest(generation, token, currentUserId, targetUserId)) return
         this.users = Array.isArray(result) ? result : []
       } catch (error) {
-        if (this.isCurrentRequest(generation, token, userId)) {
+        if (this.isCurrentRequest(generation, token, currentUserId, targetUserId)) {
           this.errorMessage = (error && error.message) || `${this.pageTitle}加载失败`
         }
       } finally {
         if (generation === this.requestGeneration) this.loading = false
       }
     },
-    isCurrentRequest(generation, token, userId) {
+    isCurrentRequest(generation, token, currentUserId, targetUserId) {
       const currentUser = session.getUser() || {}
       return generation === this.requestGeneration
         && session.getToken() === token
-        && Number(currentUser.id) === userId
+        && Number(currentUser.id) === currentUserId
+        && (this.targetUserId || Number(currentUser.id)) === targetUserId
     },
     avatarText(username) {
       return (username || '?').slice(0, 1).toUpperCase()

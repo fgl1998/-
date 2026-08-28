@@ -195,3 +195,30 @@ export async function commentDelete(req:Request,res:Response,next:NextFunction){
     next(error)
   }
 }
+
+export async function getFavoriteArticleListByUserId(req:Request,res:Response,next:NextFunction){
+  try {
+    const input = req.body
+    const list = await articleService.getFavoriteArticleListByUserId(input.userId)
+    return res.status(200).json({
+      success: true,
+      code: 'FAVORITE_ARTICLE_LIST_FOUND',
+      data: list
+    })
+  }catch (error) {
+    next(error)
+  }
+}
+export async function getArticleListByUserId(req:Request,res:Response,next:NextFunction){
+  try {
+    const input = req.body
+    const list = await articleService.getArticleListByUserId(input.userId)
+    return res.status(200).json({
+      success: true,
+      code: 'FAVORITE_ARTICLE_LIST_FOUND',
+      data: list
+    })
+  }catch (error) {
+    next(error)
+  }
+}

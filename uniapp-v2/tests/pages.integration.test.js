@@ -11,6 +11,7 @@ function read(relativePath) {
 
 const pageFiles = [
   'pages/login/login.vue',
+  'pages/register/register.vue',
   'pages/index/index.vue',
   'pages/article/create.vue',
   'pages/article/detail.vue',
@@ -43,6 +44,20 @@ test('login page uses the reviewed user API and session contract', () => {
   assert.match(source, /userApi\.login\(/)
   assert.match(source, /session\.set\(\{\s*token:\s*result\.token,\s*user:\s*result\.user/)
   assert.match(source, /uni\.switchTab\(\{\s*url:\s*['"]\/pages\/index\/index['"]/)
+  assert.match(source, /pages\/register\/register/)
+})
+
+test('registration page creates an account and returns to login without signing in', () => {
+  const source = read('pages/register/register.vue')
+
+  assert.match(source, /form:\s*\{\s*username:/)
+  assert.match(source, /email:/)
+  assert.match(source, /confirmPassword:/)
+  assert.match(source, /userApi\.register\(username, email, password\)/)
+  assert.match(source, /注册成功，请登录/)
+  assert.match(source, /uni\.navigateBack\(/)
+  assert.doesNotMatch(source, /userApi\.login\(/)
+  assert.doesNotMatch(source, /session\.set\(/)
 })
 
 test('home page implements authenticated paginated article loading', () => {
@@ -88,6 +103,8 @@ test('my page restores and refreshes the reviewed session user', () => {
   assert.match(source, /userApi\.getUser\(\)/)
   assert.match(source, /profileApi\.followingList\(/)
   assert.match(source, /profileApi\.followedList\(/)
+  assert.match(source, /articleApi\.getArticleListByUserId\(/)
+  assert.match(source, /articleApi\.getFavoriteArticleListByUserId\(/)
   assert.match(source, /session\.setUser\(/)
   assert.match(source, /session\.clear\(\)/)
   assert.match(source, /uni\.reLaunch\(\{\s*url:\s*['"]\/pages\/login\/login['"]/)
@@ -97,15 +114,21 @@ test('my page restores and refreshes the reviewed session user', () => {
   assert.match(source, /pages\/article\/list\?type=favorites/)
 })
 
-test('relation page uses profile APIs while article list still switches mock data by query type', () => {
+test('relation and article list pages use real APIs selected by query type', () => {
   const relation = read('pages/profile/relation.vue')
   const articles = read('pages/article/list.vue')
 
   assert.match(relation, /profileApi\.(?:followedList|followingList)/)
   assert.match(relation, /session\.getUser\(\)/)
+  assert.match(relation, /options\.userId/)
   assert.match(relation, /pages\/profile\/detail\?username=/)
-  assert.match(articles, /type\s*===\s*['"]favorites['"]\s*\?\s*favoriteArticles\s*:\s*myArticles/)
-  assert.match(articles, /getMockMyArticles\(session\.getUser\(\)\)/)
+  assert.match(articles, /articleApi\.getFavoriteArticleListByUserId\(/)
+  assert.match(articles, /articleApi\.getArticleListByUserId\(/)
+  assert.match(articles, /options\.userId/)
+  assert.match(articles, /normalizeArticle/)
+  assert.match(articles, /v-if=["']canDelete["']/)
+  assert.match(articles, /@click\.stop=["']confirmDelete\(article\)["']/)
+  assert.match(articles, /articleApi\.deleteArticle\(article\.id\)/)
 })
 
 test('article author avatars navigate to the author profile page', () => {
@@ -117,8 +140,13 @@ test('article author avatars navigate to the author profile page', () => {
   assert.match(detail, /@click=["']openAuthor\(article\.author\)["']/)
   assert.match(home, /pages\/profile\/detail\?username=/)
   assert.match(detail, /pages\/profile\/detail\?username=/)
-  assert.match(profile, /getMockProfile\(this\.username\)/)
-  assert.match(profile, /this\.isSelf\s*=\s*Boolean/)
+  assert.match(profile, /profileApi\.get\(this\.username\)/)
+  assert.match(profile, /profileApi\.(?:follow|unfollow)\(this\.profile\.id\)/)
+  assert.match(profile, /articleApi\.getArticleListByUserId\(this\.profile\.id\)/)
+  assert.match(profile, /@click=["']openRelation\('following'\)["']/)
+  assert.match(profile, /@click=["']openRelation\('followers'\)["']/)
+  assert.match(profile, /@click=["']openArticles["']/)
+  assert.match(profile, /this\.isSelf\s*=\s*Number\(currentUser\.id\)/)
   assert.match(profile, /v-if=["']!isSelf["']/)
 })
 
@@ -130,16 +158,20 @@ test('page configuration registers detail and home refresh support', () => {
   const relation = pages.pages.find((page) => page.path === 'pages/profile/relation')
   const articleList = pages.pages.find((page) => page.path === 'pages/article/list')
   const profile = pages.pages.find((page) => page.path === 'pages/profile/detail')
+  const register = pages.pages.find((page) => page.path === 'pages/register/register')
 
   assert.ok(detail)
   assert.ok(create)
   assert.ok(relation)
   assert.ok(articleList)
   assert.ok(profile)
+  assert.ok(register)
+  assert.equal(register.style.navigationBarTitleText, '注册')
   assert.equal(home.style.enablePullDownRefresh, true)
   assert.equal(home.style.navigationBarTitleText, '文章')
   assert.equal(detail.style.navigationBarTitleText, '文章详情')
   assert.equal(create.style.navigationBarTitleText, '发布文章')
+  assert.equal(articleList.style.enablePullDownRefresh, true)
 })
 
 test('mini-program build uses a simple list key and transpiles uView', () => {

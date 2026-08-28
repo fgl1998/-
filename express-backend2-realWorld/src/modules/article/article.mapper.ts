@@ -1,5 +1,5 @@
 import type { RowDataPacket } from "mysql2";
-import type {Article,ArticleQuery,TagQuery,QueryFollowingArticle,QueryArticleDetail,QueryComment} from './article.entity.js'
+import type {Article,ArticleQuery,TagQuery,QueryFollowingArticle,QueryArticleDetail,QueryComment,ArticleQueryByUserId} from './article.entity.js'
 
 
 export interface ArticleRow extends RowDataPacket {
@@ -172,4 +172,37 @@ export function toComment(row: CommentRow):QueryComment{
   }
 }
 
+
+export interface ArticleQueryByUserIdRow extends RowDataPacket {
+  id: number
+  slug: string
+  title: string
+  description: string
+  body: string
+  created_at: Date
+  updated_at: Date
+
+  author_id: number
+  author_username: string
+  author_bio: string | null
+  author_image: string | null
+
+  favorites_count: number
+}
+export function toArticleQueryByUserId(row: ArticleQueryByUserIdRow):ArticleQueryByUserId{
+  return {
+    id:row.id,
+    slug:row.slug,
+    title:row.title,
+    description:row.description,
+    body:row.body,
+    createdAt:row.created_at,
+    updatedAt:row.updated_at,
+    favorites_count:row.favorites_count,
+    author_id:row.author_id,
+    author_bio:row.author_bio,
+    author_image:row.author_image,
+    author_username:row.author_username,
+  }
+}
 

@@ -1,4 +1,4 @@
-  import type { ArticleOutput,QueryFollowingArticleOutput,QueryArticleDetailOutput,QueryCommentOutput } from '../article/article.dto.js'
+  import type { ArticleOutput,QueryFollowingArticleOutput,QueryArticleDetailOutput,QueryCommentOutput,ArticleQueryByUserIdOutput } from '../article/article.dto.js'
   import { articleRepository } from '../article/article.repository.js'
   import type { CreateArticleInput,CreateArticleData,
     UpdateArticleInput,CommentsCerateInput,ArticleListInput } from '../article/article.schema.js'
@@ -18,6 +18,9 @@
     list(currentUserId:number,input:ArticleListInput):Promise<PageResult<ArticleOutput>>
     feed(currentUserId:number):Promise<QueryFollowingArticleOutput[]>
     detail(currentUserId:number,slug:string):Promise<QueryArticleDetailOutput|null>
+
+    getFavoriteArticleListByUserId(userId:number):Promise<ArticleQueryByUserIdOutput[]>
+    getArticleListByUserId(userId:number):Promise<ArticleQueryByUserIdOutput[]>
 
     favorite(currentUserId:number,articleId:number):Promise<{favorited:true}>
     unfavorite(currentUserId:number,articleId:number):Promise<{favorited:false}>
@@ -188,5 +191,25 @@
       }
       return articleRepository.commentDelete(commentId)
     },
+    async getArticleListByUserId(userId:number):Promise<ArticleQueryByUserIdOutput[]>{
+      const articleList = await articleRepository.getArticleListByUserId(userId)
+      return articleList.map(article=>{
+        return {
+          ...article,
+          createdAt:article.createdAt.toISOString(),
+          updatedAt:article.updatedAt.toISOString(),
+        }
+      })
+    },
+    async getFavoriteArticleListByUserId(userId:number):Promise<ArticleQueryByUserIdOutput[]>{
+      const articleList = await articleRepository.getFavoriteArticleListByUserId(userId)
+      return articleList.map(article=>{
+        return {
+          ...article,
+          createdAt:article.createdAt.toISOString(),
+          updatedAt:article.updatedAt.toISOString(),
+        }
+      })
+    }
 
   }

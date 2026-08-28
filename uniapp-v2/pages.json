@@ -21,6 +21,12 @@
       }
     },
     {
+      "path": "pages/register/register",
+      "style": {
+        "navigationBarTitleText": "注册"
+      }
+    },
+    {
       "path": "pages/article/create",
       "style": {
         "navigationBarTitleText": "发布文章"
@@ -35,7 +41,9 @@
     {
       "path": "pages/article/list",
       "style": {
-        "navigationBarTitleText": "文章列表"
+        "navigationBarTitleText": "文章列表",
+        "enablePullDownRefresh": true,
+        "backgroundTextStyle": "dark"
       }
     },
     {
@@ -49,7 +57,9 @@
     {
       "path": "pages/profile/detail",
       "style": {
-        "navigationBarTitleText": "作者主页"
+        "navigationBarTitleText": "作者主页",
+        "enablePullDownRefresh": true,
+        "backgroundTextStyle": "dark"
       }
     }
   ],

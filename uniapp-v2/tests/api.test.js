@@ -22,10 +22,15 @@ test('user API describes login and current-user request bodies through the share
   const client = createClient()
   const userApi = createUserApi(client)
 
+  await userApi.register('alice', 'alice@example.com', 'secret')
   await userApi.login('alice', 'secret')
   await userApi.getUser()
 
   assert.deepEqual(client.calls, [
+    {
+      path: '/api/users/create',
+      data: { username: 'alice', email: 'alice@example.com', password: 'secret' },
+    },
     { path: '/api/users/login', data: { username: 'alice', password: 'secret' } },
     { path: '/api/users/getUser', data: {} },
   ])
@@ -48,6 +53,9 @@ test('article API describes every article and comment request through the shared
   await articleApi.listComments(12)
   await articleApi.createComment(12, 'Useful post')
   await articleApi.deleteComment(31)
+  await articleApi.deleteArticle(12)
+  await articleApi.getArticleListByUserId(7)
+  await articleApi.getFavoriteArticleListByUserId(7)
 
   assert.deepEqual(client.calls, [
     {
@@ -61,6 +69,9 @@ test('article API describes every article and comment request through the shared
     { path: '/api/articles/comment/list', data: { articleId: 12 } },
     { path: '/api/articles/comment/create', data: { articleId: 12, body: 'Useful post' } },
     { path: '/api/articles/comment/delete', data: { commentId: 31 } },
+    { path: '/api/articles/deleteByArticleId', data: { articleId: 12 } },
+    { path: '/api/articles/getArticleListByUserId', data: { userId: 7 } },
+    { path: '/api/articles/getFavoriteArticleListByUserId', data: { userId: 7 } },
   ])
 })
 
@@ -84,9 +95,15 @@ test('profile API loads following and follower lists with the current user id', 
 
   await profileApi.followingList(7)
   await profileApi.followedList(7)
+  await profileApi.get('alice')
+  await profileApi.follow(8)
+  await profileApi.unfollow(8)
 
   assert.deepEqual(client.calls, [
     { path: '/api/profiles/followingList', data: { userId: 7 } },
     { path: '/api/profiles/followedList', data: { userId: 7 } },
+    { path: '/api/profiles/get', data: { username: 'alice' } },
+    { path: '/api/profiles/follow', data: { followingId: 8 } },
+    { path: '/api/profiles/unfollow', data: { followingId: 8 } },
   ])
 })

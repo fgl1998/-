@@ -16,6 +16,10 @@
       <u-button type="primary" shape="circle" :loading="submitting" :disabled="submitting" @click="handleLogin">
         {{ submitting ? '登录中…' : '登录' }}
       </u-button>
+      <view class="register-entry">
+        <text>还没有账号？</text>
+        <text class="register-link" @click="openRegister">去注册</text>
+      </view>
     </view>
   </view>
 </template>
@@ -35,6 +39,10 @@ export default {
     }
   },
   methods: {
+    openRegister() {
+      if (this.submitting) return
+      uni.navigateTo({ url: '/pages/register/register' })
+    },
     showError(message) {
       uni.showToast({ title: message, icon: 'none' })
     },
@@ -93,5 +101,18 @@ export default {
   margin: 16rpx 0 36rpx;
   color: #909399;
   font-size: 28rpx;
+}
+
+.register-entry {
+  display: flex;
+  justify-content: center;
+  margin-top: 30rpx;
+  color: #909399;
+  font-size: 26rpx;
+}
+
+.register-link {
+  margin-left: 10rpx;
+  color: #3c9cff;
 }
 </style>

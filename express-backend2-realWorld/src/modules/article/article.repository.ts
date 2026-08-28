@@ -6,9 +6,9 @@ import {pool} from '../../database/pool.js'
 import { ArticleNotFoundError } from './article.error.js'
 import { ArticleRow ,TagRow, ArticleQueryRow,toArticleQuery,TagQueryRow,toTagQuery,
   toQueryArticleDetail,QueryFollowingArticleRow,
-  QueryArticleDetailRow,toQueryFollowingArticle,CommentRow,toComment
+  QueryArticleDetailRow,toQueryFollowingArticle,CommentRow,toComment,ArticleQueryByUserIdRow,toArticleQueryByUserId
 } from './article.mapper.js'
-import type {Article,ArticleQuery,TagQuery,QueryFollowingArticle,QueryArticleDetail,QueryComment} from './article.entity.js'
+import type {Article,ArticleQuery,TagQuery,QueryFollowingArticle,QueryArticleDetail,QueryComment,ArticleQueryByUserId} from './article.entity.js'
 import type{ RowDataPacket } from 'mysql2'
 
 export interface ArticleRepository {
@@ -25,6 +25,8 @@ export interface ArticleRepository {
   tagList(articleIdList:number[]): Promise<TagQuery[]>
 
   followingArticleList(currentUserId:number): Promise<QueryFollowingArticle[]>
+  getArticleListByUserId(userId:number): Promise<ArticleQueryByUserId[]>
+  getFavoriteArticleListByUserId(userId:number): Promise<ArticleQueryByUserId[]>
   articleDetail(currentUserId:number,slug: string): Promise<QueryArticleDetail|null>
   articleDetailById(currentUserId:number,articleId: number): Promise<QueryArticleDetail|null>
 
@@ -344,6 +346,65 @@ export const articleRepository:ArticleRepository = {
       [currentUserId,currentUserId]
     )
     return rows.map(row=>toQueryFollowingArticle(row))
+  },
+
+  async getArticleListByUserId(userId:number):Promise<ArticleQueryByUserId[]>{
+    const [rows] = await pool.execute<ArticleQueryByUserIdRow[]>(
+      `
+      SELECT 
+        articles.id,
+        articles.slug,
+        articles.title,
+        articles.description,
+        articles.body,
+        articles.author_id,
+        articles.created_at,
+        articles.updated_at,
+        users.username AS author_username,
+        users.bio AS author_bio,
+        users.image AS author_image,
+
+        (
+        SELECT COUNT(*) FROM favorites WHERE favorites.article_id=articles.id
+        ) AS favorites_count
+
+      FROM articles
+      JOIN users ON users.id=articles.author_id
+      WHERE articles.author_id=?
+      `,
+      [userId]
+    ) 
+    return rows.map(row=>toArticleQueryByUserId(row))
+  },
+  async getFavoriteArticleListByUserId(userId:number):Promise<ArticleQueryByUserId[]>{
+    const [rows] = await pool.execute<ArticleQueryByUserIdRow[]>(
+      `
+      SELECT 
+        articles.id,
+        articles.slug,
+        articles.title,
+        articles.description,
+        articles.body,
+        articles.author_id,
+        articles.created_at,
+        articles.updated_at,
+        users.username AS author_username,
+        users.bio AS author_bio,
+        users.image AS author_image,
+
+        (
+        SELECT COUNT(*) FROM favorites WHERE favorites.article_id=articles.id
+        ) AS favorites_count
+
+      FROM favorites
+  
+			JOIN articles ON articles.id=favorites.article_id
+			JOIN users ON users.id=articles.author_id
+      WHERE favorites.user_id=  ?
+      `,
+      [userId]
+    ) 
+    return rows.map(row=>toArticleQueryByUserId(row))
   },
 
   async articleDetail(currentUserId:number,slug:string):Promise<QueryArticleDetail|null>{

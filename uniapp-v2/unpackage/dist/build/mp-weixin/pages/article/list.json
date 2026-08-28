@@ -1,8 +1,0 @@
-{
-  "navigationBarTitleText": "文章列表",
-  "enablePullDownRefresh": true,
-  "backgroundTextStyle": "dark",
-  "usingComponents": {
-    "u-button": "/uni_modules/uview-ui/components/u-button/u-button"
-  }
-}

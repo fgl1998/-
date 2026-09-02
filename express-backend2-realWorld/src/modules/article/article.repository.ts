@@ -20,8 +20,8 @@ export interface ArticleRepository {
   updateArticle(updateData:UpdateArticleInput):Promise<number>
   deleteArticle(articleId: number):Promise<boolean>
 
-  articleList(currentUserId:number,limit:number,offset:number): Promise<ArticleQuery[]>
-  articleCount(): Promise<number>
+  articleList(currentUserId:number,keyWord:string,limit:number,offset:number): Promise<ArticleQuery[]>
+  articleCount(keyWord:string): Promise<number>
   tagList(articleIdList:number[]): Promise<TagQuery[]>
 
   followingArticleList(currentUserId:number): Promise<QueryFollowingArticle[]>
@@ -241,7 +241,7 @@ export const articleRepository:ArticleRepository = {
   //   return rows[0] ? toArticle(rows[0],[]) : null
   // },
 
-  async articleList(currentUserId:number,limit:number,offset:number):Promise<ArticleQuery[]>{
+  async articleList(currentUserId:number,keyWord:string,limit:number,offset:number):Promise<ArticleQuery[]>{
     const [rows] = await pool.query<ArticleQueryRow[]>(
       `
       SELECT
@@ -273,22 +273,24 @@ export const articleRepository:ArticleRepository = {
 
       FROM articles a
       JOIN users u ON a.author_id = u.id
+      WHERE a.title LIKE ?
       ORDER BY a.created_at DESC
       LIMIT ? OFFSET ?
       `,
-      [currentUserId,limit,offset]
+      [currentUserId,keyWord,limit,offset]
     )
-
     return rows.map(row=>toArticleQuery(row))
 
   },
 
-  async articleCount(): Promise<number> {
+  async articleCount(keyWord): Promise<number> {
     const [rows] = await pool.query<RowDataPacket[]>(
       `
       SELECT COUNT(*) AS total
       FROM articles
-      `
+      WHERE title LIKE ?
+      `,
+      [keyWord]
     )
 
     return Number(rows[0]?.total ?? 0)

@@ -1,0 +1,29 @@
+{
+  "name": "agent1",
+  "version": "1.0.0",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "dev": "tsx watch src/index.ts",
+    "start": "tsx src/index.ts",
+    "start2": "tsx src/stream-test.ts",
+    "start3": "tsx src/response-test.ts"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "devDependencies": {
+    "@types/node": "^26.4.0",
+    "tsx": "^4.23.13",
+    "typescript": "^7.0.2"
+  },
+  "dependencies": {
+    "@langchain/core": "^1.2.9",
+    "@langchain/deepseek": "^1.1.10",
+    "@langchain/openai": "^1.5.10",
+    "dotenv": "^17.4.2",
+    "langchain": "^1.5.10",
+    "zod": "^4.5.4"
+  }
+}

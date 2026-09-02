@@ -78,6 +78,7 @@ export const CommentDeleteSchema = z.object({
 export const ArticleListSchema = PaginationSchema.extend({
   tag: z.string().trim().min(1).max(100).optional(),
   author: z.string().trim().min(1).max(100).optional(),
+  keyWord: z.string().trim().min(1).max(100).optional(),
 })
 
 export type ArticleListInput = z.infer<typeof ArticleListSchema>

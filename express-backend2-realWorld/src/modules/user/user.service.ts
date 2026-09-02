@@ -41,6 +41,8 @@ export const userService:UserService = {
   },
 
   async login(input:LoginInput):Promise<LoginOutput>{
+    console.log(await bcrypt.hash('123456',12));
+    
     const existingUser = await userRepository.findByUsername(input.username)
     if(!existingUser){
       throw new InvalidCredentialsError()

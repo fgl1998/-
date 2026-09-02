@@ -86,12 +86,15 @@
     },
 
     async list(currentUserId:number,input:ArticleListInput):Promise<PageResult<ArticleOutput>>{
-      const {page,pageSize} = input
+      let {page,pageSize,keyWord} = input
       const {limit,offset} = getPagination(page,pageSize)
       // const articleList = await articleRepository.articleList(currentUserId,limit,offset)
+      if(keyWord===undefined){
+        keyWord=''
+      }
       const [articleList,total] = await Promise.all([
-        articleRepository.articleList(currentUserId,limit,offset),
-        articleRepository.articleCount()
+        articleRepository.articleList(currentUserId,keyWord,limit,offset),
+        articleRepository.articleCount(keyWord)
       ])
       const articleIdList = articleList.map(article=>article.id)
       const tagList = await articleRepository.tagList(articleIdList)

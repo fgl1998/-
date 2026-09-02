@@ -16,7 +16,7 @@
             <view v-if="refreshing" class="refreshing">正在同步最新资料…</view>
           </view>
         </view>
-        <view class="email">{{ userInfo.email || '未填写邮箱' }}</view>
+        <view class="email" @click="test">{{ userInfo.email || '未填写邮箱' }}</view>
       </view>
 
       <view class="stats-card">
@@ -209,6 +209,21 @@ export default {
       this.activeSessionUserId = 0
       uni.reLaunch({ url: '/pages/login/login' })
     },
+    test(){
+     uni.request({
+             url:"http://localhost:3002/api/agent/chat",
+             method:'POST',
+             header:{
+               'Content-Type':'application/json',
+               'Accept':'application/json',
+               "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTYsImlhdCI6MTc4ODMxOTE3MywiZXhwIjoxNzg4OTIzOTczfQ.XsYQO1VOJ8njTqqKQedj8JTSA_79Hg_PAXILjjUbPF8"
+             },
+             data:{
+              message:"帮我查询关键词为nodejs的文章,一共几条，把标题返回给我"
+             }
+           })
+      
+    }
   },
 }
 </script>

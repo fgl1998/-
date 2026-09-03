@@ -10,6 +10,7 @@ function read(relativePath) {
 }
 
 const pageFiles = [
+  'pages/agent/chat.vue',
   'pages/login/login.vue',
   'pages/register/register.vue',
   'pages/index/index.vue',

@@ -58,7 +58,11 @@ const EnvSchema = z.object({
     .min(1000, 'DEEPSEEK_TIMEOUT_MS不能小于1000')
     .max(120000, 'DEEPSEEK_TIMEOUT_MS不能超过120000')
     .default(30000),
+
+  AGENT_TRACE_ENABLED: z.coerce.boolean().default(false),
   })
+
+  
 
 export type Env = z.infer<typeof EnvSchema>
 

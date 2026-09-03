@@ -16,6 +16,10 @@ import { AgentService } from './modules/agent/agent.service.js'
 import { AgentController } from './modules/agent/agent.controller.js'
 import { createAgentRouter } from './modules/agent/agent.route.js'
 
+import { AgentTraceLogger } from './common/logging/agent-trace.logger.js'
+
+import { MemorySaver } from '@langchain/langgraph'
+
 
 export function createApp() {
   const app = express()
@@ -37,13 +41,21 @@ export function createApp() {
     env.JWT_SECRET
   )
 
+  const agentTraceLogger = new AgentTraceLogger({
+    enabled: env.AGENT_TRACE_ENABLED,
+  })
+
+  const checkpointer = new MemorySaver()
+
   /*
    * 二、组装 Agent 模块
    */
 
   const agentRuntime = new AgentRuntime({
     model: deepSeekModel,
-    realWorldClient
+    realWorldClient,
+    traceLogger: agentTraceLogger,
+    checkpointer
   })
 
   const agentService = new AgentService({

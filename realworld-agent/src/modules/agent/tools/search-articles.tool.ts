@@ -144,9 +144,11 @@ export function createSearchArticlesTool(
           keyWord: keyword,
         },
       })
+      console.log('response',response);
+      
 
       const articlePage =
-        ArticleListResponseSchema.parse(response.data)
+        ArticleListResponseSchema.parse(response)
         
       const result = {
         items: articlePage.items.map((article) => {

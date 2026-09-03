@@ -3,6 +3,56 @@ const assert = require('node:assert/strict')
 
 const { createHttpClient, createUnauthorizedHandler } = require('../common/http')
 
+test('request forwards an explicit timeout without changing default requests', async () => {
+  let received
+  const client = createHttpClient({
+    requestAdapter: async (options) => {
+      received = options
+      return { statusCode: 200, data: { success: true, data: { answer: 'ok' } } }
+    },
+  })
+  await client.request('/api/agent/chat', { message: '你好' }, { timeout: 120000 })
+  assert.equal(received.timeout, 120000)
+})
+
+test('request preserves nested Agent HTTP and business error messages and codes', async () => {
+  for (const statusCode of [502, 200]) {
+    const client = createHttpClient({
+      requestAdapter: async () => ({
+        statusCode,
+        data: { success: false, error: { code: 'AGENT_EXECUTION_FAILED', message: 'Agent暂时无法完成请求' } },
+      }),
+    })
+    await assert.rejects(client.request('/api/agent/chat'), (error) => {
+      assert.equal(error.message, 'Agent暂时无法完成请求')
+      assert.equal(error.code, 'AGENT_EXECUTION_FAILED')
+      return true
+    })
+  }
+})
+
+test('request gives a readable uni timeout error', async () => {
+  const client = createHttpClient({
+    requestAdapter: async () => { throw { errMsg: 'request:fail timeout' } },
+  })
+  await assert.rejects(client.request('/api/agent/chat'), /超时/)
+})
+
+test('an old request returning 401 cannot clear a newly logged-in session', async () => {
+  let token = 'old-token'
+  let unauthorizedCount = 0
+  const client = createHttpClient({
+    getToken: () => token,
+    requestAdapter: async () => {
+      token = 'new-token'
+      return { statusCode: 401, data: { success: false, error: { message: '登录已过期' } } }
+    },
+    onUnauthorized: () => { unauthorizedCount += 1 },
+  })
+  await assert.rejects(client.request('/api/agent/chat'), /登录已过期/)
+  assert.equal(unauthorizedCount, 0)
+})
+
 test('request posts to injected base URL with Bearer token and returns response data', async () => {
   let received
   const client = createHttpClient({

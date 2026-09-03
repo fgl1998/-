@@ -16,7 +16,7 @@
             <view v-if="refreshing" class="refreshing">正在同步最新资料…</view>
           </view>
         </view>
-        <view class="email" @click="test">{{ userInfo.email || '未填写邮箱' }}</view>
+        <view class="email">{{ userInfo.email || '未填写邮箱' }}</view>
       </view>
 
       <view class="stats-card">
@@ -42,10 +42,17 @@
           </view>
           <text class="menu-arrow">›</text>
         </view>
-        <view class="menu-item menu-item--last" @click="openArticleList('favorites')">
+        <view class="menu-item" @click="openArticleList('favorites')">
           <view>
             <view class="menu-title">收藏的文章</view>
             <view class="menu-copy">共 {{ relationStatsLoading ? '…' : stats.favoritesCount }} 篇</view>
+          </view>
+          <text class="menu-arrow">›</text>
+        </view>
+        <view class="menu-item menu-item--last" @click="openAgent">
+          <view>
+            <view class="menu-title">智能助手</view>
+            <view class="menu-copy">用一句话查找感兴趣的文章</view>
           </view>
           <text class="menu-arrow">›</text>
         </view>
@@ -184,6 +191,9 @@ export default {
     goLogin() {
       uni.navigateTo({ url: '/pages/login/login' })
     },
+    openAgent() {
+      uni.navigateTo({ url: '/pages/agent/chat' })
+    },
     openRelation(type) {
       const url = type === 'followers'
         ? '/pages/profile/relation?type=followers'
@@ -209,21 +219,6 @@ export default {
       this.activeSessionUserId = 0
       uni.reLaunch({ url: '/pages/login/login' })
     },
-    test(){
-     uni.request({
-             url:"http://localhost:3002/api/agent/chat",
-             method:'POST',
-             header:{
-               'Content-Type':'application/json',
-               'Accept':'application/json',
-               "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTYsImlhdCI6MTc4ODMxOTE3MywiZXhwIjoxNzg4OTIzOTczfQ.XsYQO1VOJ8njTqqKQedj8JTSA_79Hg_PAXILjjUbPF8"
-             },
-             data:{
-              message:"帮我查询关键词为nodejs的文章,一共几条，把标题返回给我"
-             }
-           })
-      
-    }
   },
 }
 </script>

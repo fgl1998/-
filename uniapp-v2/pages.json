@@ -15,6 +15,16 @@
       }
     },
     {
+      "path": "pages/agent/chat",
+      "style": {
+        "navigationBarTitleText": "智能助手",
+        "disableScroll": true,
+        "app-plus": {
+          "softinputMode": "adjustResize"
+        }
+      }
+    },
+    {
       "path": "pages/login/login",
       "style": {
         "navigationBarTitleText": "登录"

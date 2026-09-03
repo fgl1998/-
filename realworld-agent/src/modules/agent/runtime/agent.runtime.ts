@@ -2,6 +2,7 @@ import type { ChatDeepSeek } from '@langchain/deepseek'
 import { AIMessage } from '@langchain/core/messages'
 import { createAgent } from 'langchain'
 
+
 import { AppError } from '../../../common/errors/app.error.js'
 import { AgentExecutionError } from '../../../common/errors/agent.error.js'
 import type { RealWorldClient } from '../../../clients/realworld.client.js'
@@ -9,12 +10,23 @@ import type { RealWorldClient } from '../../../clients/realworld.client.js'
 import { createSearchArticlesTool } from '../tools/index.js'
 import { AGENT_SYSTEM_PROMPT } from './system.prompt.js'
 
+import type {AgentTraceLogger} from '../../../common/logging/agent-trace.logger.js'
+import type { BaseMessage } from '@langchain/core/messages'
+import type {
+  MemorySaver
+} from '@langchain/langgraph'
+
 export interface AgentRuntimeDependencies {
   model: ChatDeepSeek
   realWorldClient: RealWorldClient
+
+  traceLogger: AgentTraceLogger
+
+  checkpointer: MemorySaver
 }
 
 export interface RunAgentInput {
+  userId: number
   message: string
   token: string
 }
@@ -23,12 +35,21 @@ export class AgentRuntime {
   private readonly model: ChatDeepSeek
   private readonly realWorldClient: RealWorldClient
 
+  private readonly traceLogger: AgentTraceLogger
+  private readonly checkpointer: MemorySaver
+
   constructor(dependencies: AgentRuntimeDependencies) {
     this.model = dependencies.model
     this.realWorldClient = dependencies.realWorldClient
+
+    this.traceLogger =dependencies.traceLogger
+    this.checkpointer = dependencies.checkpointer
   }
 
   async run(input: RunAgentInput): Promise<string> {
+    const startedAt = new Date()
+    let traceMessages:
+    readonly BaseMessage[] = []
     try {
       const tools = [
         createSearchArticlesTool({
@@ -40,8 +61,11 @@ export class AgentRuntime {
       const agent = createAgent({
         model: this.model,
         tools,
-        systemPrompt: AGENT_SYSTEM_PROMPT
+        systemPrompt: AGENT_SYSTEM_PROMPT,
+        checkpointer: this.checkpointer
       })
+
+      const threadId = `realworld-user:${input.userId}`
 
       const result = await agent.invoke({
         messages: [
@@ -50,10 +74,43 @@ export class AgentRuntime {
             content: input.message
           }
         ]
+      },{
+        configurable:{
+          thread_id: threadId
+        }
+
+      })
+       /*
+     * 先保存到局部变量。
+     *
+     * 如果后面的extractFinalAnswer失败，
+     * catch仍然可以把这些messages写入失败日志。
+     */
+      traceMessages = result.messages
+
+      const answer =
+        this.extractFinalAnswer(
+          result.messages
+        )
+
+      await this.traceLogger.write({
+      status: 'success',
+      startedAt,
+      inputMessage: input.message,
+      messages: traceMessages
       })
 
-      return this.extractFinalAnswer(result.messages)
+      // return this.extractFinalAnswer(result.messages)
+      return answer
     } catch (error) {
+      await this.traceLogger.write({
+        status: 'failed',
+        startedAt,
+        inputMessage: input.message,
+        messages: traceMessages,
+        error
+      })
+
       if (error instanceof AppError) {
         throw error
       }
@@ -62,6 +119,7 @@ export class AgentRuntime {
     }
   }
 
+  // 它适合当前无历史记录的单轮 Agent，但不适合作为未来多轮对话的通用实现
   private extractFinalAnswer(
     messages: Awaited<
       ReturnType<

@@ -40,6 +40,7 @@ export class AgentController {
       }
 
       const data = await this.agentService.chat(
+        request.auth.id,
         request.auth.token,
         result.data
       )

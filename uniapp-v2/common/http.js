@@ -87,25 +87,31 @@ function createHttpClient(options) {
         method: 'POST',
         data: data || {},
         header,
+        ...(extraOptions.timeout === undefined ? {} : { timeout: extraOptions.timeout }),
       })
     } catch (error) {
-      throw createError((error && error.message) || '网络请求失败')
+      const message = (error && (error.message || error.errMsg)) || ''
+      const errorMessage = /timeout/i.test(message)
+        ? '请求超时，请稍后重试'
+        : (error && error.message) || '网络请求失败，请检查网络连接'
+      throw createError(errorMessage)
     }
 
     const body = (response && response.data) || {}
     const statusCode = response && response.statusCode
+    const errorBody = body.error || body
     if (statusCode < 200 || statusCode >= 300) {
-      if (statusCode === 401) {
+      if (statusCode === 401 && getToken() === token) {
         await onUnauthorized()
       }
-      throw createError(body.message || `HTTP 请求失败（${statusCode || '未知状态'}）`, {
-        code: body.code,
+      throw createError(errorBody.message || `HTTP 请求失败（${statusCode || '未知状态'}）`, {
+        code: errorBody.code,
         statusCode,
       })
     }
 
     if (body.success === false) {
-      throw createError(body.message || '业务请求失败', { code: body.code, statusCode })
+      throw createError(errorBody.message || '业务请求失败', { code: errorBody.code, statusCode })
     }
 
     return body.data

@@ -17,10 +17,12 @@ export class AgentService {
   }
 
   async chat(
+    userId: number,
     token: string,
     input: AgentChatInput
   ): Promise<AgentChatOutput> {
     const answer = await this.agentRuntime.run({
+      userId,
       message: input.message,
       token
     })

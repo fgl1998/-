@@ -1,0 +1,10 @@
+node_modules/
+dist/
+.env
+coverage/
+*.log
+logs/
+
+# SQLite Agent 会话数据库
+data/*.sqlite
+data/*.sqlite-*

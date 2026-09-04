@@ -21,5 +21,12 @@ export function createAgentRouter(
     options.agentController.chat
   )
 
+  router.post(
+    '/history',
+    options.authMiddleware,
+    options.agentController
+      .getHistory
+  )
+
   return router
 }

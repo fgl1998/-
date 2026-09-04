@@ -2,6 +2,7 @@ import express from 'express'
 import cors from 'cors'
 
 import {env } from './config/env.js'
+import { createSqliteCheckpointer } from './config/checkpointer.js'
 
 import { RealWorldClient } from './clients/realworld.client.js'
 
@@ -45,7 +46,20 @@ export function createApp() {
     enabled: env.AGENT_TRACE_ENABLED,
   })
 
-  const checkpointer = new MemorySaver()
+  // const checkpointer = new MemorySaver()
+   /*
+   * 使用 SQLite 持久化 Agent 状态。
+   *
+   * 原来：
+   * const checkpointer = new MemorySaver()
+   *
+   * 现在：
+   * checkpoint 会保存到 SQLite 文件。
+   */
+  const checkpointer =
+    createSqliteCheckpointer(
+      env.AGENT_CHECKPOINT_DB_PATH
+    )
 
   /*
    * 二、组装 Agent 模块

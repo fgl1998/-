@@ -1,5 +1,7 @@
 import type { ChatDeepSeek } from '@langchain/deepseek'
-import { AIMessage } from '@langchain/core/messages'
+import { AIMessage,ToolMessage,BaseMessage } from '@langchain/core/messages'
+// import type { BaseMessage } from '@langchain/core/messages'
+
 import { createAgent } from 'langchain'
 
 
@@ -11,10 +13,15 @@ import { createSearchArticlesTool } from '../tools/index.js'
 import { AGENT_SYSTEM_PROMPT } from './system.prompt.js'
 
 import type {AgentTraceLogger} from '../../../common/logging/agent-trace.logger.js'
-import type { BaseMessage } from '@langchain/core/messages'
 import type {
   MemorySaver
 } from '@langchain/langgraph'
+import type {
+  BaseCheckpointSaver
+} from '@langchain/langgraph'
+
+import type { AgentHistoryMessageOutput } from '../agent.schema.js' 
+
 
 export interface AgentRuntimeDependencies {
   model: ChatDeepSeek
@@ -22,7 +29,7 @@ export interface AgentRuntimeDependencies {
 
   traceLogger: AgentTraceLogger
 
-  checkpointer: MemorySaver
+  checkpointer: BaseCheckpointSaver
 }
 
 export interface RunAgentInput {
@@ -36,7 +43,7 @@ export class AgentRuntime {
   private readonly realWorldClient: RealWorldClient
 
   private readonly traceLogger: AgentTraceLogger
-  private readonly checkpointer: MemorySaver
+  private readonly checkpointer: BaseCheckpointSaver
 
   constructor(dependencies: AgentRuntimeDependencies) {
     this.model = dependencies.model
@@ -177,5 +184,145 @@ export class AgentRuntime {
       .filter(Boolean)
       .join('\n')
       .trim()
+  }
+
+   /**
+   * 查询当前用户会话中的全部消息。
+   *
+   * 这里不调用大模型，也不调用 Tool。
+   * 只是读取 SQLite 中最新的 checkpoint。
+   */
+  async getHistory(
+    userId: number
+  ): Promise<
+    AgentHistoryMessageOutput[]
+  > {
+    try {
+      const threadId = `realworld-user:${userId}`
+
+      /*
+       * 不传 checkpoint_id 时，
+       * SqliteSaver 会读取这个 thread
+       * 最新的一份 checkpoint。
+       */
+      const checkpointTuple =
+        await this.checkpointer
+          .getTuple({
+            configurable: {
+              thread_id:
+                threadId
+            }
+          })
+
+      if (!checkpointTuple) {
+        return []
+      }
+
+      /*
+       * createAgent 默认把对话消息
+       * 保存在 channel_values.messages。
+       */
+      const storedMessages =
+        checkpointTuple
+          .checkpoint
+          .channel_values
+          .messages
+
+      if (
+        !Array.isArray(
+          storedMessages
+        )
+      ) {
+        return []
+      }
+
+      /*
+       * Checkpointer 反序列化后，
+       * 应该得到 LangChain BaseMessage 实例。
+       *
+       * 这里再判断一次，避免异常数据
+       * 导致接口失败。
+       */
+      const messages =
+        storedMessages.filter(
+          (
+            message
+          ): message is BaseMessage =>
+            BaseMessage.isInstance(
+              message
+            )
+        )
+
+      return messages.map(
+        (message, index) =>
+          this.toHistoryMessage(
+            message,
+            index
+          )
+      )
+    } catch (error) {
+      if (
+        error instanceof AppError
+      ) {
+        throw error
+      }
+
+      throw new AgentExecutionError(
+        error
+      )
+    }
+  }
+
+  /**
+   * 把 LangChain Message 转换为
+   * 前端容易使用的普通对象。
+   */
+  private toHistoryMessage(
+    message: BaseMessage,
+    index: number
+  ): AgentHistoryMessageOutput {
+    const isAiMessage =
+      AIMessage.isInstance(
+        message
+      )
+
+    const isToolMessage =
+      ToolMessage.isInstance(
+        message
+      )
+
+    const toolCalls =
+      isAiMessage
+        ? message.tool_calls ?? []
+        : []
+
+    const toolCallId =
+      isToolMessage
+        ? message.tool_call_id
+        : null
+
+    return {
+      index,
+
+      id:
+        message.id ?? null,
+
+      type:
+        message.getType(),
+
+      name:
+        message.name ?? null,
+
+      content:
+        message.content,
+
+      toolCalls,
+
+      toolCallId,
+
+      isFinalAnswer:
+        isAiMessage &&
+        toolCalls.length === 0
+    }
   }
 }

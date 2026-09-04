@@ -60,6 +60,22 @@ const EnvSchema = z.object({
     .default(30000),
 
   AGENT_TRACE_ENABLED: z.coerce.boolean().default(false),
+
+   /**
+   * Agent 会话数据库文件。
+   *
+   * 相对路径以项目启动目录为基准。
+   */
+  AGENT_CHECKPOINT_DB_PATH: z
+    .string()
+    .trim()
+    .min(
+      1,
+      'AGENT_CHECKPOINT_DB_PATH不能为空'
+    )
+    .default(
+      './data/agent-checkpoints.sqlite'
+    )
   })
 
   

@@ -1,6 +1,7 @@
 import type {
   AgentChatInput,
-  AgentChatOutput
+  AgentChatOutput,
+  AgentHistoryOutput
 } from './agent.schema.js'
 
 import type { AgentRuntime } from './runtime/agent.runtime.js'
@@ -29,6 +30,18 @@ export class AgentService {
 
     return {
       answer
+    }
+  }
+
+  async getHistory(
+    userId: number
+  ): Promise<AgentHistoryOutput> {
+    const messages =
+      await this.agentRuntime
+        .getHistory(userId)
+
+    return {
+      messages
     }
   }
 }

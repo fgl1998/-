@@ -72,6 +72,8 @@ export function createAuthMiddleware(
       )
       
       const authPayload = JwtPayloadSchema.parse(payload)
+      console.log(authPayload,666);
+      
       
       request.auth = {
         userId: authPayload.id,

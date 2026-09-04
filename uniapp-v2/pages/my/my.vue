@@ -16,7 +16,7 @@
             <view v-if="refreshing" class="refreshing">正在同步最新资料…</view>
           </view>
         </view>
-        <view class="email">{{ userInfo.email || '未填写邮箱' }}</view>
+        <view class="email" @click="test">{{ userInfo.email || '未填写邮箱' }}</view>
       </view>
 
       <view class="stats-card">
@@ -103,6 +103,39 @@ export default {
     this.restoreAndRefresh()
   },
   methods: {
+		test(){
+			uni.request({
+			  url:"http://localhost:3002/api/agent/history",
+			  method:'POST',
+			  header:{
+			    'Content-Type':'application/json',
+			    'Accept':'application/json',
+			    "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTYsImlhdCI6MTc4ODMxOTE3MywiZXhwIjoxNzg4OTIzOTczfQ.XsYQO1VOJ8njTqqKQedj8JTSA_79Hg_PAXILjjUbPF8"
+			   //  "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTUsImlhdCI6MTc4NzEwNDc3NiwiZXhwIjoxNzg3NzA5NTc2fQ.coPpvxmRJTC_M51dsI453Z-bnHWKnbF9GbhMXIkD8mg"
+			  },
+			  data:{
+			   //  email:'wangwu44444@169.com',
+			   //  username:'wangwu4',
+			   //  password:'1234567888'
+			   // articleId:34,
+			   // body:'测试评论'
+			   // commentId:1
+			   // followingId:7
+			   // page:1,
+			   // pageSize:3
+			   // userId:14
+			
+			   // title:'测试标题826',
+			   // description:'测试  描述826',
+			   // body:'测试内容826',
+			   // slug:'测试标题825-624a345a',
+			   // tags:JSON.stringify([1])
+			   // slug:'vue-getting-started'
+			   
+			
+			  }
+			})
+		},
     async restoreAndRefresh() {
       const generation = ++this.profileRequestGeneration
       const cached = session.get()

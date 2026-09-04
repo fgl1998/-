@@ -8,7 +8,7 @@
     </view>
 
     <template v-else>
-      <view class="chat-notice">每次提问独立回答，离开页面后记录不会保存。</view>
+      <view class="chat-notice">工具与中间过程默认收起，点击展开可查看完整内容。</view>
 
       <scroll-view
         class="message-list"
@@ -17,7 +17,15 @@
         :scroll-with-animation="true"
       >
         <view class="message-content">
-          <view v-if="messages.length === 0" class="welcome-card">
+          <view v-if="historyLoading" class="history-state">
+            <text>正在加载历史对话…</text>
+          </view>
+          <view v-else-if="historyError" class="history-state history-state--error">
+            <text class="history-error-title">历史对话加载失败</text>
+            <text class="history-error-copy">{{ historyError }}</text>
+            <u-button type="primary" plain shape="circle" size="small" @click="loadHistory">重新加载</u-button>
+          </view>
+          <view v-else-if="historyLoaded && messages.length === 0" class="welcome-card">
             <view class="assistant-mark">AI</view>
             <view class="welcome-title">想找什么文章？</view>
             <view class="welcome-copy">我是 RealWorld 智能助手，可以帮你搜索文章、整理查询结果。</view>
@@ -40,16 +48,33 @@
             class="message-row"
             :class="{ 'message-row--user': message.role === 'user' }"
           >
-            <text class="message-label">{{ message.role === 'user' ? '你' : '智能助手' }}</text>
-            <view class="message-bubble" :class="{ 'message-bubble--user': message.role === 'user' }">
+            <button class="message-heading" :class="{ 'message-heading--collapsed': message.collapsed }" @click="toggleMessage(message)">
+              <view class="message-heading-info">
+                <text class="message-label">{{ message.label || (message.role === 'user' ? '你 · human' : '最终回答 · ai') }}</text>
+                <text v-if="message.name || message.toolNames" class="message-heading-name">{{ message.name || message.toolNames }}</text>
+              </view>
+              <text class="message-toggle">{{ message.collapsed ? '展开 ▾' : '收起 ▴' }}</text>
+            </button>
+            <view v-if="!message.collapsed" class="message-bubble" :class="{ 'message-bubble--user': message.role === 'user', 'message-bubble--tool': message.type === 'tool', 'message-bubble--system': message.type === 'system' }">
+              <text v-if="message.name" class="message-meta" selectable>名称：{{ message.name }}</text>
+              <text v-if="message.toolCallId" class="message-meta" selectable>调用 ID：{{ message.toolCallId }}</text>
               <text class="message-text" selectable>{{ message.content }}</text>
+              <view v-if="message.toolCallsText" class="tool-calls">
+                <text class="tool-calls-title">工具调用与参数</text>
+                <text class="message-text tool-calls-text" selectable>{{ message.toolCallsText }}</text>
+              </view>
             </view>
             <view v-if="message.status === 'failed'" class="message-error">
               <text>{{ message.error }}</text>
-              <button class="retry-button" size="mini" :disabled="sending" @click="retryMessage(message)">重试</button>
+              <button class="retry-button" size="mini" :disabled="sending || !historyLoaded" @click="retryMessage(message)">重试</button>
             </view>
           </view>
 
+          <view v-if="processError" class="history-state history-state--error">
+            <text class="history-error-title">完整过程暂未加载</text>
+            <text class="history-error-copy">{{ processError }}</text>
+            <u-button type="primary" plain shape="circle" size="small" :disabled="sending || historyLoading" @click="reloadProcess">重新加载过程</u-button>
+          </view>
           <view v-if="sending" class="pending-message">
             <view class="pending-dot" />
             <text>正在查找和整理，请稍候…</text>
@@ -65,7 +90,7 @@
           placeholder="输入你想查询的文章或关键词…"
           placeholder-class="input-placeholder"
           :maxlength="2000"
-          :disabled="sending"
+          :disabled="sending || historyLoading"
           :cursor-spacing="20"
           :adjust-position="true"
           :show-confirm-bar="false"
@@ -74,7 +99,7 @@
           <text class="character-count">{{ draft.length }} / 2000</text>
           <view class="send-button">
             <u-button type="primary" shape="circle" size="small" :loading="sending" :disabled="!canSend" @click="sendMessage">
-              {{ sending ? '等待回答' : '发送' }}
+              {{ sending ? '等待回答' : (historyLoading ? '加载中' : '发送') }}
             </u-button>
           </view>
         </view>
@@ -86,6 +111,7 @@
 <script>
 const agentApi = require('../../api/agent')
 const session = require('../../common/session')
+const { normalizeHistory } = require('../../common/agent-history')
 
 export default {
   data() {
@@ -94,6 +120,10 @@ export default {
       draft: '',
       messages: [],
       sending: false,
+      historyLoading: false,
+      historyLoaded: false,
+      historyError: '',
+      processError: '',
       scrollTarget: '',
       messageSequence: 0,
       activeToken: '',
@@ -105,24 +135,32 @@ export default {
   computed: {
     canSend() {
       const message = this.draft.trim()
-      return this.isLoggedIn && !this.sending && message.length > 0 && message.length <= 2000
+      return this.isLoggedIn && this.historyLoaded && !this.historyLoading && !this.sending && message.length > 0 && message.length <= 2000
     },
   },
   onShow() {
     this.pageActive = true
     this.syncSession()
+    return this.loadHistory()
   },
   onUnload() {
     this.pageActive = false
     this.resetConversation()
   },
   methods: {
+    toggleMessage(message) {
+      if (this.pageActive && this.messages.includes(message)) message.collapsed = !message.collapsed
+    },
     resetConversation() {
-      // 消息只属于当前页面实例；旧请求完成时也不能重新填回这些消息。
+      // 清理页面状态，不删除服务端历史；重新进入时会再次读取。
       this.requestGeneration += 1
       this.messages = []
       this.draft = ''
       this.sending = false
+      this.historyLoading = false
+      this.historyLoaded = false
+      this.historyError = ''
+      this.processError = ''
       this.scrollTarget = ''
     },
     syncSession() {
@@ -137,8 +175,64 @@ export default {
     goLogin() {
       uni.navigateTo({ url: '/pages/login/login' })
     },
+    async loadHistory() {
+      if (!this.pageActive || this.sending || this.historyLoading || this.historyLoaded) return
+      const token = this.syncSession()
+      if (!token) return
+      const generation = ++this.requestGeneration
+      this.historyLoading = true
+      this.historyError = ''
+      try {
+        const result = await agentApi.history()
+        if (!this.isCurrentRequest(generation, token)) return
+        this.messages = normalizeHistory(result)
+        this.historyLoaded = true
+        this.scrollToMessage()
+      } catch (error) {
+        if (!this.isCurrentRequest(generation, token)) return
+        this.historyError = (error && error.message) || '历史对话暂时无法加载，请重试'
+      } finally {
+        if (this.pageActive && generation === this.requestGeneration) {
+          this.historyLoading = false
+          this.syncSession()
+        }
+      }
+    },
     useSuggestion(question) {
       if (!this.sending) this.draft = question
+    },
+    async fetchProcess(generation, token) {
+      this.processError = ''
+      try {
+        const result = await agentApi.history()
+        if (!this.isCurrentRequest(generation, token)) return false
+        const messages = normalizeHistory(result)
+        // chat 已成功时，空历史不能抹掉刚收到的回答。
+        if (!messages.length) throw new Error('服务端暂未返回本次过程，请稍后重新加载')
+        const failedQuestions = this.messages.filter((message) => message.status === 'failed')
+        this.messages = messages.concat(failedQuestions)
+        return true
+      } catch (error) {
+        if (this.isCurrentRequest(generation, token)) {
+          this.processError = (error && error.message) || '过程读取失败，请重试'
+        }
+        return false
+      }
+    },
+    async reloadProcess() {
+      if (!this.pageActive || this.sending || this.historyLoading) return
+      const token = this.syncSession()
+      if (!token) return
+      const generation = ++this.requestGeneration
+      this.historyLoading = true
+      try {
+        if (await this.fetchProcess(generation, token)) this.scrollToMessage()
+      } finally {
+        if (this.pageActive && generation === this.requestGeneration) {
+          this.historyLoading = false
+          this.syncSession()
+        }
+      }
     },
     scrollToMessage(target = 'chat-bottom') {
       this.scrollTarget = ''
@@ -147,12 +241,13 @@ export default {
       })
     },
     async sendMessage() {
-      if (!this.pageActive || this.sending) return
+      if (!this.pageActive || this.sending || this.historyLoading) return
       const token = this.syncSession()
       if (!token) {
         this.goLogin()
         return
       }
+      if (!this.historyLoaded) return
       const content = this.draft.trim()
       if (!content) return
       if (content.length > 2000) {
@@ -162,6 +257,7 @@ export default {
       const question = {
         id: `message-${++this.messageSequence}`,
         role: 'user',
+        collapsed: false,
         content,
         status: 'pending',
         error: '',
@@ -171,13 +267,13 @@ export default {
       await this.requestAnswer(question, token)
     },
     async retryMessage(question) {
-      if (!this.pageActive || this.sending) return
+      if (!this.pageActive || this.sending || this.historyLoading) return
       const token = this.syncSession()
       if (!token) {
         this.goLogin()
         return
       }
-      if (!this.messages.includes(question) || question.status !== 'failed') return
+      if (!this.historyLoaded || !this.messages.includes(question) || question.status !== 'failed') return
       await this.requestAnswer(question, token)
     },
     async requestAnswer(question, token) {
@@ -197,6 +293,7 @@ export default {
         const reply = {
           id: `message-${++this.messageSequence}`,
           role: 'assistant',
+          collapsed: false,
           content: answer,
           status: 'sent',
           error: '',
@@ -204,6 +301,8 @@ export default {
         // 重试早先的问题时，回答仍放在对应问题后面，避免问答错位。
         this.messages.splice(this.messages.indexOf(question) + 1, 0, reply)
         scrollTarget = reply.id
+        // chat 只返回最终回答；随后读取已落库的完整消息，补齐工具和中间 AI 阶段。
+        if (await this.fetchProcess(generation, token)) scrollTarget = 'chat-bottom'
       } catch (error) {
         if (!this.isCurrentRequest(generation, token)) return
         question.status = 'failed'
@@ -228,6 +327,9 @@ export default {
 .chat-notice { flex-shrink: 0; padding: 20rpx 24rpx; color: #7c8798; font-size: 22rpx; text-align: center; background: #edf3fa; }
 .message-list { flex: 1; height: 0; min-height: 0; }
 .message-content { padding: 28rpx 28rpx 0; }
+.history-state { display: flex; flex-direction: column; align-items: center; margin: 32rpx 0; padding: 40rpx 32rpx; color: #909399; font-size: 27rpx; text-align: center; background: #fff; border-radius: 24rpx; }
+.history-error-title { color: #303133; font-size: 30rpx; font-weight: 600; }
+.history-error-copy { margin: 16rpx 0 28rpx; line-height: 1.6; }
 .welcome-card { margin: 16rpx 0 32rpx; padding: 40rpx 32rpx; background: #fff; border-radius: 24rpx; box-shadow: 0 10rpx 36rpx rgba(31, 41, 55, 0.04); }
 .assistant-mark { display: flex; align-items: center; justify-content: center; width: 76rpx; height: 76rpx; color: #fff; font-size: 27rpx; font-weight: 700; background: #3c9cff; border-radius: 22rpx; }
 .welcome-title { margin-top: 28rpx; color: #303133; font-size: 40rpx; font-weight: 700; }
@@ -237,9 +339,22 @@ export default {
 .suggestion-arrow { flex-shrink: 0; margin-left: 12rpx; font-size: 30rpx; }
 .message-row { display: flex; flex-direction: column; align-items: flex-start; margin-bottom: 32rpx; }
 .message-row--user { align-items: flex-end; }
-.message-label { margin: 0 8rpx 12rpx; color: #909399; font-size: 22rpx; }
+.message-heading { display: flex; align-items: center; justify-content: space-between; max-width: 94%; margin: 0 0 12rpx; padding: 8rpx; text-align: left; line-height: 1.5; background: transparent; border-radius: 12rpx; }
+.message-heading::after { border: none; }
+.message-heading--collapsed { width: 94%; margin-bottom: 0; padding: 22rpx 24rpx; background: #eaf0f6; }
+.message-row--user .message-heading--collapsed { width: 88%; }
+.message-heading-info { flex: 1; min-width: 0; }
+.message-label { display: block; color: #7c8798; font-size: 22rpx; }
+.message-heading-name { display: block; margin-top: 6rpx; color: #53786a; font-size: 24rpx; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.message-toggle { flex-shrink: 0; margin-left: 24rpx; color: #3979b7; font-size: 23rpx; }
 .message-bubble { max-width: 94%; padding: 24rpx 28rpx; color: #303133; background: #fff; border-radius: 4rpx 22rpx 22rpx; }
 .message-bubble--user { max-width: 88%; color: #fff; background: #3c9cff; border-radius: 22rpx 4rpx 22rpx 22rpx; }
+.message-bubble--tool { background: #edf8f3; border-left: 6rpx solid #48a881; }
+.message-bubble--system { background: #eef0f5; border-left: 6rpx solid #909399; }
+.message-meta { display: block; margin-bottom: 12rpx; color: #53786a; font-size: 22rpx; overflow-wrap: anywhere; word-break: break-word; }
+.tool-calls { margin-top: 20rpx; padding-top: 20rpx; border-top: 1rpx solid #e8edf3; }
+.tool-calls-title { display: block; margin-bottom: 12rpx; color: #3979b7; font-size: 24rpx; font-weight: 600; }
+.tool-calls-text { font-family: monospace; font-size: 24rpx; }
 .message-text { font-size: 28rpx; line-height: 1.8; white-space: pre-wrap; overflow-wrap: anywhere; word-break: break-word; }
 .message-error { display: flex; align-items: center; max-width: 94%; margin-top: 14rpx; color: #d75555; font-size: 23rpx; line-height: 1.6; }
 .retry-button { flex-shrink: 0; margin: 0 0 0 16rpx; padding: 0 20rpx; color: #3c9cff; font-size: 23rpx; background: #fff; }

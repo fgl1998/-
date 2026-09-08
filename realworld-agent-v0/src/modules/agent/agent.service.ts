@@ -33,15 +33,4 @@ export class AgentService {
     }
   }
 
-  async getHistory(
-    userId: number
-  ): Promise<AgentHistoryOutput> {
-    const messages =
-      await this.agentRuntime
-        .getHistory(userId)
-
-    return {
-      messages
-    }
-  }
 }

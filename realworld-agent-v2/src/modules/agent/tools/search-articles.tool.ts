@@ -187,11 +187,16 @@ export function createSearchArticlesTool(
     },
     {
       name: 'search_articles',
-
-      description:
-        '搜索或分页查询RealWorld文章。用户询问文章列表、查找包含某个关键词的文章、最近有哪些文章时使用。该工具只返回文章摘要，不返回文章正文。',
-
       schema: SearchArticlesInputSchema,
+      description: `
+        搜索 RealWorld 中的公开文章。
+
+        用于查找作者发布的相关文章，作为结构、选题和内容完整度的参考。
+        不能用它代替 get_my_articles 查询当前用户自己的文章。
+        只返回文章摘要，不返回完整正文。
+
+        搜索结果仅作为分析参考，不得复制其他文章的大段内容。
+        `.trim()
     },
   ) 
 }

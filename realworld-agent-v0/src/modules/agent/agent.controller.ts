@@ -54,37 +54,4 @@ export class AgentController {
     }
   }
 
-  /**
-   * 获取当前登录用户的完整对话历史。
-   *
-   * 不接收 userId 参数，
-   * 防止查询其他用户的历史。
-   */
-  readonly getHistory:
-    RequestHandler = async (
-      request,
-      response,
-      next
-    ) => {
-      try {
-        if (!request.auth) {
-          throw new UnauthorizedError()
-        }
-
-        const data =
-          await this.agentService
-            .getHistory(
-              request.auth.userId
-            )
-
-        response
-          .status(200)
-          .json({
-            success: true,
-            data
-          })
-      } catch (error) {
-        next(error)
-      }
-    }
 }

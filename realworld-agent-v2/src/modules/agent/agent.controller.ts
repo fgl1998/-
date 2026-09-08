@@ -1,10 +1,11 @@
-import type { RequestHandler } from 'express'
+import { response, type RequestHandler } from 'express'
 
 import { AppError } from '../../common/errors/app.error.js'
 import { UnauthorizedError } from '../../common/errors/agent.error.js'
 
 import { AgentChatSchema } from './agent.schema.js'
 import type { AgentService } from './agent.service.js'
+import { request } from 'node:http'
 
 export interface AgentControllerDependencies {
   agentService: AgentService
@@ -87,4 +88,29 @@ export class AgentController {
         next(error)
       }
     }
+
+  readonly clearHistory: 
+    RequestHandler = async (
+    request,
+    response,
+    next
+  )=>{
+    try {
+      if (!request.auth) {
+        throw new UnauthorizedError()
+      }
+
+      await this.agentService.clearHistory(
+        request.auth.userId
+      )
+
+      response
+        .status(200)
+        .json({
+          success: true,
+        })
+    } catch (error) {
+      next(error)
+    }
+  }
 }

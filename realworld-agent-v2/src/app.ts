@@ -20,7 +20,8 @@ import { createAgentRouter } from './modules/agent/agent.route.js'
 import { AgentTraceLogger } from './common/logging/agent-trace.logger.js'
 
 import { MemorySaver } from '@langchain/langgraph'
-
+import { PostgresSaver } from '@langchain/langgraph-checkpoint-postgres'
+import { agentCheckpointer } from './config/agent-checkpointer.js'
 
 export function createApp() {
   const app = express()
@@ -56,10 +57,12 @@ export function createApp() {
    * 现在：
    * checkpoint 会保存到 SQLite 文件。
    */
-  const checkpointer =
-    createSqliteCheckpointer(
-      env.AGENT_CHECKPOINT_DB_PATH
-    )
+  // const checkpointer =
+  //   createSqliteCheckpointer(
+  //     env.AGENT_CHECKPOINT_DB_PATH
+  //   )
+
+
 
   /*
    * 二、组装 Agent 模块
@@ -69,7 +72,7 @@ export function createApp() {
     model: deepSeekModel,
     realWorldClient,
     traceLogger: agentTraceLogger,
-    checkpointer
+    checkpointer: agentCheckpointer
   })
 
   const agentService = new AgentService({

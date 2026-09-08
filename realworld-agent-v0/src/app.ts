@@ -46,7 +46,7 @@ export function createApp() {
     enabled: env.AGENT_TRACE_ENABLED,
   })
 
-  // const checkpointer = new MemorySaver()
+  const checkpointer = new MemorySaver()
    /*
    * 使用 SQLite 持久化 Agent 状态。
    *
@@ -56,10 +56,10 @@ export function createApp() {
    * 现在：
    * checkpoint 会保存到 SQLite 文件。
    */
-  const checkpointer =
-    createSqliteCheckpointer(
-      env.AGENT_CHECKPOINT_DB_PATH
-    )
+  // const checkpointer =
+  //   createSqliteCheckpointer(
+  //     env.AGENT_CHECKPOINT_DB_PATH
+  //   )
 
   /*
    * 二、组装 Agent 模块
@@ -69,7 +69,7 @@ export function createApp() {
     model: deepSeekModel,
     realWorldClient,
     traceLogger: agentTraceLogger,
-    checkpointer
+    checkpointer: checkpointer
   })
 
   const agentService = new AgentService({

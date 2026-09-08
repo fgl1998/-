@@ -13,20 +13,32 @@ function deferred() {
   return { promise, resolve, reject }
 }
 
-function createChatPage(chat = async () => ({ answer: '找到文章了' }), initialToken = 'user-token', history = async () => ({ messages: [] })) {
+function createChatPage(
+  chat = async () => ({ answer: '找到文章了' }),
+  initialToken = 'user-token',
+  history = async () => ({ messages: [] }),
+  clearHistory = async () => undefined,
+) {
   const file = path.join(root, 'pages/agent/chat.vue')
   assert.ok(fs.existsSync(file), 'Agent chat page should exist')
   const script = fs.readFileSync(file, 'utf8').match(/<script>([\s\S]*?)<\/script>/)[1]
   const state = { token: initialToken }
   const calls = []
+  const clearHistoryCalls = []
   const toasts = []
   const routes = []
+  const modals = []
   const modules = {
-    '../../api/agent': { chat: (message) => { calls.push(message); return chat(message) }, history },
+    '../../api/agent': {
+      chat: (message) => { calls.push(message); return chat(message) },
+      history,
+      clearHistory: () => { clearHistoryCalls.push(true); return clearHistory() },
+    },
     '../../common/session': { getToken: () => state.token },
   }
   const uni = {
     showToast: (options) => toasts.push(options.title),
+    showModal: (options) => modals.push(options),
     navigateTo: (options) => routes.push(options.url),
   }
   const component = new Function('require', 'uni', script.replace(/export\s+default/, 'return'))(
@@ -42,7 +54,7 @@ function createChatPage(chat = async () => ({ answer: '找到文章了' }), init
     Object.defineProperty(vm, key, { get: () => getter.call(vm) })
   }
   const ready = component.onShow.call(vm)
-  return { vm, component, state, calls, toasts, routes, ready }
+  return { vm, component, state, calls, clearHistoryCalls, toasts, routes, modals, ready }
 }
 
 async function loadChat(...args) {
@@ -65,6 +77,26 @@ test('history API uses POST with current JWT and no caller-supplied user id', as
   assert.equal(typeof api.history, 'function')
   assert.deepEqual(await api.history(), { messages: [] })
   assert.equal(received.url, 'http://agent.example.test/api/agent/history')
+  assert.equal(received.method, 'POST')
+  assert.deepEqual(received.data, {})
+  assert.equal(received.header.Authorization, 'Bearer current-token')
+})
+
+test('clear history API uses POST with current JWT and no caller-supplied user id', async () => {
+  let received
+  const { createAgentApi } = require('../api/agent')
+  const api = createAgentApi(createHttpClient({
+    baseUrl: 'http://agent.example.test',
+    getToken: () => 'current-token',
+    requestAdapter: async (options) => {
+      received = options
+      return { statusCode: 200, data: { success: true } }
+    },
+  }))
+
+  assert.equal(typeof api.clearHistory, 'function')
+  assert.equal(await api.clearHistory(), undefined)
+  assert.equal(received.url, 'http://agent.example.test/api/agent/clear_history')
   assert.equal(received.method, 'POST')
   assert.deepEqual(received.data, {})
   assert.equal(received.header.Authorization, 'Bearer current-token')
@@ -190,6 +222,62 @@ test('guests never fetch history and history 401 clears the visible conversation
   assert.equal(page.vm.isLoggedIn, false)
   assert.deepEqual(page.vm.messages, [])
   assert.equal(page.vm.historyLoading, false)
+})
+
+test('clear history requires confirmation and cancellation keeps the conversation', async () => {
+  const page = await loadChat(undefined, 'user-token', async () => savedMessages())
+  const originalContents = page.vm.messages.map((message) => message.content)
+
+  const clearing = page.vm.confirmClearHistory()
+  assert.equal(page.modals.length, 1)
+  page.modals[0].success({ confirm: false, cancel: true })
+  await clearing
+
+  assert.equal(page.clearHistoryCalls.length, 0)
+  assert.deepEqual(page.vm.messages.map((message) => message.content), originalContents)
+})
+
+test('confirmed clear history resets the page to its welcome state', async () => {
+  const page = await loadChat(undefined, 'user-token', async () => savedMessages())
+  page.vm.draft = '未发送草稿'
+
+  const clearing = page.vm.confirmClearHistory()
+  page.modals[0].success({ confirm: true, cancel: false })
+  await clearing
+
+  assert.equal(page.clearHistoryCalls.length, 1)
+  assert.deepEqual(page.vm.messages, [])
+  assert.equal(page.vm.draft, '')
+  assert.equal(page.vm.historyLoaded, true)
+  assert.equal(page.vm.historyError, '')
+  assert.equal(page.vm.processError, '')
+  assert.equal(page.vm.clearingHistory, false)
+  assert.ok(page.toasts.includes('历史已清除'))
+})
+
+test('failed clear history preserves the conversation and reports the error', async () => {
+  const page = await loadChat(
+    undefined,
+    'user-token',
+    async () => savedMessages(),
+    async () => { throw new Error('清除服务暂不可用') },
+  )
+  const originalContents = page.vm.messages.map((message) => message.content)
+
+  const clearing = page.vm.confirmClearHistory()
+  page.modals[0].success({ confirm: true, cancel: false })
+  await clearing
+
+  assert.deepEqual(page.vm.messages.map((message) => message.content), originalContents)
+  assert.equal(page.vm.clearingHistory, false)
+  assert.ok(page.toasts.includes('清除服务暂不可用'))
+})
+
+test('chat page exposes a guarded clear-history toolbar action', () => {
+  const source = fs.readFileSync(path.join(root, 'pages/agent/chat.vue'), 'utf8')
+  assert.match(source, /class="clear-history-button"/)
+  assert.match(source, /:disabled="!canClearHistory"/)
+  assert.match(source, /@click="confirmClearHistory"/)
 })
 
 test('Agent API posts only the current message to its own server with current JWT and timeout', async () => {

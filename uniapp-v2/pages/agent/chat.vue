@@ -8,7 +8,16 @@
     </view>
 
     <template v-else>
-      <view class="chat-notice">工具与中间过程默认收起，点击展开可查看完整内容。</view>
+      <view class="chat-toolbar">
+        <text class="chat-notice">工具与中间过程默认收起，点击展开可查看完整内容。</text>
+        <button
+          class="clear-history-button"
+          :disabled="!canClearHistory"
+          @click="confirmClearHistory"
+        >
+          {{ clearingHistory ? '清除中…' : '清除历史' }}
+        </button>
+      </view>
 
       <scroll-view
         class="message-list"
@@ -66,14 +75,14 @@
             </view>
             <view v-if="message.status === 'failed'" class="message-error">
               <text>{{ message.error }}</text>
-              <button class="retry-button" size="mini" :disabled="sending || !historyLoaded" @click="retryMessage(message)">重试</button>
+              <button class="retry-button" size="mini" :disabled="sending || clearingHistory || !historyLoaded" @click="retryMessage(message)">重试</button>
             </view>
           </view>
 
           <view v-if="processError" class="history-state history-state--error">
             <text class="history-error-title">完整过程暂未加载</text>
             <text class="history-error-copy">{{ processError }}</text>
-            <u-button type="primary" plain shape="circle" size="small" :disabled="sending || historyLoading" @click="reloadProcess">重新加载过程</u-button>
+            <u-button type="primary" plain shape="circle" size="small" :disabled="sending || clearingHistory || historyLoading" @click="reloadProcess">重新加载过程</u-button>
           </view>
           <view v-if="sending" class="pending-message">
             <view class="pending-dot" />
@@ -90,7 +99,7 @@
           placeholder="输入你想查询的文章或关键词…"
           placeholder-class="input-placeholder"
           :maxlength="2000"
-          :disabled="sending || historyLoading"
+          :disabled="sending || historyLoading || clearingHistory"
           :cursor-spacing="20"
           :adjust-position="true"
           :show-confirm-bar="false"
@@ -120,6 +129,7 @@ export default {
       draft: '',
       messages: [],
       sending: false,
+      clearingHistory: false,
       historyLoading: false,
       historyLoaded: false,
       historyError: '',
@@ -135,7 +145,10 @@ export default {
   computed: {
     canSend() {
       const message = this.draft.trim()
-      return this.isLoggedIn && this.historyLoaded && !this.historyLoading && !this.sending && message.length > 0 && message.length <= 2000
+      return this.isLoggedIn && this.historyLoaded && !this.historyLoading && !this.sending && !this.clearingHistory && message.length > 0 && message.length <= 2000
+    },
+    canClearHistory() {
+      return this.isLoggedIn && this.historyLoaded && !this.historyLoading && !this.sending && !this.clearingHistory
     },
   },
   onShow() {
@@ -157,6 +170,7 @@ export default {
       this.messages = []
       this.draft = ''
       this.sending = false
+      this.clearingHistory = false
       this.historyLoading = false
       this.historyLoaded = false
       this.historyError = ''
@@ -175,8 +189,60 @@ export default {
     goLogin() {
       uni.navigateTo({ url: '/pages/login/login' })
     },
+    async confirmClearHistory() {
+      if (!this.canClearHistory) return
+
+      const confirmed = await new Promise((resolve) => {
+        uni.showModal({
+          title: '清除历史',
+          content: '将删除当前账号的全部助手对话，且无法恢复。确定继续吗？',
+          confirmText: '清除',
+          confirmColor: '#d75555',
+          success: (result) => resolve(Boolean(result.confirm)),
+          fail: () => resolve(false),
+        })
+      })
+
+      if (!confirmed || !this.canClearHistory) return
+      await this.clearHistory()
+    },
+    async clearHistory() {
+      if (!this.canClearHistory) return
+      const token = this.syncSession()
+      if (!token) {
+        this.goLogin()
+        return
+      }
+
+      const generation = ++this.requestGeneration
+      this.clearingHistory = true
+
+      try {
+        await agentApi.clearHistory()
+        if (!this.isCurrentRequest(generation, token)) return
+
+        this.messages = []
+        this.draft = ''
+        this.historyLoaded = true
+        this.historyError = ''
+        this.processError = ''
+        this.scrollTarget = ''
+        uni.showToast({ title: '历史已清除', icon: 'success' })
+      } catch (error) {
+        if (!this.isCurrentRequest(generation, token)) return
+        uni.showToast({
+          title: (error && error.message) || '清除历史失败，请重试',
+          icon: 'none',
+        })
+      } finally {
+        if (this.pageActive && generation === this.requestGeneration) {
+          this.clearingHistory = false
+          this.syncSession()
+        }
+      }
+    },
     async loadHistory() {
-      if (!this.pageActive || this.sending || this.historyLoading || this.historyLoaded) return
+      if (!this.pageActive || this.sending || this.clearingHistory || this.historyLoading || this.historyLoaded) return
       const token = this.syncSession()
       if (!token) return
       const generation = ++this.requestGeneration
@@ -220,7 +286,7 @@ export default {
       }
     },
     async reloadProcess() {
-      if (!this.pageActive || this.sending || this.historyLoading) return
+      if (!this.pageActive || this.sending || this.clearingHistory || this.historyLoading) return
       const token = this.syncSession()
       if (!token) return
       const generation = ++this.requestGeneration
@@ -241,7 +307,7 @@ export default {
       })
     },
     async sendMessage() {
-      if (!this.pageActive || this.sending || this.historyLoading) return
+      if (!this.pageActive || this.sending || this.clearingHistory || this.historyLoading) return
       const token = this.syncSession()
       if (!token) {
         this.goLogin()
@@ -267,7 +333,7 @@ export default {
       await this.requestAnswer(question, token)
     },
     async retryMessage(question) {
-      if (!this.pageActive || this.sending || this.historyLoading) return
+      if (!this.pageActive || this.sending || this.clearingHistory || this.historyLoading) return
       const token = this.syncSession()
       if (!token) {
         this.goLogin()
@@ -324,7 +390,11 @@ export default {
 
 <style lang="scss" scoped>
 .chat-page { display: flex; flex-direction: column; height: calc(100vh - var(--window-top, 0px)); overflow: hidden; background: #f5f7fa; }
-.chat-notice { flex-shrink: 0; padding: 20rpx 24rpx; color: #7c8798; font-size: 22rpx; text-align: center; background: #edf3fa; }
+.chat-toolbar { display: flex; flex-shrink: 0; align-items: center; padding: 16rpx 24rpx; background: #edf3fa; }
+.chat-notice { flex: 1; min-width: 0; color: #7c8798; font-size: 22rpx; line-height: 1.5; }
+.clear-history-button { flex-shrink: 0; margin: 0 0 0 20rpx; padding: 8rpx 18rpx; color: #d75555; font-size: 23rpx; line-height: 1.5; background: #fff; border-radius: 999rpx; }
+.clear-history-button::after { border-color: #efcaca; border-radius: 999rpx; }
+.clear-history-button[disabled] { color: #b9bec6; background: #f5f7fa; }
 .message-list { flex: 1; height: 0; min-height: 0; }
 .message-content { padding: 28rpx 28rpx 0; }
 .history-state { display: flex; flex-direction: column; align-items: center; margin: 32rpx 0; padding: 40rpx 32rpx; color: #909399; font-size: 27rpx; text-align: center; background: #fff; border-radius: 24rpx; }

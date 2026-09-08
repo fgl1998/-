@@ -24,6 +24,16 @@
         }
       }
     },
+		{
+      "path": "pages/agent/chat0",
+      "style": {
+        "navigationBarTitleText": "智能助手",
+        "disableScroll": true,
+        "app-plus": {
+          "softinputMode": "adjustResize"
+        }
+      }
+    },
     {
       "path": "pages/login/login",
       "style": {

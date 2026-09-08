@@ -496,3 +496,166 @@ function isSensitiveKey(
     'passwordhash'
   ].includes(normalizedKey)
 }
+
+
+export async function printAgentState(
+  agent: any,
+  threadId: string
+) {
+
+  const config = {
+    configurable: {
+      thread_id: threadId,
+    },
+  }
+
+  const state = await agent.getState(config)
+
+  console.log('\n========= AGENT STATE =========')
+
+  console.log(
+    'threadId:',
+    threadId
+  )
+
+  console.log(
+    'checkpointId:',
+    state.config.configurable?.checkpoint_id
+  )
+
+  console.log(
+    'step:',
+    state.metadata?.step
+  )
+
+  console.log(
+    'next:',
+    state.next
+  )
+
+  console.log('messages:')
+
+  for (const message of state.values.messages ?? []) {
+
+    console.log(
+      `[${message.constructor.name}]`
+    )
+
+    console.dir(
+      message.content,
+      { depth: null }
+    )
+  }
+
+  console.log('===============================\n')
+}
+
+export async function printAgentStateHistory(
+  agent: any,
+  threadId: string
+) {
+  const config = {
+    configurable: {
+      thread_id: threadId,
+    },
+  }
+
+  console.log('\n')
+  console.log('==================================================')
+  console.log('              AGENT STATE HISTORY')
+  console.log('==================================================')
+  console.log('threadId:', threadId)
+
+  let index = 0
+
+  for await (const snapshot of agent.getStateHistory(config)) {
+    index++
+
+    console.log('\n')
+    console.log(`================ CHECKPOINT ${index} ================`)
+
+    console.log(
+      'checkpointId:',
+      snapshot.config.configurable?.checkpoint_id
+    )
+
+    console.log(
+      'parentCheckpointId:',
+      snapshot.parentConfig?.configurable?.checkpoint_id ?? null
+    )
+
+    console.log(
+      'step:',
+      snapshot.metadata?.step
+    )
+
+    console.log(
+      'source:',
+      snapshot.metadata?.source
+    )
+
+    console.log(
+      'next:',
+      snapshot.next
+    )
+
+    console.log(
+      'tasks:',
+      snapshot.tasks
+    )
+
+    const messages = snapshot.values.messages ?? []
+
+    console.log(
+      'messageCount:',
+      messages.length
+    )
+
+    console.log('---------------- MESSAGES ----------------')
+
+    for (const message of messages) {
+      console.log(`[${message.constructor.name}]`)
+
+      console.dir(
+        message.content,
+        {
+          depth: null,
+        }
+      )
+
+      // AIMessage 如果产生了 tool call，把 tool call 也打印出来
+      if (
+        'tool_calls' in message &&
+        Array.isArray(message.tool_calls) &&
+        message.tool_calls.length > 0
+      ) {
+        console.log('tool_calls:')
+
+        console.dir(
+          message.tool_calls,
+          {
+            depth: null,
+          }
+        )
+      }
+
+      // ToolMessage 通常有 tool_call_id
+      if (
+        'tool_call_id' in message &&
+        message.tool_call_id
+      ) {
+        console.log(
+          'tool_call_id:',
+          message.tool_call_id
+        )
+      }
+
+      console.log('------------------------------------------')
+    }
+  }
+
+  console.log('\n')
+  console.log('==================================================')
+  console.log(`checkpoint total: ${index}`)
+  console.log('==================================================')
+}

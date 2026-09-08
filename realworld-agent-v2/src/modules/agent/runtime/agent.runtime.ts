@@ -9,7 +9,10 @@ import { AppError } from '../../../common/errors/app.error.js'
 import { AgentExecutionError } from '../../../common/errors/agent.error.js'
 import type { RealWorldClient } from '../../../clients/realworld.client.js'
 
-import { createSearchArticlesTool } from '../tools/index.js'
+import { createSearchArticlesTool,createGetArticleDetailTool,
+  createGetArticleByUserIdTool,createGetArticleCommentTool,
+  createMyArticleTool,createListAvailableTagsTool
+ } from '../tools/index.js'
 import { AGENT_SYSTEM_PROMPT } from './system.prompt.js'
 
 import type {AgentTraceLogger} from '../../../common/logging/agent-trace.logger.js'
@@ -19,6 +22,10 @@ import type {
 import type {
   BaseCheckpointSaver
 } from '@langchain/langgraph'
+import { PostgresSaver } from '@langchain/langgraph-checkpoint-postgres'
+
+import { printAgentState,printAgentStateHistory } from '../../../common/logging/agent-trace.logger.js'
+
 
 import type { AgentHistoryMessageOutput } from '../agent.schema.js' 
 
@@ -62,7 +69,31 @@ export class AgentRuntime {
         createSearchArticlesTool({
           realWorldClient: this.realWorldClient,
           token: input.token
-        })
+        }),
+        createGetArticleDetailTool({
+          realWorldClient: this.realWorldClient,
+          token: input.token,
+          currentUserId: input.userId
+        }),
+        createGetArticleByUserIdTool({
+          realWorldClient: this.realWorldClient,
+          token: input.token,
+          currentUserId: input.userId
+        }),
+        createGetArticleCommentTool({
+          realWorldClient: this.realWorldClient,
+          token: input.token,
+          currentUserId: input.userId
+        }),
+        createMyArticleTool({
+          realWorldClient: this.realWorldClient,
+          token: input.token,
+          currentUserId: input.userId
+        }),
+        createListAvailableTagsTool({
+          realWorldClient: this.realWorldClient,
+          token: input.token,
+        }),
       ]
 
       const agent = createAgent({
@@ -87,6 +118,17 @@ export class AgentRuntime {
         }
 
       })
+      
+      await printAgentState(
+        agent,
+        threadId
+      )
+      // await printAgentStateHistory(
+      //   agent,
+      //   threadId
+      // )
+
+
        /*
      * 先保存到局部变量。
      *
@@ -324,5 +366,15 @@ export class AgentRuntime {
         isAiMessage &&
         toolCalls.length === 0
     }
+  }
+
+  /**
+   * 删除会话中全部消息。
+   * @param userId 用户 ID
+   */
+  async clearHistory(userId: number): Promise<void> {
+    const threadId = `realworld-user:${userId}`
+
+    await this.checkpointer.deleteThread(threadId)
   }
 }

@@ -221,8 +221,6 @@ getFavoriteArticleListByUserId = async (req:Request,res:Response,next:NextFuncti
 getArticleListByUserId = async (req:Request,res:Response,next:NextFunction)=>{
   try {
     const input = req.body
-    console.log(this,9999);
-    
     const list = await this.articleService.getArticleListByUserId(input.userId)
     return res.status(200).json({
       success: true,

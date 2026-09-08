@@ -10,7 +10,9 @@
     "typecheck": "tsc --noEmit",
     "build": "tsc",
     "start2": "node dist/app.js",
-    "test": "tsx test.ts"
+    "test": "tsx test.ts",
+    "test:seed": "tsx --test src/database/seeds/agent-demo.seed-data.test.ts",
+    "seed:agent-demo": "tsx src/database/seeds/agent-demo.seed.ts"
   },
   "keywords": [],
   "author": "",

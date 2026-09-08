@@ -28,5 +28,13 @@ export function createAgentRouter(
       .getHistory
   )
 
+  router.post(
+    '/clear_history',
+    options.authMiddleware,
+    options.agentController
+      .clearHistory
+
+  )
+
   return router
 }

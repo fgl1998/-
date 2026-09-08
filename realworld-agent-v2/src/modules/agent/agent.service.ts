@@ -44,4 +44,10 @@ export class AgentService {
       messages
     }
   }
+
+  async clearHistory(
+    userId: number
+  ): Promise<void> {
+    await this.agentRuntime.clearHistory(userId)
+  }
 }

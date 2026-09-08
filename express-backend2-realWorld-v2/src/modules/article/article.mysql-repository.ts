@@ -170,12 +170,14 @@ export class MysqlArticleRepository implements ArticleRepository {
 
       FROM articles a
       JOIN users u ON a.author_id = u.id
-      WHERE a.title LIKE ?
+      WHERE a.title LIKE CONCAT('%', COALESCE(?, ''), '%')
       ORDER BY a.created_at DESC
       LIMIT ? OFFSET ?
       `,
       [currentUserId,keyWord,limit,offset]
     )
+    console.log(rows,999);
+    
     return rows.map(row=>toArticleQuery(row))
 
   }

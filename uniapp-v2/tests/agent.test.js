@@ -44,6 +44,7 @@ function createChatPage(
   const component = new Function('require', 'uni', script.replace(/export\s+default/, 'return'))(
     (name) => {
       if (name === '../../common/agent-history') return require('../common/agent-history')
+      if (name === '../../common/markdown') return require('../common/markdown')
       assert.ok(modules[name], `Unexpected dependency: ${name}`)
       return modules[name]
     }, uni,
@@ -278,6 +279,14 @@ test('chat page exposes a guarded clear-history toolbar action', () => {
   assert.match(source, /class="clear-history-button"/)
   assert.match(source, /:disabled="!canClearHistory"/)
   assert.match(source, /@click="confirmClearHistory"/)
+})
+
+test('chat page renders assistant answers as markdown and keeps other messages as text', () => {
+  const source = fs.readFileSync(path.join(root, 'pages/agent/chat.vue'), 'utf8')
+  assert.match(source, /<u-parse/)
+  assert.match(source, /v-if="isMarkdownMessage\(message\)"/)
+  assert.match(source, /:content="renderMarkdown\(message\.content\)"/)
+  assert.match(source, /v-else class="message-text"/)
 })
 
 test('Agent API posts only the current message to its own server with current JWT and timeout', async () => {

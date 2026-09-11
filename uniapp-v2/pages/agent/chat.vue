@@ -67,7 +67,18 @@
             <view v-if="!message.collapsed" class="message-bubble" :class="{ 'message-bubble--user': message.role === 'user', 'message-bubble--tool': message.type === 'tool', 'message-bubble--system': message.type === 'system' }">
               <text v-if="message.name" class="message-meta" selectable>名称：{{ message.name }}</text>
               <text v-if="message.toolCallId" class="message-meta" selectable>调用 ID：{{ message.toolCallId }}</text>
-              <text class="message-text" selectable>{{ message.content }}</text>
+              <u-parse
+                v-if="isMarkdownMessage(message)"
+                class="message-markdown"
+                :content="renderMarkdown(message.content)"
+                :tag-style="markdownTagStyle"
+                :selectable="true"
+                :set-title="false"
+                :preview-img="false"
+                :show-img-menu="false"
+                :scroll-table="true"
+              />
+              <text v-else class="message-text" selectable>{{ message.content }}</text>
               <view v-if="message.toolCallsText" class="tool-calls">
                 <text class="tool-calls-title">工具调用与参数</text>
                 <text class="message-text tool-calls-text" selectable>{{ message.toolCallsText }}</text>
@@ -121,6 +132,7 @@
 const agentApi = require('../../api/agent')
 const session = require('../../common/session')
 const { normalizeHistory } = require('../../common/agent-history')
+const { markdownToHtml } = require('../../common/markdown')
 
 export default {
   data() {
@@ -140,6 +152,24 @@ export default {
       requestGeneration: 0,
       pageActive: false,
       suggestions: ['帮我找 Node.js 相关的文章', '最近有哪些文章？'],
+      markdownTagStyle: {
+        h1: 'margin: 4px 0 14px; color: #1f2937; font-size: 22px; line-height: 1.4; font-weight: 700;',
+        h2: 'margin: 18px 0 10px; color: #1f2937; font-size: 19px; line-height: 1.45; font-weight: 700;',
+        h3: 'margin: 16px 0 8px; color: #27364a; font-size: 17px; line-height: 1.5; font-weight: 650;',
+        h4: 'margin: 14px 0 8px; color: #27364a; font-size: 16px; line-height: 1.5; font-weight: 650;',
+        p: 'margin: 0 0 12px; color: #303133; font-size: 15px; line-height: 1.8;',
+        ul: 'margin: 8px 0 14px; padding-left: 22px;',
+        ol: 'margin: 8px 0 14px; padding-left: 22px;',
+        li: 'margin: 5px 0; color: #303133; font-size: 15px; line-height: 1.75;',
+        blockquote: 'margin: 12px 0; padding: 10px 14px; color: #526174; background-color: #f3f7fb; border-left: 4px solid #78aee3;',
+        pre: 'margin: 14px 0; padding: 14px; color: #e6edf3; background-color: #202938; border-radius: 8px; white-space: pre-wrap;',
+        code: 'padding: 2px 5px; color: #c7254e; background-color: #f6f7f9; border-radius: 4px; font-family: monospace; font-size: 13px;',
+        table: 'width: 100%; margin: 12px 0; border-collapse: collapse; font-size: 14px;',
+        th: 'padding: 9px 10px; color: #27364a; background-color: #eef4fa; border: 1px solid #d9e2ec; font-weight: 650;',
+        td: 'padding: 9px 10px; color: #3f4b5a; border: 1px solid #d9e2ec;',
+        a: 'color: #2f7fc4; text-decoration: underline;',
+        hr: 'margin: 16px 0; border-top: 1px solid #dfe6ee;',
+      },
     }
   },
   computed: {
@@ -161,6 +191,12 @@ export default {
     this.resetConversation()
   },
   methods: {
+    isMarkdownMessage(message) {
+      return Boolean(message && message.role === 'assistant' && message.type !== 'tool' && message.type !== 'system')
+    },
+    renderMarkdown(content) {
+      return markdownToHtml(content)
+    },
     toggleMessage(message) {
       if (this.pageActive && this.messages.includes(message)) message.collapsed = !message.collapsed
     },
@@ -422,6 +458,7 @@ export default {
 .message-bubble--tool { background: #edf8f3; border-left: 6rpx solid #48a881; }
 .message-bubble--system { background: #eef0f5; border-left: 6rpx solid #909399; }
 .message-meta { display: block; margin-bottom: 12rpx; color: #53786a; font-size: 22rpx; overflow-wrap: anywhere; word-break: break-word; }
+.message-markdown { width: 100%; min-width: 0; color: #303133; font-size: 28rpx; line-height: 1.8; overflow-wrap: anywhere; word-break: break-word; }
 .tool-calls { margin-top: 20rpx; padding-top: 20rpx; border-top: 1rpx solid #e8edf3; }
 .tool-calls-title { display: block; margin-bottom: 12rpx; color: #3979b7; font-size: 24rpx; font-weight: 600; }
 .tool-calls-text { font-family: monospace; font-size: 24rpx; }

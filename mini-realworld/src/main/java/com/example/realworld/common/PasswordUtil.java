@@ -1,0 +1,29 @@
+package com.example.realworld.common;
+
+import at.favre.lib.crypto.bcrypt.BCrypt;
+
+public final class PasswordUtil {
+
+    private PasswordUtil() {
+    }
+
+    public static String hash(String password) {
+        return BCrypt.withDefaults()
+                .hashToString(
+                        12,
+                        password.toCharArray()
+                );
+    }
+
+    public static boolean verify(
+            String password,
+            String passwordHash
+    ) {
+        return BCrypt.verifyer()
+                .verify(
+                        password.toCharArray(),
+                        passwordHash
+                )
+                .verified;
+    }
+}

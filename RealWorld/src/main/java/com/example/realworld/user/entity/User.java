@@ -1,4 +1,4 @@
-package com.example.realworld.user;
+package com.example.realworld.user.entity;
 
 public class User {
     private Long id;

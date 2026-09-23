@@ -1,4 +1,4 @@
-package com.example.realworld.user;
+package com.example.realworld.user.dto;
 
 public class UserResponse {
     private final Long id;

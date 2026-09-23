@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
 
-@Component
+//@Component
 public class BeanPrinter implements CommandLineRunner {
 
     private final ApplicationContext applicationContext;

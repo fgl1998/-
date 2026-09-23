@@ -32,6 +32,9 @@ public class WebMvcConfig
                 .excludePathPatterns(
                         "/api/users/register"
                 )
+                .excludePathPatterns(
+                        "/api/hello"
+                )
 
                 // 登录接口不需要登录
                 .excludePathPatterns(

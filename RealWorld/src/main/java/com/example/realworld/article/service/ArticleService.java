@@ -2,11 +2,15 @@ package com.example.realworld.article.service;
 
 import com.example.realworld.article.dto.CreateArticleRequest;
 import com.example.realworld.article.entity.Article;
+import com.example.realworld.article.entity.ArticleQueryRow;
 import com.example.realworld.article.mapper.ArticleMapper;
+import com.example.realworld.common.PageResult;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.xml.transform.Result;
+import java.util.List;
 import java.util.Locale;
 import java.util.UUID;
 
@@ -47,5 +51,17 @@ public class ArticleService {
         return !normalized.isBlank()
                 ? normalized + "-" + suffix
                 : "article-" + suffix;
+    }
+
+    public PageResult<ArticleQueryRow> queryArticles(Long currentUserId, String keyword, int pageSize, int pageNumber){
+        if(pageSize>100){
+            pageSize = 100;
+        }
+        int offset = (pageNumber - 1) * pageSize;
+        long total = articleMapper.countArticles(keyword);
+        List<ArticleQueryRow> list = total==0
+                ?List.of()
+                :articleMapper.queryArticles(currentUserId, keyword, pageSize, offset);
+        return new PageResult<>(list,total,pageSize,pageNumber);
     }
 }

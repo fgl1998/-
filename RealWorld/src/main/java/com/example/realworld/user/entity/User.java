@@ -5,6 +5,9 @@ public class User {
     private String username;
     private String email;
     private String passwordHash;
+    private String bio;
+    private String image;
+
 
     public User() {
     }
@@ -39,5 +42,17 @@ public class User {
 
     public void setPasswordHash(String passwordHash) {
         this.passwordHash = passwordHash;
+    }
+    public String getBio() {
+        return bio;
+    }
+    public void setBio(String bio) {
+        this.bio = bio;
+    }
+    public String getImage() {
+        return image;
+    }
+    public void setImage(String image) {
+        this.image = image;
     }
 }

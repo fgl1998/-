@@ -11,7 +11,11 @@ public class HelloService {
         System.out.println("1. 创建 HelloService");
     }
 
-    public String sayHello() {
+    public String sayHello2() {
         return "Hello Spring Service";
     }
+    public Test sayHello() {
+        return new Test("11111");
+    }
 }
+

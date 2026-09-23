@@ -28,7 +28,7 @@ public class HelloController {
     }
 
     @GetMapping("/api/hello")
-    public String hello() {
+    public Test hello() {
         return helloService.sayHello();
     }
 }

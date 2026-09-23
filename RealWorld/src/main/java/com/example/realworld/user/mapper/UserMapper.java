@@ -43,12 +43,25 @@ public interface UserMapper {
 //            @Param("username") String username
 //    );
 
+    @Update("""
+            UPDATE users
+            SET username = #{username},
+                email = #{email},
+                password_hash = #{passwordHash},  
+                bio = #{bio},
+                image = #{image} 
+            WHERE id = #{id}
+            """)
+    int update(User user);
+
     @Insert("""
             INSERT INTO users (username, email, password_hash,created_at,updated_at)
             VALUES (#{username}, #{email}, #{passwordHash},NOW(),NOW())
             """)
     @Options(useGeneratedKeys = true, keyProperty = "id", keyColumn = "id")
     int insert(User user);
+
+
 //    int insert(
 //            @Param("username") String username,
 //            @Param("email") String email,

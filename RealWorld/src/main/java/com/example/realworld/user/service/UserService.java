@@ -1,14 +1,11 @@
 package com.example.realworld.user.service;
 
 import com.example.realworld.security.JwtService;
-import com.example.realworld.user.dto.CreateUserRequest;
-import com.example.realworld.user.dto.LoginRequest;
-import com.example.realworld.user.dto.LoginResponse;
+import com.example.realworld.user.dto.*;
 import com.example.realworld.user.entity.User;
 import com.example.realworld.user.exception.InvalidCredentialsException;
 import com.example.realworld.user.exception.UserNotFoundException;
 import com.example.realworld.user.mapper.UserMapper;
-import com.example.realworld.user.dto.UserResponse;
 import com.example.realworld.user.exception.UserAlreadyExistsException;
 import org.springframework.stereotype.Service;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -93,5 +90,9 @@ public class UserService {
                         existingUser.getEmail()
                 )
         );
+    }
+
+    public void updateUser(UpdateUserRequest request) {
+//        userMapper.update(request);
     }
 }

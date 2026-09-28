@@ -3,6 +3,7 @@ package com.example.realworld.article.service;
 import com.example.realworld.article.dto.CreateArticleRequest;
 import com.example.realworld.article.entity.Article;
 import com.example.realworld.article.entity.ArticleQueryRow;
+import com.example.realworld.article.entity.CommentQueryRow;
 import com.example.realworld.article.mapper.ArticleMapper;
 import com.example.realworld.common.PageResult;
 import jakarta.servlet.http.HttpServletRequest;
@@ -64,4 +65,42 @@ public class ArticleService {
                 :articleMapper.queryArticles(currentUserId, keyword, pageSize, offset);
         return new PageResult<>(list,total,pageSize,pageNumber);
     }
+
+    public List<ArticleQueryRow> queryArticlesByAuthorId(Long currentUserId){
+        return  articleMapper.queryArticlesByAuthorId(currentUserId);
+    }
+
+    public List<ArticleQueryRow> queryArticlesByFavoriteUser(Long currentUserId){
+        return articleMapper.queryArticlesByFavoriteUser(currentUserId);
+    }
+
+
+    public ArticleQueryRow getArticleDetailBySlug(Long currentUserId, String slug){
+        return articleMapper.queryArticleDetail(currentUserId, slug);
+    }
+
+    public int deleteArticle(Long articleId){
+        return articleMapper.deleteArticle(articleId);
+    }
+
+    public void unfavorite(Long userId, Long articleId){
+        articleMapper.unfavorite(userId, articleId);
+    }
+
+    public void favorite(Long userId, Long articleId){
+        articleMapper.favorite(userId, articleId);
+    }
+
+    public void createComment(Long userId, Long articleId, String body){
+        articleMapper.insertComment(userId, articleId, body);
+    }
+
+    public void deleteComment(Long commentId){
+        articleMapper.deleteComment(commentId);
+    }
+
+    public List<CommentQueryRow> queryComments(Long articleId,Long userId){
+        return articleMapper.listComments(userId, articleId);
+    }
+
 }

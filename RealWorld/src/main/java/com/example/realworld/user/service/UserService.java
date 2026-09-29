@@ -9,6 +9,8 @@ import com.example.realworld.user.mapper.UserMapper;
 import com.example.realworld.user.exception.UserAlreadyExistsException;
 import org.springframework.stereotype.Service;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.bind.annotation.RequestBody;
+
 import java.util.Locale;
 import java.util.Map;
 
@@ -93,6 +95,16 @@ public class UserService {
     }
 
     public void updateUser(UpdateUserRequest request) {
-//        userMapper.update(request);
+        String password = request.getPassword();
+        User user = new User();
+        user.setEmail(request.getEmail());
+        user.setBio(request.getBio());
+        user.setImage(request.getImage());
+        user.setId(request.getId());
+        if (password != null) {
+            String passwordHash = passwordEncoder.encode(password);
+            user.setPasswordHash(passwordHash);
+        }
+        userMapper.update(user);
     }
 }

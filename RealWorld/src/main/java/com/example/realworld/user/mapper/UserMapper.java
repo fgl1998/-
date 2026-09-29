@@ -44,15 +44,20 @@ public interface UserMapper {
 //    );
 
     @Update("""
+            <script>
             UPDATE users
-            SET username = #{username},
-                email = #{email},
-                password_hash = #{passwordHash},  
-                bio = #{bio},
-                image = #{image} 
+            <set>
+                 <if test="username != null">username = #{username},</if>
+                 <if test="email != null">email = #{email},</if>
+                 <if test="passwordHash != null">password_hash = #{passwordHash},</if>
+                 <if test="bio != null">bio = #{bio},</if>
+                 <if test="image != null">image = #{image},</if>
+            </set>
             WHERE id = #{id}
+            </script>
             """)
     int update(User user);
+    // entity实体类除了对齐数据库查询的返回值还能作为insert的参数的类型限制吗
 
     @Insert("""
             INSERT INTO users (username, email, password_hash,created_at,updated_at)

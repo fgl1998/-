@@ -1,10 +1,7 @@
 package com.example.realworld.user.controller;
 
 import com.example.realworld.common.Result;
-import com.example.realworld.user.dto.CreateUserRequest;
-import com.example.realworld.user.dto.LoginRequest;
-import com.example.realworld.user.dto.LoginResponse;
-import com.example.realworld.user.dto.UserResponse;
+import com.example.realworld.user.dto.*;
 import com.example.realworld.user.service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
@@ -38,5 +35,11 @@ public class UserController {
     public Result<LoginResponse> login(@Valid @RequestBody LoginRequest request){
         LoginResponse response = userService.login(request);
         return Result.success(response);
+    }
+
+    @PostMapping("/update")
+    public Result<Void> update(@Valid @RequestBody UpdateUserRequest request){
+        userService.updateUser(request);
+        return Result.success();
     }
 }

@@ -20,7 +20,7 @@ public class PageResult<T> {
     // 下面 getter 必须写全，否则 Jackson 序列化不出来（就是你之前踩的坑）
     public List<T> getList() { return list; }
     public long getTotal() { return total; }
-    public int getPageNum() { return pageNumber; }
+    public int getPageNumber() { return pageNumber; }
     public int getPageSize() { return pageSize; }
     public int getTotalPages() { return totalPages; }
 }

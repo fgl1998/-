@@ -99,7 +99,7 @@ public class ArticleService {
         articleMapper.deleteComment(commentId);
     }
 
-    public List<CommentQueryRow> queryComments(Long articleId,Long userId){
+    public List<CommentQueryRow> queryComments(Long userId,Long articleId){
         return articleMapper.listComments(userId, articleId);
     }
 

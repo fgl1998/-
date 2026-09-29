@@ -1,12 +1,23 @@
 package com.example.realworld.user.dto;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+
 public class UpdateUserRequest {
+    @NotNull(message = "Id cannot be null")
+    private Long id;
     private String email;
     private String password;
     private String username;
     private String bio;
     private String image;
 
+    public Long getId() {
+        return id;
+    }
+    public void setId(Long id) {
+        this.id = id;
+    }
     public String getEmail() {
         return email;
     }

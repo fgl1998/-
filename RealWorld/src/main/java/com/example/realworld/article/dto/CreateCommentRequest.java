@@ -1,12 +1,13 @@
 package com.example.realworld.article.dto;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 public class CreateCommentRequest {
     private String body;
     private Long articleId;
 
-    @NotBlank(message = "Article ID cannot be blank")
+    @NotNull(message = "Article ID cannot be null")
     public Long getArticleId() {
         return articleId;
     }
